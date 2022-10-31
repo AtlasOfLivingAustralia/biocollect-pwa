@@ -1,5 +1,5 @@
 function App() {
-  return <div>Hello world!</div>;
+  return <div>{import.meta.env.MODE}</div>;
 }
 
 export default App;

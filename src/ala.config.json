@@ -1,5 +1,5 @@
 {
-  "prod": {
+  "production": {
     "timeout": 2000,
     "auth": {
       "user_pool": "<user-pool-here>",
@@ -23,7 +23,7 @@
       "ecodata_url": "https://ecodata-staging.ala.org.au"
     }
   },
-  "test": {
+  "testing": {
     "timeout": 10000,
     "auth": {
       "url": "https://auth-test.ala.org.au/cas/oidc",
@@ -35,7 +35,7 @@
       "ecodata_url": "https://ecodata-test.ala.org.au"
     }
   },
-  "dev": {
+  "development": {
     "timeout": 10000,
     "auth": {
       "user_pool": "ap-southeast-2_dqIVUS9bF",
