@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "run:dev": "vite --mode development",
+    "run:test": "vite --mode testing",
+    "run:stage": "vite --mode staging",
+    "run:prod": "vite --mode production",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
