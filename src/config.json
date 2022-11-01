@@ -2,9 +2,10 @@
   "production": {
     "timeout": 2000,
     "auth": {
-      "user_pool": "<user-pool-here>",
+      "authority": "https://auth.ala.org.au/cas/oidc",
       "client_id": "<client-id-here>",
-      "scopes": "email openid profile"
+      "redirect_uri": "https://biocollect.ala.org.au",
+      "scope": "email openid profile"
     },
     "biocollect": {
       "biocollect_url": "https://biocollect.ala.org.au",
@@ -14,9 +15,10 @@
   "staging": {
     "timeout": 3000,
     "auth": {
-      "user_pool": "<user-pool-here>",
-      "client_id": "oidc-expo-test",
-      "scopes": "email openid profile"
+      "authority": "https://auth.ala.org.au/cas/oidc",
+      "client_id": "<client-id-here>",
+      "redirect_uri": "https://biocollect.ala.org.au",
+      "scope": "email openid profile"
     },
     "biocollect": {
       "biocollect_url": "https://biocollect-staging.ala.org.au",
@@ -26,9 +28,10 @@
   "testing": {
     "timeout": 10000,
     "auth": {
-      "url": "https://auth-test.ala.org.au/cas/oidc",
-      "client_id": "oidc-expo-test",
-      "scopes": "email openid profile"
+      "authority": "https://auth-test.ala.org.au/cas/oidc",
+      "client_id": "<client-id-here>",
+      "redirect_uri": "https://biocollect-test.ala.org.au",
+      "scope": "email openid profile"
     },
     "biocollect": {
       "biocollect_url": "https://apis.test.ala.org.au/biocollect",
@@ -38,13 +41,14 @@
   "development": {
     "timeout": 10000,
     "auth": {
-      "user_pool": "ap-southeast-2_dqIVUS9bF",
-      "client_id": "5mqnuhdf75ru6fc153hjifdtsn",
-      "scopes": "email openid profile"
+      "authority": "https://auth-test.ala.org.au/cas/oidc",
+      "client_id": "oidc-pkce-public-test",
+      "redirect_uri": "http://localhost:5173",
+      "scope": "email openid profile"
     },
     "biocollect": {
       "biocollect_url": "https://apis.test.ala.org.au/biocollect",
-      "ecodata_url": "https://ecodata.ala.org.au"
+      "ecodata_url": "https://ecodata-test.ala.org.au"
     }
   }
 }

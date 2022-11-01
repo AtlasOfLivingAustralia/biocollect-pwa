@@ -1,12 +1,12 @@
-import config from 'ala.config.json';
+import configJson from 'config.json';
 
 export interface ApplicationConfig {
   timeout: number;
   auth: {
-    user_pool?: string;
-    url?: string;
+    authority: string;
     client_id: string;
-    scopes: string;
+    redirect_uri: string;
+    scope: string;
   };
   biocollect: {
     biocollect_url: string;
@@ -14,4 +14,5 @@ export interface ApplicationConfig {
   };
 }
 
-export default config as { [key: string]: ApplicationConfig };
+export const all = configJson as { [key: string]: ApplicationConfig };
+export default all[import.meta.env.MODE];

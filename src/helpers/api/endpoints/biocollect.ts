@@ -20,7 +20,7 @@ export default {
     geoSearchJSON?: object
   ): Promise<BioCollectProjectSearch> => {
     // Retrieve the auth configuration
-    const { biocollect_url } = config[import.meta.env.MODE].biocollect;
+    const { biocollect_url } = config.biocollect;
 
     // Define basic query parameters
     const params: { [key: string]: any } = {
@@ -53,7 +53,7 @@ export default {
   },
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
     // Retrieve the auth configuration
-    const { biocollect_url } = config[import.meta.env.MODE].biocollect;
+    const { biocollect_url } = config.biocollect;
 
     // Make the GET request
     const { data } = await axios.get<BioCollectSurvey[]>(

@@ -22,7 +22,7 @@ const APIProvider = (props: APIProviderProps): ReactElement => {
       axios.defaults.headers.common[
         'Authorization'
       ] = `Bearer ${auth.user?.access_token}`;
-      axios.defaults.timeout = config[import.meta.env.MODE].timeout;
+      axios.defaults.timeout = config.timeout;
       console.log('[API : Provider] Updated axios auth header & timeout');
     } else {
       delete axios.defaults.headers.common['Authorization'];

@@ -1,5 +1,13 @@
+import { AuthProvider } from 'react-oidc-context';
+import Routes from './Routes';
+import config from 'helpers/config';
+
 function App() {
-  return <div>{import.meta.env.MODE}</div>;
+  return (
+    <AuthProvider {...config.auth}>
+      <Routes />
+    </AuthProvider>
+  );
 }
 
 export default App;

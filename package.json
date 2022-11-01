@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "run:dev": "vite --mode development",
-    "run:test": "vite --mode testing",
-    "run:stage": "vite --mode staging",
-    "run:prod": "vite --mode production",
+    "start": "vite --mode development",
+    "start:test": "vite --mode testing",
+    "start:stage": "vite --mode staging",
+    "start:prod": "vite --mode production",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
@@ -16,7 +16,8 @@
     "oidc-client-ts": "^2.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-oidc-context": "^2.2.0"
+    "react-oidc-context": "^2.2.0",
+    "react-router-dom": "^6.4.2"
   },
   "devDependencies": {
     "@types/react": "^18.0.22",
@@ -30,6 +31,7 @@
     "eslint-plugin-react": "^7.31.10",
     "prettier": "^2.7.1",
     "typescript": "^4.6.4",
-    "vite": "^3.2.0"
+    "vite": "^3.2.0",
+    "vite-tsconfig-paths": "^3.5.2"
   }
 }
