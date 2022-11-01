@@ -44,22 +44,22 @@ export default {
     }
 
     // Make the GET request
-    const request = await axios.get<BioCollectProjectSearch>(
+    const { data } = await axios.get<BioCollectProjectSearch>(
       `${biocollect_url}/ws/project/search`,
       { params }
     );
 
-    return await formatProjects(request.data);
+    return await formatProjects(data);
   },
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
     // Retrieve the auth configuration
     const { biocollect_url } = config[import.meta.env.MODE].biocollect;
 
     // Make the GET request
-    const request = await axios.get<BioCollectSurvey[]>(
+    const { data } = await axios.get<BioCollectSurvey[]>(
       `${biocollect_url}/ws/survey/list/${projectId}`
     );
 
-    return request.data;
+    return data;
   },
 };
