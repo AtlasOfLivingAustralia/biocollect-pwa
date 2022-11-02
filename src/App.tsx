@@ -23,8 +23,23 @@ function App() {
   const toggleColourScheme = (value?: ColorScheme) =>
     setColourScheme(value || (colourScheme === 'dark' ? 'light' : 'dark'));
 
+  const onSigninCallback = () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('code') && params.get('state')) {
+      params.delete('code');
+      params.delete('state');
+    }
+
+    // Remove the auth code & state variables from the history
+    window.history.replaceState(
+      null,
+      '',
+      window.location.origin + window.location.pathname + params.toString()
+    );
+  };
+
   return (
-    <AuthProvider {...config.auth}>
+    <AuthProvider {...config.auth} onSigninCallback={onSigninCallback}>
       <ColorSchemeProvider
         colorScheme={colourScheme}
         toggleColorScheme={toggleColourScheme}
