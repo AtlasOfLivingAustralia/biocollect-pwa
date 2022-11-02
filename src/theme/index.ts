@@ -7,7 +7,7 @@ const defaults: MantineThemeOverride = {
   headings: {
     fontFamily: `Lato, ${fontStack}`,
   },
-  defaultRadius: 'md',
+  defaultRadius: 'sm',
   // colors: {
   //   test: [],
   // },
