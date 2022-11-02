@@ -9,6 +9,8 @@ import { AuthProvider } from 'react-oidc-context';
 // App-specific imports
 import config from 'helpers/config';
 import Routes from './Routes';
+import Layout from 'views/Layout';
+import { themes } from 'theme';
 
 function App() {
   const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
@@ -27,8 +29,14 @@ function App() {
         colorScheme={colourScheme}
         toggleColorScheme={toggleColourScheme}
       >
-        <MantineProvider withGlobalStyles withNormalizeCSS>
-          <Routes />
+        <MantineProvider
+          theme={themes[colourScheme]}
+          withGlobalStyles
+          withNormalizeCSS
+        >
+          <Layout>
+            <Routes />
+          </Layout>
         </MantineProvider>
       </ColorSchemeProvider>
     </AuthProvider>

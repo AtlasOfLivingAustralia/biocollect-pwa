@@ -1,13 +1,14 @@
+import { Text } from '@mantine/core';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>MODE: {import.meta.env.MODE}!</div>,
+    element: <Text>MODE: {import.meta.env.MODE}!</Text>,
   },
   {
     path: 'test',
-    element: <div>testing route</div>,
+    element: <Text>testing route</Text>,
   },
 ]);
 
