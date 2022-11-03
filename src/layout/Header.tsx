@@ -7,15 +7,18 @@ import {
   Image,
   Button,
   UnstyledButton,
-  Center,
-  Loader,
+  Autocomplete,
+  MediaQuery,
   useMantineColorScheme,
-  ActionIcon,
-  Tooltip,
 } from '@mantine/core';
 import { useAuth } from 'react-oidc-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOut, faQuestion } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSignOut,
+  faQuestion,
+  faAdd,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 
 // BioCollect logos
 import logoDark from 'assets/biocollect-logo.png';
@@ -34,6 +37,13 @@ export default function Header() {
           src={colorScheme === 'dark' ? logoLight : logoDark}
         />
         <Group>
+          <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
+            <Autocomplete
+              icon={<FontAwesomeIcon width={14} icon={faSearch} />}
+              placeholder="Search Projects"
+              data={[]}
+            />
+          </MediaQuery>
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
               <Menu.Target>
@@ -42,8 +52,15 @@ export default function Header() {
                 </Avatar>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Label>User</Menu.Label>
-                <Menu.Item>Testing</Menu.Item>
+                <Menu.Label>Projects</Menu.Label>
+                <Menu.Item
+                  icon={<FontAwesomeIcon width={14} icon={faSearch} />}
+                >
+                  Search projects
+                </Menu.Item>
+                <Menu.Item icon={<FontAwesomeIcon width={14} icon={faAdd} />}>
+                  Add your project
+                </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item
                   component="a"

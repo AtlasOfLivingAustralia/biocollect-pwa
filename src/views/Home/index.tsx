@@ -1,5 +1,10 @@
-import { Text } from '@mantine/core';
+import { Text, Title } from '@mantine/core';
 
 export default function Home() {
-  return <Text>Home</Text>;
+  return (
+    <>
+      <Title>Home</Title>
+      <Text>This is the home page</Text>
+    </>
+  );
 }
