@@ -10,10 +10,12 @@ import {
   Center,
   Loader,
   useMantineColorScheme,
+  ActionIcon,
+  Tooltip,
 } from '@mantine/core';
 import { useAuth } from 'react-oidc-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faSignOut, faQuestion } from '@fortawesome/free-solid-svg-icons';
 
 // BioCollect logos
 import logoDark from 'assets/biocollect-logo.png';
@@ -39,36 +41,56 @@ export default function Header() {
           height={38}
           src={colorScheme === 'dark' ? logoLight : logoDark}
         />
-        {auth.isAuthenticated ? (
-          <Menu position="bottom-end">
-            <Menu.Target>
-              <Avatar component={UnstyledButton} radius="xl" variant="filled">
-                JB
-              </Avatar>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Label>User</Menu.Label>
-              <Menu.Item>Testing</Menu.Item>
-              <Menu.Divider />
-              <Menu.Item
-                onClick={() => auth.signoutRedirect()}
-                icon={<FontAwesomeIcon icon={faSignOut} />}
-                disabled={auth.isLoading}
-                color="red"
-              >
-                Sign Out
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        ) : (
-          <Button
-            variant="light"
-            onClick={() => auth.signinRedirect()}
-            loading={auth.isLoading}
-          >
-            Sign In
-          </Button>
-        )}
+        <Group>
+          {/* <Tooltip label="Help">
+            <ActionIcon
+              variant="filled"
+              target="_blank"
+              component="a"
+              href="https://support.ala.org.au/support/solutions/6000139493"
+            >
+              <FontAwesomeIcon icon={faQuestion} size="xs" />
+            </ActionIcon>
+          </Tooltip> */}
+          {auth.isAuthenticated ? (
+            <Menu position="bottom-end">
+              <Menu.Target>
+                <Avatar component={UnstyledButton} radius="xl" variant="filled">
+                  JB
+                </Avatar>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>User</Menu.Label>
+                <Menu.Item>Testing</Menu.Item>
+                <Menu.Divider />
+                <Menu.Item
+                  component="a"
+                  href="https://support.ala.org.au/support/solutions/6000139493"
+                  target="_blank"
+                  icon={<FontAwesomeIcon width={14} icon={faQuestion} />}
+                >
+                  Help
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => auth.signoutRedirect()}
+                  icon={<FontAwesomeIcon width={14} icon={faSignOut} />}
+                  disabled={auth.isLoading}
+                  color="red"
+                >
+                  Sign Out
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          ) : (
+            <Button
+              variant="light"
+              onClick={() => auth.signinRedirect()}
+              loading={auth.isLoading}
+            >
+              Sign In
+            </Button>
+          )}
+        </Group>
       </Group>
     </MantineHeader>
   );
