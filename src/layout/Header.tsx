@@ -1,4 +1,3 @@
-import { ReactElement } from 'react';
 import {
   Header as MantineHeader,
   Group,
@@ -10,7 +9,9 @@ import {
   Autocomplete,
   MediaQuery,
   useMantineColorScheme,
+  Badge,
 } from '@mantine/core';
+import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,6 +19,7 @@ import {
   faQuestion,
   faAdd,
   faSearch,
+  faBug,
 } from '@fortawesome/free-solid-svg-icons';
 
 // BioCollect logos
@@ -31,11 +33,16 @@ export default function Header() {
   return (
     <MantineHeader height={71} p="md">
       <Group position="apart" px="sm">
-        <Image
-          width="auto"
-          height={38}
-          src={colorScheme === 'dark' ? logoLight : logoDark}
-        />
+        <Group>
+          <Image
+            width="auto"
+            height={38}
+            src={colorScheme === 'dark' ? logoLight : logoDark}
+          />
+          <Badge radius="sm" color="grey">
+            ver 0.0
+          </Badge>
+        </Group>
         <Group>
           <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
             <Autocomplete
@@ -61,6 +68,19 @@ export default function Header() {
                 <Menu.Item icon={<FontAwesomeIcon width={14} icon={faAdd} />}>
                   Add your project
                 </Menu.Item>
+                {import.meta.env.DEV && (
+                  <>
+                    <Menu.Divider />
+                    <Menu.Label>Development</Menu.Label>
+                    <Menu.Item
+                      component={Link}
+                      to="/debug"
+                      icon={<FontAwesomeIcon width={14} icon={faBug} />}
+                    >
+                      Debug info
+                    </Menu.Item>
+                  </>
+                )}
                 <Menu.Divider />
                 <Menu.Item
                   component="a"

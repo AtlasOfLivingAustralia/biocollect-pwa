@@ -33,11 +33,7 @@ function App() {
     );
   }
 
-  return (
-    <Layout>
-      <Routes />
-    </Layout>
-  );
+  return <Routes />;
 }
 
 export default App;
