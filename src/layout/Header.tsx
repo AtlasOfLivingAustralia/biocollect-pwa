@@ -34,11 +34,13 @@ export default function Header() {
     <MantineHeader height={71} p="md">
       <Group position="apart" px="sm">
         <Group>
-          <Image
-            width="auto"
-            height={38}
-            src={colorScheme === 'dark' ? logoLight : logoDark}
-          />
+          <Link to="/">
+            <Image
+              width="auto"
+              height={38}
+              src={colorScheme === 'dark' ? logoLight : logoDark}
+            />
+          </Link>
           <Badge radius="sm" color="grey">
             ver 0.0
           </Badge>
