@@ -10,6 +10,7 @@ import { AuthProvider } from 'react-oidc-context';
 import config from 'helpers/config';
 import { themes } from 'theme';
 import App from './App';
+import { APIProvider } from 'helpers/api';
 
 function Main() {
   const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
@@ -23,19 +24,39 @@ function Main() {
     setColourScheme(value || (colourScheme === 'dark' ? 'light' : 'dark'));
 
   return (
-    <AuthProvider {...config.auth}>
-      <ColorSchemeProvider
-        colorScheme={colourScheme}
-        toggleColorScheme={toggleColourScheme}
-      >
-        <MantineProvider
-          theme={themes[colourScheme]}
-          withGlobalStyles
-          withNormalizeCSS
+    <AuthProvider
+      {...config.auth}
+      onSigninCallback={() => {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('code') && params.get('state')) {
+          params.delete('code');
+          params.delete('state');
+
+          // Remove the auth code & state variables from the history
+          window.history.replaceState(
+            null,
+            '',
+            window.location.origin +
+              window.location.pathname +
+              params.toString()
+          );
+        }
+      }}
+    >
+      <APIProvider>
+        <ColorSchemeProvider
+          colorScheme={colourScheme}
+          toggleColorScheme={toggleColourScheme}
         >
-          <App />
-        </MantineProvider>
-      </ColorSchemeProvider>
+          <MantineProvider
+            theme={themes[colourScheme]}
+            withGlobalStyles
+            withNormalizeCSS
+          >
+            <App />
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </APIProvider>
     </AuthProvider>
   );
 }

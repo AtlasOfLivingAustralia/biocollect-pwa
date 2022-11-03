@@ -19,14 +19,14 @@ const APIProvider = (props: APIProviderProps): ReactElement => {
   // useEffect hook to add / remove access token the axios globals
   useEffect(() => {
     if (auth.isAuthenticated) {
-      axios.defaults.headers.common[
+      axios.defaults.headers[
         'Authorization'
       ] = `Bearer ${auth.user?.access_token}`;
       axios.defaults.timeout = config.timeout;
-      console.log('[API : Provider] Updated axios auth header & timeout');
+      // console.log('[API : Provider] Updated axios auth header & timeout');
     } else {
-      delete axios.defaults.headers.common['Authorization'];
-      console.log('[API : Provider] Removed token from axios auth header');
+      delete axios.defaults.headers['Authorization'];
+      // console.log('[API : Provider] Removed token from axios auth header');
     }
   }, [auth.isAuthenticated]);
 

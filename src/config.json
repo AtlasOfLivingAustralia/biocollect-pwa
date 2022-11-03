@@ -47,7 +47,7 @@
       "scope": "email openid profile"
     },
     "biocollect": {
-      "biocollect_url": "https://apis.test.ala.org.au/biocollect",
+      "biocollect_url": "http://localhost:8080/https://apis.test.ala.org.au/biocollect",
       "ecodata_url": "https://ecodata-test.ala.org.au"
     }
   }
