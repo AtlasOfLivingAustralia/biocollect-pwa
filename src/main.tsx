@@ -7,9 +7,9 @@ import { useLocalStorage, useColorScheme } from '@mantine/hooks';
 import { AuthProvider } from 'react-oidc-context';
 
 // App-specific imports
-import App from './App';
 import config from 'helpers/config';
 import { themes } from 'theme';
+import App from './App';
 
 function Main() {
   const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
