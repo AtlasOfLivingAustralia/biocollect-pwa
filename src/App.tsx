@@ -3,7 +3,7 @@ import { useAuth } from 'react-oidc-context';
 
 // App-specific imports
 import Routes from './Routes';
-import Layout from 'views/Layout';
+import Layout from 'layout';
 
 function App() {
   const auth = useAuth();
