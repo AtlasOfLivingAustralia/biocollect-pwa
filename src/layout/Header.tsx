@@ -25,14 +25,6 @@ export default function Header() {
   const { colorScheme } = useMantineColorScheme();
   const auth = useAuth();
 
-  if (auth.isLoading) {
-    return (
-      <Center sx={{ width: '100vw', height: '100vh' }}>
-        <Loader />
-      </Center>
-    );
-  }
-
   return (
     <MantineHeader height={71} p="md">
       <Group position="apart" px="sm">
@@ -42,16 +34,6 @@ export default function Header() {
           src={colorScheme === 'dark' ? logoLight : logoDark}
         />
         <Group>
-          {/* <Tooltip label="Help">
-            <ActionIcon
-              variant="filled"
-              target="_blank"
-              component="a"
-              href="https://support.ala.org.au/support/solutions/6000139493"
-            >
-              <FontAwesomeIcon icon={faQuestion} size="xs" />
-            </ActionIcon>
-          </Tooltip> */}
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
               <Menu.Target>
