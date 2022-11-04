@@ -13,14 +13,13 @@ import {
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSignOut,
-  faQuestion,
-  faAdd,
-  faSearch,
-  faBug,
-} from '@fortawesome/free-solid-svg-icons';
+  IconSearch,
+  IconPlus,
+  IconBug,
+  IconQuestionMark,
+  IconLogout,
+} from '@tabler/icons';
 
 // BioCollect logos
 import logoDark from 'assets/biocollect-logo.png';
@@ -48,7 +47,7 @@ export default function Header() {
         <Group>
           <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
             <Autocomplete
-              icon={<FontAwesomeIcon width={14} icon={faSearch} />}
+              icon={<IconSearch />}
               placeholder="Search Projects"
               data={[]}
             />
@@ -62,23 +61,13 @@ export default function Header() {
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Label>Projects</Menu.Label>
-                <Menu.Item
-                  icon={<FontAwesomeIcon width={14} icon={faSearch} />}
-                >
-                  Search projects
-                </Menu.Item>
-                <Menu.Item icon={<FontAwesomeIcon width={14} icon={faAdd} />}>
-                  Add your project
-                </Menu.Item>
+                <Menu.Item icon={<IconSearch />}>Search projects</Menu.Item>
+                <Menu.Item icon={<IconPlus />}>Add your project</Menu.Item>
                 {import.meta.env.DEV && (
                   <>
                     <Menu.Divider />
                     <Menu.Label>Development</Menu.Label>
-                    <Menu.Item
-                      component={Link}
-                      to="/debug"
-                      icon={<FontAwesomeIcon width={14} icon={faBug} />}
-                    >
+                    <Menu.Item component={Link} to="/debug" icon={<IconBug />}>
                       Debug info
                     </Menu.Item>
                   </>
@@ -88,13 +77,13 @@ export default function Header() {
                   component="a"
                   href="https://support.ala.org.au/support/solutions/6000139493"
                   target="_blank"
-                  icon={<FontAwesomeIcon width={14} icon={faQuestion} />}
+                  icon={<IconQuestionMark />}
                 >
                   Help
                 </Menu.Item>
                 <Menu.Item
                   onClick={() => auth.signoutRedirect()}
-                  icon={<FontAwesomeIcon width={14} icon={faSignOut} />}
+                  icon={<IconLogout />}
                   disabled={auth.isLoading}
                   color="red"
                 >
