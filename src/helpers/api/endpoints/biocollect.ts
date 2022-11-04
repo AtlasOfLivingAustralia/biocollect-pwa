@@ -11,10 +11,17 @@ const formatProjects = async (search: BioCollectProjectSearch) => ({
   })),
 });
 
+type BioCollectProjectSort =
+  | 'dateCreatedSort'
+  | 'nameSort'
+  | '_score'
+  | 'organisationSort';
+
 export default {
   projectSearch: async (
     offset = 0,
-    max = 20,
+    max = 30,
+    sort: string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
     geoSearchJSON?: object
@@ -26,7 +33,7 @@ export default {
     const params: { [key: string]: any } = {
       fq: 'isExternal:F',
       initiator: 'biocollect',
-      sort: 'nameSort',
+      sort,
       mobile: true,
       max,
       offset,

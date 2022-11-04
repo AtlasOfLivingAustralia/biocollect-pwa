@@ -6,10 +6,10 @@ import {
   Image,
   Button,
   UnstyledButton,
-  Autocomplete,
   MediaQuery,
   useMantineColorScheme,
   Badge,
+  TextInput,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -46,11 +46,7 @@ export default function Header() {
         </Group>
         <Group>
           <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
-            <Autocomplete
-              icon={<IconSearch />}
-              placeholder="Search Projects"
-              data={[]}
-            />
+            <TextInput icon={<IconSearch />} placeholder="Search Projects" />
           </MediaQuery>
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
