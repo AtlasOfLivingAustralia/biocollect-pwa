@@ -11,6 +11,7 @@ import {
   Select,
   SegmentedControl,
   MediaQuery,
+  Pagination,
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import { IconSearch, IconLayoutGrid, IconListDetails } from '@tabler/icons';
@@ -39,9 +40,10 @@ export default function Home() {
   useEffect(() => {
     async function fetchProjects() {
       try {
+        const paramMax = getNumber('max', 30, params);
         const data = await api.biocollect.projectSearch(
-          getNumber('offset', 0, params),
-          getNumber('max', 30, params),
+          (getNumber('page', 1, params) - 1) * paramMax,
+          paramMax,
           getString('pSort', 'dateCreatedSort', params),
           getBool('isUserPage', false, params),
           getString('search', undefined, params)
@@ -57,10 +59,24 @@ export default function Home() {
   }, [params]);
 
   const paramMax = getNumber('max', 30, params);
+  const paramPage = getNumber('page', 1, params);
 
   // Handle for updating the max result count
   const handleChangeMax = (newMax: number) => {
-    setParams({ ...params, max: newMax.toString() });
+    const newParams: { [key: string]: string } = {
+      ...Object.fromEntries(params.entries()),
+      max: newMax.toString(),
+    };
+
+    // Ensure our page value is also updated
+    if (params.get('page') && projectSearch) {
+      newParams.page = Math.min(
+        paramPage,
+        Math.floor(projectSearch.total / newMax)
+      ).toString();
+    }
+
+    setParams(newParams);
 
     // Update the project search data to immediately reflect the changes
     // if the max result count has been decreased
@@ -70,6 +86,15 @@ export default function Home() {
         projects: projectSearch.projects.slice(0, newMax),
       });
     }
+  };
+
+  // Handle for updating the pagination
+  const handleChangePage = (page: number) => {
+    setProjectSearch(null);
+    setParams({
+      ...Object.fromEntries(params.entries()),
+      page: page.toString(),
+    });
   };
 
   // Handle for updating the sort parameter
@@ -145,6 +170,17 @@ export default function Home() {
           <ProjectCard key={id} project={null} />
         ))}
       </Grid>
+      <Center mt="xl">
+        <Pagination
+          disabled={!Boolean(projectSearch)}
+          total={
+            projectSearch
+              ? Math.floor(projectSearch.total / projectSearch.projects.length)
+              : 0
+          }
+          onChange={handleChangePage}
+        />
+      </Center>
     </Box>
   );
 }
