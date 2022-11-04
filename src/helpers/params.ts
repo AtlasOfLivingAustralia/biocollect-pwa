@@ -1,6 +1,6 @@
 export const getNumber = (
   name: string,
-  fallback: number | undefined,
+  fallback: number,
   params: URLSearchParams
 ) => {
   const param = parseInt(params.get(name) || '', 10);
@@ -17,7 +17,7 @@ export const getString = (
 
 export const getBool = (
   name: string,
-  fallback: boolean | undefined,
+  fallback: boolean,
   params: URLSearchParams
 ) => {
   const param = params.get(name);

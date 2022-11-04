@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react';
-import { Text, Title, Button } from '@mantine/core';
+import { Grid, Box, Text, Title, Button } from '@mantine/core';
 import { Link, useSearchParams } from 'react-router-dom';
 
 // Helper functions / components
@@ -7,8 +7,10 @@ import { APIContext } from 'helpers/api';
 import { getBool, getNumber, getString } from 'helpers/params';
 
 // Local components
-import ProjectCard from './components';
+import ProjectCard from './components/ProjectCard';
 import { BioCollectProjectSearch } from 'types';
+
+const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
 export default function Home() {
   const [projectSearch, setProjectSearch] =
@@ -37,21 +39,36 @@ export default function Home() {
     fetchProjects();
   }, [params]);
 
+  const paramMax = getNumber('max', 20, params);
+  const handleChangeMax = (newMax: number) => {
+    setParams({ ...params, max: newMax.toString() });
+    if (newMax < paramMax && projectSearch) {
+      setProjectSearch({
+        ...projectSearch,
+        projects: projectSearch.projects.slice(0, newMax),
+      });
+    }
+  };
+
   return (
-    <>
+    <Box p="lg">
       <Title>Home</Title>
       <Text>This is the home page</Text>
       <Button component={Link} to="/test">
         Test
       </Button>
-      <Button onClick={() => setParams({ ...params, max: '40' })}>
-        Max 40
-      </Button>
-      {projectSearch
-        ? projectSearch.projects.map((project) => (
+      <Button onClick={() => handleChangeMax(5)}>Max 5</Button>
+      <Button onClick={() => handleChangeMax(10)}>Max 10</Button>
+      <Button onClick={() => handleChangeMax(15)}>Max 15</Button>
+      <Grid>
+        {projectSearch &&
+          projectSearch.projects.map((project) => (
             <ProjectCard key={project.projectId} project={project} />
-          ))
-        : [1, 2, 3, 4, 5].map((id) => <ProjectCard key={id} project={null} />)}
-    </>
+          ))}
+        {range(paramMax - (projectSearch?.projects.length || 0)).map((id) => (
+          <ProjectCard key={id} project={null} />
+        ))}
+      </Grid>
+    </Box>
   );
 }

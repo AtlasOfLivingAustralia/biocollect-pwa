@@ -5,7 +5,7 @@ const fontStack = `-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe U
 const defaults: MantineThemeOverride = {
   fontFamily: `Roboto, ${fontStack}`,
   headings: {
-    fontFamily: `Roboto, ${fontStack}`,
+    fontFamily: `Lato, ${fontStack}`,
   },
   defaultRadius: 'sm',
   // colors: {

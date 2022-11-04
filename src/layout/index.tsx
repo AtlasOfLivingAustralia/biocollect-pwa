@@ -1,3 +1,4 @@
+import { ScrollArea } from '@mantine/core';
 import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
@@ -20,7 +21,9 @@ export default function Layout() {
   return (
     <>
       <Header />
-      <Outlet />
+      <ScrollArea type="auto" style={{ height: 'calc(100vh - 71px)' }}>
+        <Outlet />
+      </ScrollArea>
     </>
   );
 }
