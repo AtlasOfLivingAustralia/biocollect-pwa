@@ -7,6 +7,7 @@ import Logger from 'helpers/logger';
 import { useAuth } from 'react-oidc-context';
 
 import { Frame } from 'components';
+import Header from './components/Header';
 
 interface ProjectProps {}
 
@@ -38,47 +39,34 @@ export default function Project() {
   console.log(survey);
 
   return (
-    <Box p="xl">
-      {project?.urlImage && (
-        <Skeleton visible={loading} width={200}>
-          <Image
-            src={project.urlImage}
-            width={200}
-            height={150}
-            radius="lg"
-            withPlaceholder
+    <>
+      <Header project={project} />
+      <Box p="xl">
+        {surveys.length > 0 && (
+          <Menu>
+            <Menu.Target>
+              <Button>Add Record</Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {surveys.map((survey) => (
+                <Menu.Item
+                  key={survey.id}
+                  onClick={() => setSurvery(survey.id)}
+                >
+                  {survey.name}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+        )}
+        {survey && (
+          <Frame
+            src={`https://biocollect.ala.org.au/acsa/bioActivity/create/${survey}`}
+            width="100%"
+            height={400}
           />
-        </Skeleton>
-      )}
-      <Skeleton visible={loading} mt="md">
-        <Title>{project?.name || 'Project Name'}</Title>
-      </Skeleton>
-      <Skeleton visible={loading} mt="xs">
-        <Title order={3}>{project?.projectType || 'Project Type'}</Title>
-      </Skeleton>
-      <Text>{projectId}</Text>
-      {surveys.length > 0 && (
-        <Menu>
-          <Menu.Target>
-            <Button>Add Record</Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {surveys.map((survey) => (
-              <Menu.Item key={survey.id} onClick={() => setSurvery(survey.id)}>
-                {survey.name}
-              </Menu.Item>
-            ))}
-          </Menu.Dropdown>
-        </Menu>
-      )}
-      {survey && (
-        <Frame
-          src={`https://biocollect.ala.org.au/acsa/bioActivity/create/${survey}`}
-          width="100%"
-          height={400}
-        />
-      )}
-      {/* <Text>{JSON.stringify(project || {}, null, 2)}</Text> */}
-    </Box>
+        )}
+      </Box>
+    </>
   );
 }
