@@ -30,6 +30,7 @@ const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 export default function Home() {
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
+  const [lastTotal, setLastTotal] = useState<number>(30);
   const [params, setParams] = useSearchParams();
 
   // API Context
@@ -39,6 +40,7 @@ export default function Home() {
   // Effect hook to fetch project data
   useEffect(() => {
     async function fetchProjects() {
+      setProjectSearch(null);
       try {
         const paramMax = getNumber('max', 30, params);
         const data = await api.biocollect.projectSearch(
@@ -49,8 +51,9 @@ export default function Home() {
           getString('search', undefined, params)
         );
         setProjectSearch(data);
-        console.log(data);
+        setLastTotal(data.total);
       } catch (error) {
+        // TODO: Error handling
         console.error(error);
       }
     }
@@ -65,16 +68,9 @@ export default function Home() {
   const handleChangeMax = (newMax: number) => {
     const newParams: { [key: string]: string } = {
       ...Object.fromEntries(params.entries()),
+      page: '1',
       max: newMax.toString(),
     };
-
-    // Ensure our page value is also updated
-    if (params.get('page') && projectSearch) {
-      newParams.page = Math.min(
-        paramPage,
-        Math.floor(projectSearch.total / newMax)
-      ).toString();
-    }
 
     setParams(newParams);
 
@@ -90,7 +86,6 @@ export default function Home() {
 
   // Handle for updating the pagination
   const handleChangePage = (page: number) => {
-    setProjectSearch(null);
     setParams({
       ...Object.fromEntries(params.entries()),
       page: page.toString(),
@@ -99,7 +94,6 @@ export default function Home() {
 
   // Handle for updating the sort parameter
   // const handleChangeSort = (newSort: string) => {
-  //   setProjectSearch(null);
   //   setParams({ ...params, pSort: newSort });
   // };
 
@@ -162,25 +156,23 @@ export default function Home() {
         </Group>
       </Group>
       <Grid>
-        {projectSearch &&
-          projectSearch.projects.map((project) => (
-            <ProjectCard key={project.projectId} project={project} />
-          ))}
-        {range(paramMax - (projectSearch?.projects.length || 0)).map((id) => (
-          <ProjectCard key={id} project={null} />
-        ))}
+        {projectSearch
+          ? projectSearch.projects.map((project) => (
+              <ProjectCard key={project.projectId} project={project} />
+            ))
+          : range(paramMax).map((id) => (
+              <ProjectCard key={id} project={null} />
+            ))}
       </Grid>
-      <Center mt="xl">
-        <Pagination
-          disabled={!Boolean(projectSearch)}
-          total={
-            projectSearch
-              ? Math.floor(projectSearch.total / projectSearch.projects.length)
-              : 0
-          }
-          onChange={handleChangePage}
-        />
-      </Center>
+      {lastTotal && (
+        <Center mt="xl">
+          <Pagination
+            page={paramPage}
+            total={Math.floor(lastTotal / paramMax)}
+            onChange={handleChangePage}
+          />
+        </Center>
+      )}
     </Box>
   );
 }
