@@ -6,10 +6,9 @@ import {
   Image,
   Button,
   UnstyledButton,
-  MediaQuery,
+  // MediaQuery,
   useMantineColorScheme,
   Badge,
-  TextInput,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -45,9 +44,9 @@ export default function Header() {
           </Badge>
         </Group>
         <Group>
-          <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
+          {/* <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
             <TextInput icon={<IconSearch />} placeholder="Search Projects" />
-          </MediaQuery>
+          </MediaQuery> */}
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
               <Menu.Target>
@@ -57,8 +56,17 @@ export default function Header() {
               </Menu.Target>
               <Menu.Dropdown>
                 <Menu.Label>Projects</Menu.Label>
-                <Menu.Item icon={<IconSearch />}>Search projects</Menu.Item>
-                <Menu.Item icon={<IconPlus />}>Add your project</Menu.Item>
+                <Menu.Item component={Link} to="/" icon={<IconSearch />}>
+                  Search projects
+                </Menu.Item>
+                <Menu.Item
+                  component="a"
+                  href="https://biocollect.ala.org.au/acsa/project/create"
+                  target="_blank"
+                  icon={<IconPlus />}
+                >
+                  Add your project
+                </Menu.Item>
                 {import.meta.env.DEV && (
                   <>
                     <Menu.Divider />
