@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { BioCollectProjectSearch, BioCollectSurvey } from 'types';
+import {
+  BioCollectProject,
+  BioCollectProjectSearch,
+  BioCollectSurvey,
+} from 'types';
 import config from 'helpers/config';
 
 const formatProjects = async (search: BioCollectProjectSearch) => ({
@@ -57,6 +61,23 @@ export default {
     );
 
     return await formatProjects(data);
+  },
+  getProject: async (projectId: string): Promise<BioCollectProject> => {
+    // Retrieve the auth configuration
+    const { biocollect_url } = config.biocollect;
+
+    // Make the GET request
+    const { data } = await axios.get<BioCollectProjectSearch>(
+      `${biocollect_url}/ws/project/search`,
+      {
+        params: {
+          fq: `projectId:${projectId}`,
+        },
+      }
+    );
+
+    const [project] = (await formatProjects(data)).projects;
+    return project;
   },
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
     // Retrieve the auth configuration

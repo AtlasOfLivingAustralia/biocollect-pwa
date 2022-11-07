@@ -2,6 +2,7 @@ import { ReactNode, ReactElement, useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 import config from 'helpers/config';
 import axios from 'axios';
+import Logger from 'helpers/logger';
 
 // Contexts
 import APIContext from './context';
@@ -23,10 +24,10 @@ const APIProvider = (props: APIProviderProps): ReactElement => {
         'Authorization'
       ] = `Bearer ${auth.user?.access_token}`;
       axios.defaults.timeout = config.timeout;
-      // console.log('[API : Provider] Updated axios auth header & timeout');
+      Logger.log('[API : Provider] Updated axios auth header & timeout');
     } else {
       delete axios.defaults.headers['Authorization'];
-      // console.log('[API : Provider] Removed token from axios auth header');
+      Logger.log('[API : Provider] Removed token from axios auth header');
     }
   }, [auth.isAuthenticated]);
 

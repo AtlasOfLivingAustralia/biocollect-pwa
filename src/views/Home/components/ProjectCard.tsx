@@ -7,7 +7,7 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
-  const visible = !Boolean(project);
+  const loading = !Boolean(project);
   return (
     <Grid.Col xl={2} lg={3} md={4} sm={6} xs={12}>
       <Card
@@ -16,10 +16,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         shadow="md"
         sx={{ height: '100%' }}
         component={Link}
-        to="/debug"
+        to={loading ? '#' : `/project/${project?.projectId}`}
+        state={{ project }}
       >
         <Card.Section>
-          <Skeleton visible={visible}>
+          <Skeleton visible={loading}>
             <Image
               src={project?.urlImage || ''}
               withPlaceholder
@@ -29,10 +30,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </Skeleton>
         </Card.Section>
         <Group mt="md">
-          <Skeleton visible={visible}>
+          <Skeleton visible={loading}>
             <Title size={20}>{project?.name || 'Project Name'}</Title>
           </Skeleton>
-          <Skeleton visible={visible}>
+          <Skeleton visible={loading}>
             <Text lineClamp={2}>
               {project?.description || 'Project Description'}
             </Text>

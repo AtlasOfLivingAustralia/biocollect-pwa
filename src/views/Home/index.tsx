@@ -21,6 +21,8 @@ import { useAuth } from 'react-oidc-context';
 import { APIContext } from 'helpers/api';
 import { getBool, getNumber, getString } from 'helpers/params';
 
+import Logger from 'helpers/logger';
+
 // Local components
 import ProjectCard from './components/ProjectCard';
 import { BioCollectProjectSearch } from 'types';
@@ -54,7 +56,7 @@ export default function Home() {
         setLastTotal(data.total);
       } catch (error) {
         // TODO: Error handling
-        console.error(error);
+        Logger.error(error);
       }
     }
 
