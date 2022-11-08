@@ -6,12 +6,16 @@ import {
   Title,
   Text,
   ScrollArea,
-  Tabs,
   Breadcrumbs,
   Anchor,
+  useMantineTheme,
+  Card,
+  Center,
+  Spoiler,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
-import Wave from 'components/Wave/Corner';
+import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
 
 interface HeaderProps {
@@ -20,7 +24,55 @@ interface HeaderProps {
 
 export default function Header({ project }: HeaderProps) {
   const loading = !Boolean(project);
-  return (
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
+
+  return mobile ? (
+    <Box>
+      <Box style={{ position: 'relative' }}>
+        <Image src={project?.fullSizeImageUrl} height="23vh" withPlaceholder />
+        <Wave style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+      </Box>
+      <Center mt={-60}>
+        <Card
+          shadow="md"
+          radius="lg"
+          style={{
+            width: 'calc(65vw)',
+            maxWidth: 400,
+            textAlign: 'center',
+            zIndex: 200,
+          }}
+        >
+          <Skeleton visible={loading}>
+            <Title order={2} lineClamp={3}>
+              {project?.name || 'The title / name of the project'}
+            </Title>
+          </Skeleton>
+          <Skeleton visible={loading} mt="sm">
+            <Title order={4} color="dimmed">
+              {project?.organisationName}
+            </Title>
+          </Skeleton>
+        </Card>
+      </Center>
+      <Box p="xl">
+        <Center>
+          <Breadcrumbs mb="md">
+            <Anchor component={Link} to=".." size="sm">
+              Search
+            </Anchor>
+            <Text color="dimmed" size="sm">
+              {project?.name.substring(0, 38)}
+            </Text>
+          </Breadcrumbs>
+        </Center>
+        <Spoiler mt="md" maxHeight={253} showLabel="Show more" hideLabel="Hide">
+          <Text>{project?.description}</Text>
+        </Spoiler>
+      </Box>
+    </Box>
+  ) : (
     <Group position="apart" align="start">
       <Box
         p={36}
@@ -33,7 +85,7 @@ export default function Header({ project }: HeaderProps) {
       >
         <Breadcrumbs mb="md">
           <Anchor component={Link} to=".." size="sm">
-            Project Search
+            Search
           </Anchor>
           <Text color="dimmed" size="sm">
             {project?.name}
@@ -62,7 +114,7 @@ export default function Header({ project }: HeaderProps) {
         <Skeleton visible={loading}>
           <Image src={project?.fullSizeImageUrl} height={320} withPlaceholder />
         </Skeleton>
-        <Wave style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+        <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
       </Box>
     </Group>
   );
