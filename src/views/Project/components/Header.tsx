@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Group,
   Box,
@@ -24,21 +25,30 @@ interface HeaderProps {
 
 export default function Header({ project }: HeaderProps) {
   const loading = !Boolean(project);
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
 
   return mobile ? (
     <Box>
       <Box style={{ position: 'relative' }}>
-        <Image src={project?.fullSizeImageUrl} height="23vh" withPlaceholder />
-        <Wave style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+        <Skeleton visible={loading || !imageLoaded}>
+          <Image
+            src={project?.fullSizeImageUrl}
+            height="23vh"
+            withPlaceholder
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+          />
+        </Skeleton>
+        <Wave style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
       </Box>
       <Center mt={-60}>
         <Card
           shadow="md"
           radius="lg"
           style={{
-            width: 'calc(65vw)',
+            width: 'calc(75vw)',
             maxWidth: 400,
             textAlign: 'center',
             zIndex: 200,
@@ -111,10 +121,16 @@ export default function Header({ project }: HeaderProps) {
         </Tabs> */}
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
-        <Skeleton visible={loading}>
-          <Image src={project?.fullSizeImageUrl} height={320} withPlaceholder />
+        <Skeleton visible={loading || !imageLoaded}>
+          <Image
+            src={project?.fullSizeImageUrl}
+            height={320}
+            withPlaceholder
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+          />
         </Skeleton>
-        <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+        <Corner style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
       </Box>
     </Group>
   );
