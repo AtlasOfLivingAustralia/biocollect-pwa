@@ -32,7 +32,7 @@ export default function Header({ project }: HeaderProps) {
   return mobile ? (
     <Box>
       <Box style={{ position: 'relative' }}>
-        <Skeleton visible={loading || !imageLoaded}>
+        <Skeleton visible={loading || !imageLoaded} radius={0}>
           <Image
             src={project?.fullSizeImageUrl}
             height="23vh"
@@ -121,7 +121,7 @@ export default function Header({ project }: HeaderProps) {
         </Tabs> */}
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
-        <Skeleton visible={loading || !imageLoaded}>
+        <Skeleton visible={loading || !imageLoaded} radius={0}>
           <Image
             src={project?.fullSizeImageUrl}
             height={320}
@@ -130,7 +130,7 @@ export default function Header({ project }: HeaderProps) {
             onError={() => setImageLoaded(true)}
           />
         </Skeleton>
-        <Corner style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
+        <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
       </Box>
     </Group>
   );
