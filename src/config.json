@@ -2,13 +2,13 @@
   "production": {
     "timeout": 2000,
     "auth": {
-      "authority": "https://auth.ala.org.au/cas/oidc",
-      "client_id": "<client-id-here>",
-      "redirect_uri": "https://biocollect.ala.org.au",
+      "authority": "https://auth-test.ala.org.au/cas/oidc",
+      "client_id": "oidc-pkce-public-test",
+      "redirect_uri": "http://localhost:5173",
       "scope": "email openid profile"
     },
     "biocollect": {
-      "biocollect_url": "https://biocollect.ala.org.au",
+      "biocollect_url": "http://localhost:9000/https://apis.test.ala.org.au/biocollect",
       "ecodata_url": "https://ecodata.ala.org.au"
     }
   },

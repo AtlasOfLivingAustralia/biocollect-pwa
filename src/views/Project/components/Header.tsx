@@ -77,7 +77,7 @@ export default function Header({ project }: HeaderProps) {
             </Text>
           </Breadcrumbs>
         </Center>
-        <Spoiler mt="md" maxHeight={253} showLabel="Show more" hideLabel="Hide">
+        <Spoiler mt="md" maxHeight={200} showLabel="Show more" hideLabel="Hide">
           <Text>{project?.description}</Text>
         </Spoiler>
       </Box>
