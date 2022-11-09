@@ -12,6 +12,10 @@ import { themes } from 'theme';
 import App from './App';
 import { APIProvider } from 'helpers/api';
 import Logger from 'helpers/logger';
+import { WebStorageStateStore } from 'oidc-client-ts';
+
+// Use localStorage for user persistence
+const userStore = new WebStorageStateStore({ store: localStorage });
 
 function Main() {
   const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
@@ -45,6 +49,7 @@ function Main() {
           );
         }
       }}
+      userStore={userStore}
     >
       <APIProvider>
         <ColorSchemeProvider
