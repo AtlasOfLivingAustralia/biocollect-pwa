@@ -3,7 +3,7 @@ import {
   ColorSchemeProvider,
   ColorScheme,
 } from '@mantine/core';
-import { useLocalStorage, useColorScheme } from '@mantine/hooks';
+import { useLocalStorage } from '@mantine/hooks';
 import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 
 // App-specific imports
@@ -16,7 +16,9 @@ import Logger from 'helpers/logger';
 function Main() {
   const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
     key: 'app-colour-scheme',
-    defaultValue: useColorScheme(),
+    defaultValue: matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light',
     getInitialValueInEffect: true,
   });
 

@@ -1,4 +1,13 @@
-import { Group, Title, Grid, Card, Text, Image, Skeleton } from '@mantine/core';
+import {
+  Group,
+  Title,
+  Grid,
+  Card,
+  Text,
+  Image,
+  Skeleton,
+  createStyles,
+} from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { BioCollectProject } from 'types';
 
@@ -6,11 +15,22 @@ interface ProjectCardProps {
   project: BioCollectProject | null;
 }
 
+const useStyles = createStyles({
+  card: {
+    transition: 'opacity 100ms ease-out',
+    ':hover': {
+      opacity: 0.2,
+    },
+  },
+});
+
 export default function ProjectCard({ project }: ProjectCardProps) {
+  const styles = useStyles();
   const loading = !Boolean(project);
   return (
     <Grid.Col xl={2} lg={3} md={4} sm={6} xs={12}>
       <Card
+        className={styles.classes.card}
         p="lg"
         radius="md"
         shadow="md"
@@ -18,6 +38,11 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         component={Link}
         to={loading ? '#' : `/project/${project?.projectId}`}
         state={{ project }}
+        styles={{
+          '&:hover': {
+            opacity: 0.6,
+          },
+        }}
       >
         <Card.Section>
           <Skeleton visible={loading}>

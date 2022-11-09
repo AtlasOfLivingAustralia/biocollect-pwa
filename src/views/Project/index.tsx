@@ -35,9 +35,6 @@ export default function Project() {
     if (!project) fetchProject();
   }, [location]);
 
-  const loading = false;
-  console.log(survey);
-
   return (
     <>
       <Header project={project} />
