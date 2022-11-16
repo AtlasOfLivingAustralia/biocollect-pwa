@@ -39,7 +39,7 @@
     }
   },
   "development": {
-    "timeout": 10000,
+    "timeout": 30000,
     "auth": {
       "authority": "https://auth-test.ala.org.au/cas/oidc",
       "client_id": "oidc-pkce-public-test",

@@ -56,13 +56,11 @@ export default function Project() {
             </Menu.Dropdown>
           </Menu>
         )}
-        {survey && (
+        {/* {survey && (
           <Frame
             src={`https://biocollect.ala.org.au/acsa/bioActivity/create/${survey}`}
-            width="100%"
-            height={400}
           />
-        )}
+        )} */}
       </Box>
     </>
   );

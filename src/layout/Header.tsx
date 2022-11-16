@@ -43,9 +43,20 @@ export default function Header() {
               }
             />
           </Link>
-          <Badge radius="sm" color="grey">
-            ver 0.0
-          </Badge>
+          <Group spacing="xs">
+            <Badge radius="sm" color="grey">
+              ver 0.0
+            </Badge>
+            {navigator.onLine ? (
+              <Badge radius="sm" color="green">
+                online
+              </Badge>
+            ) : (
+              <Badge radius="sm" color="red">
+                offline
+              </Badge>
+            )}
+          </Group>
         </Group>
         <Group>
           {/* <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>

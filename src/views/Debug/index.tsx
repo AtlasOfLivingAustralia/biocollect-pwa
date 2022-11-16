@@ -2,6 +2,7 @@ import { Box, Text, Group, Code, Title, Button } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useAuth } from 'react-oidc-context';
 import config from 'helpers/config';
+import { Frame } from 'components';
 
 export default function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
@@ -20,6 +21,13 @@ export default function Debug() {
         API Configuration
       </Title>
       <Code block>{JSON.stringify(config, null, 2)}</Code>
+      <Title mb="sm" mt="xl">
+        Frame Test
+      </Title>
+      <Frame
+        baseUrl="https://biocollect-test.ala.org.au"
+        src="https://biocollect-test.ala.org.au/ala/bioActivity/mobileCreate/52b87cdc-3524-412a-a5a6-3a1438f02bfa"
+      />
     </Box>
   );
 }
