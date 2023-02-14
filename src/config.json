@@ -2,10 +2,11 @@
   "production": {
     "timeout": 2000,
     "auth": {
-      "authority": "https://auth-test.ala.org.au/cas/oidc",
-      "client_id": "oidc-pkce-public-test",
+      "user_pool_id": "ap-southeast-2_dqIVUS9bF",
+      "region": "ap-southeast-2",
+      "client_id": "4po564shql6l06pt6ng9ds7u3n",
       "redirect_uri": "http://localhost:5173",
-      "scope": "email openid profile"
+      "scope": "email openid profile ala/attrs ala/roles"
     },
     "biocollect": {
       "biocollect_url": "http://localhost:9000/https://apis.test.ala.org.au/biocollect",
@@ -15,10 +16,11 @@
   "staging": {
     "timeout": 3000,
     "auth": {
-      "authority": "https://auth.ala.org.au/cas/oidc",
-      "client_id": "<client-id-here>",
-      "redirect_uri": "https://biocollect.ala.org.au",
-      "scope": "email openid profile"
+      "user_pool_id": "ap-southeast-2_dqIVUS9bF",
+      "region": "ap-southeast-2",
+      "client_id": "4po564shql6l06pt6ng9ds7u3n",
+      "redirect_uri": "http://localhost:5173",
+      "scope": "email openid profile ala/attrs ala/roles"
     },
     "biocollect": {
       "biocollect_url": "https://biocollect-staging.ala.org.au",
@@ -28,10 +30,11 @@
   "testing": {
     "timeout": 10000,
     "auth": {
-      "authority": "https://auth-test.ala.org.au/cas/oidc",
-      "client_id": "<client-id-here>",
-      "redirect_uri": "https://biocollect-test.ala.org.au",
-      "scope": "email openid profile"
+      "user_pool_id": "ap-southeast-2_dqIVUS9bF",
+      "region": "ap-southeast-2",
+      "client_id": "4po564shql6l06pt6ng9ds7u3n",
+      "redirect_uri": "http://localhost:5173",
+      "scope": "email openid profile ala/attrs ala/roles"
     },
     "biocollect": {
       "biocollect_url": "https://apis.test.ala.org.au/biocollect",
@@ -41,13 +44,14 @@
   "development": {
     "timeout": 30000,
     "auth": {
-      "authority": "https://auth-test.ala.org.au/cas/oidc",
-      "client_id": "oidc-pkce-public-test",
+      "user_pool_id": "ap-southeast-2_dqIVUS9bF",
+      "region": "ap-southeast-2",
+      "client_id": "4po564shql6l06pt6ng9ds7u3n",
       "redirect_uri": "http://localhost:5173",
-      "scope": "email openid profile"
+      "scope": "email openid profile ala/attrs ala/roles"
     },
     "biocollect": {
-      "biocollect_url": "http://localhost:9000/https://apis.test.ala.org.au/biocollect",
+      "biocollect_url": "http://localhost:9000/biocollect.ala.org.au",
       "ecodata_url": "https://ecodata-test.ala.org.au"
     }
   }

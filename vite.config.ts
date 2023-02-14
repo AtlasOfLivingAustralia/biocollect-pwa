@@ -48,5 +48,5 @@ const pwaOptions: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), visualizer(), VitePWA(pwaOptions)],
+  plugins: [react(), tsconfigPaths(), visualizer()],
 });

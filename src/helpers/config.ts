@@ -3,7 +3,8 @@ import configJson from 'config.json';
 export interface ApplicationConfig {
   timeout: number;
   auth: {
-    authority: string;
+    user_pool_id: string;
+    region: string;
     client_id: string;
     redirect_uri: string;
     scope: string;

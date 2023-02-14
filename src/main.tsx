@@ -32,11 +32,13 @@ function Main() {
 
   return (
     <AuthProvider
-      {...config.auth}
+      client_id={config.auth.client_id}
+      redirect_uri={config.auth.redirect_uri}
+      authority={`https://cognito-idp.${config.auth.region}.amazonaws.com/${config.auth.user_pool_id}`}
       onSigninCallback={(user) => {
         Logger.log('[Main] onSignInCallback', user);
         const params = new URLSearchParams(window.location.search);
-        if (hasAuthParams()) {
+        if (hasAuthParams(window.location)) {
           params.delete('code');
           params.delete('state');
           // Remove the auth code & state variables from the history
