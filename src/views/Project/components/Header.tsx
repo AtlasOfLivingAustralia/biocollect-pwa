@@ -9,13 +9,12 @@ import {
   ScrollArea,
   Breadcrumbs,
   Anchor,
-  useMantineTheme,
   Card,
   Center,
   Spoiler,
   Badge,
+  Tooltip,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
 import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
@@ -24,24 +23,26 @@ import logoAla from 'assets/logo-ala.png';
 
 interface HeaderProps {
   project: BioCollectProject;
+  mobile: boolean;
 }
 
 const ALADataBadge = () => (
-  <Badge
-    color="orange"
-    leftSection={<Image height={20} width="auto" src={logoAla} />}
-    mt="md"
+  <Tooltip
+    position="bottom-start"
+    label="This project is contributing data to the Atlas of Living Australia"
   >
-    Contributing to the ALA
-  </Badge>
+    <Badge
+      color="orange"
+      leftSection={<Image height={20} width="auto" src={logoAla} />}
+      mt="md"
+    >
+      Contributing to the ALA
+    </Badge>
+  </Tooltip>
 );
 
-export default function Header({ project }: HeaderProps) {
+export default function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
-
-  console.log(project);
 
   return mobile ? (
     <Box>
@@ -77,7 +78,7 @@ export default function Header({ project }: HeaderProps) {
           {!project.isExternal && <ALADataBadge />}
         </Card>
       </Center>
-      <Box p="xl">
+      <Box p={36}>
         <Center>
           <Breadcrumbs mb="md">
             <Anchor component={Link} to=".." size="sm">
@@ -117,14 +118,14 @@ export default function Header({ project }: HeaderProps) {
           {project.organisationName}
         </Title>
         {!project.isExternal && <ALADataBadge />}
-        <ScrollArea
+        <ScrollArea.Autosize
           mt="xs"
           type="hover"
           offsetScrollbars
-          style={{ height: 150 }}
+          maxHeight={125}
         >
           <Text>{project.description}</Text>
-        </ScrollArea>
+        </ScrollArea.Autosize>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
         <Skeleton visible={!imageLoaded} radius={0}>
