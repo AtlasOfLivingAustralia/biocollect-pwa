@@ -1,1 +1,1 @@
-export { default as Frame } from './Frame';
+export { Frame } from './Frame';

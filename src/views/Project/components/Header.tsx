@@ -13,13 +13,10 @@ import {
   Center,
   Spoiler,
   Badge,
-  Tooltip,
   TypographyStylesProvider,
   ActionIcon,
   Button,
-  Stack,
   BadgeProps,
-  UnstyledButton,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
@@ -33,24 +30,14 @@ interface HeaderProps {
   mobile: boolean;
 }
 
-interface ALABadgeProps extends BadgeProps {
-  tooltipDisabled?: boolean;
-}
-
-const ALABadge = ({ tooltipDisabled, ...rest }: ALABadgeProps) => (
-  <Tooltip
-    disabled={tooltipDisabled}
-    position="bottom-start"
-    label="This project is contributing data to the Atlas of Living Australia"
+const ALABadge = (props: BadgeProps) => (
+  <Badge
+    {...props}
+    color="orange"
+    leftSection={<Image height={20} width="auto" src={logoAla} />}
   >
-    <Badge
-      {...rest}
-      color="orange"
-      leftSection={<Image height={20} width="auto" src={logoAla} />}
-    >
-      Contributing to the ALA
-    </Badge>
-  </Tooltip>
+    Contributing to the ALA
+  </Badge>
 );
 
 interface SpoilerControlProps {
@@ -65,7 +52,7 @@ const SpoilerControl = ({ hide }: SpoilerControlProps) => (
   </Center>
 );
 
-export default function Header({ project, mobile }: HeaderProps) {
+export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   return mobile ? (
@@ -102,7 +89,7 @@ export default function Header({ project, mobile }: HeaderProps) {
           </Title>
           {!project.isExternal && (
             <Center mt="md">
-              <ALABadge tooltipDisabled />
+              <ALABadge />
             </Center>
           )}
           {project.urlWeb && (
@@ -181,14 +168,7 @@ export default function Header({ project, mobile }: HeaderProps) {
             </ActionIcon>
           )}
         </Group>
-        {!project.isExternal && (
-          <Tooltip
-            position="bottom-start"
-            label="This project is contributing data to the Atlas of Living Australia"
-          >
-            <ALABadge mt="md" />
-          </Tooltip>
-        )}
+        {!project.isExternal && <ALABadge mt="md" />}
         <ScrollArea.Autosize
           mt="xs"
           type="hover"

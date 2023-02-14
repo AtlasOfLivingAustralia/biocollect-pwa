@@ -1,2 +1,2 @@
-export { default as Corner } from './Corner';
-export { default as Wave } from './Wave';
+export { Corner } from './Corner';
+export { Wave } from './Wave';

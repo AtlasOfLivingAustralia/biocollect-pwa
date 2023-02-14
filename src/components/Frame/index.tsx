@@ -10,7 +10,7 @@ interface FrameProps {
   height?: number | string;
 }
 
-export default function Frame(props: FrameProps) {
+export function Frame(props: FrameProps) {
   const auth = useAuth();
   const [pageData, setPageData] = useState<string | undefined>();
 

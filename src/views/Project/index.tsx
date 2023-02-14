@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { Box, Button, Menu, useMantineTheme } from '@mantine/core';
+import { Box, Button, Menu, Title, useMantineTheme } from '@mantine/core';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 import Logger from 'helpers/logger';
 
 // import { Frame } from 'components';
-import Header from './components/Header';
+import { Header } from './components/Header';
 import { Wave } from 'components/Wave';
 
 interface ProjectLoaderData {
@@ -14,20 +14,20 @@ interface ProjectLoaderData {
   surveys: BioCollectSurvey[];
 }
 
-export default function Project() {
+export function Project() {
   const { project, surveys } = useLoaderData() as ProjectLoaderData;
   const [survey, setSurvery] = useState<string | null>(null);
 
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
   const highlight =
-    theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2];
+    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 
   return (
     <>
       <Header project={project} mobile={mobile} />
       <Wave
-        style={{ marginTop: theme.spacing.xl, marginBottom: -8 }}
+        style={{ marginTop: theme.spacing.xl, marginBottom: -36 }}
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
@@ -35,6 +35,7 @@ export default function Project() {
         width="100%"
       />
       <Box px={36} pb={36} bg={highlight}>
+        <Title order={2}>Surveys</Title>
         {surveys.length > 0 && (
           <Menu position="bottom-start">
             <Menu.Target>

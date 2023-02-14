@@ -24,7 +24,7 @@ const useStyles = createStyles({
   },
 });
 
-export default function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project }: ProjectCardProps) {
   const styles = useStyles();
   const loading = !Boolean(project);
   return (

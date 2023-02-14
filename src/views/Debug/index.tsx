@@ -4,7 +4,7 @@ import { useAuth } from 'react-oidc-context';
 import config from 'helpers/config';
 import { Frame } from 'components';
 
-export default function Debug() {
+export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
   return (

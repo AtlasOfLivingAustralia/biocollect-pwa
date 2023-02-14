@@ -24,12 +24,12 @@ import { getBool, getNumber, getString } from 'helpers/params';
 import Logger from 'helpers/logger';
 
 // Local components
-import ProjectCard from './components/ProjectCard';
+import { ProjectCard } from './components/ProjectCard';
 import { BioCollectProjectSearch } from 'types';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
-export default function Home() {
+export function Home() {
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);

@@ -28,7 +28,7 @@ const waves = {
     'M0,160L34.3,154.7C68.6,149,137,139,206,112C274.3,85,343,43,411,58.7C480,75,549,149,617,154.7C685.7,160,754,96,823,85.3C891.4,75,960,117,1029,160C1097.1,203,1166,245,1234,240C1302.9,235,1371,181,1406,154.7L1440,128L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z',
 };
 
-export default function Wave({ waveType, waveColour, ...rest }: WaveProps) {
+export function Wave({ waveType, waveColour, ...rest }: WaveProps) {
   const theme = useMantineTheme();
   return (
     <svg {...rest} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
