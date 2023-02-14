@@ -19,7 +19,7 @@ export default function Project() {
   return (
     <>
       <Header project={project} />
-      <Box p="xl">
+      <Box p={36} pt={0}>
         {surveys.length > 0 && (
           <Menu>
             <Menu.Target>
