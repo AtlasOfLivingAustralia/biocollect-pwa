@@ -21,7 +21,7 @@ export default function Project() {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
   const highlight =
-    theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[0];
+    theme.colorScheme === 'dark' ? theme.colors.dark[5] : theme.colors.gray[2];
 
   return (
     <>

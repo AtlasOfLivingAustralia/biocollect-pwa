@@ -18,6 +18,8 @@ import {
   IconBug,
   IconQuestionMark,
   IconLogout,
+  IconMoon,
+  IconSun,
 } from '@tabler/icons';
 
 // BioCollect logos
@@ -25,7 +27,7 @@ import logoDark from 'assets/logo-dark-32x32.png';
 import logoLight from 'assets/logo-light-32x32.png';
 
 export default function Header() {
-  const { colorScheme } = useMantineColorScheme();
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const auth = useAuth();
 
   return (
@@ -77,6 +79,15 @@ export default function Header() {
                   icon={<IconPlus />}
                 >
                   Add your project
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Label>Settings</Menu.Label>
+                <Menu.Item
+                  closeMenuOnClick={false}
+                  icon={colorScheme === 'dark' ? <IconMoon /> : <IconSun />}
+                  onClick={() => toggleColorScheme()}
+                >
+                  Toggle theme
                 </Menu.Item>
                 {import.meta.env.DEV && (
                   <>
