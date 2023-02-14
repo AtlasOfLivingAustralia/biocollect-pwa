@@ -21,8 +21,8 @@ import {
 } from '@tabler/icons';
 
 // BioCollect logos
-// import logoDark from 'assets/biocollect-logo.png';
-// import logoLight from 'assets/biocollect-logo-white.png';
+import logoDark from 'assets/logo-dark-32x32.png';
+import logoLight from 'assets/logo-light-32x32.png';
 
 export default function Header() {
   const { colorScheme } = useMantineColorScheme();
@@ -36,11 +36,7 @@ export default function Header() {
             <Image
               width="auto"
               height={32}
-              src={
-                colorScheme === 'dark'
-                  ? './icon/light/32x32.png'
-                  : './icon/light/32x32.png'
-              }
+              src={colorScheme === 'dark' ? logoLight : logoDark}
             />
           </Link>
           <Group spacing="xs">

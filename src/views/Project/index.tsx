@@ -1,39 +1,20 @@
-import { useContext, useEffect, useState } from 'react';
-import { useLoaderData, useLocation, useParams } from 'react-router-dom';
-import { Box, Button, Image, Menu, Skeleton, Text, Title } from '@mantine/core';
-import { APIContext } from 'helpers/api';
+import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
+import { Box, Button, Menu } from '@mantine/core';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import Logger from 'helpers/logger';
-import { useAuth } from 'react-oidc-context';
 
-import { Frame } from 'components';
+// import { Frame } from 'components';
 import Header from './components/Header';
 
-interface ProjectProps {}
+interface ProjectLoaderData {
+  project: BioCollectProject;
+  surveys: BioCollectSurvey[];
+}
 
 export default function Project() {
-  const { projectId } = useParams();
-  const location = useLocation();
-  const api = useContext(APIContext);
-  const [project, setProject] = useState<BioCollectProject | null>(
-    location.state?.project || null
-  );
+  const { project, surveys } = useLoaderData() as ProjectLoaderData;
   const [survey, setSurvery] = useState<string | null>(null);
-  const surveys = useLoaderData() as BioCollectSurvey[];
-
-  // useEffect hook for fetching project data if not supplied by location state
-  useEffect(() => {
-    async function fetchProject() {
-      try {
-        const project = await api.biocollect.getProject(projectId as string);
-        setProject(project);
-      } catch (error) {
-        Logger.error(error);
-      }
-    }
-
-    if (!project) fetchProject();
-  }, [location]);
 
   return (
     <>

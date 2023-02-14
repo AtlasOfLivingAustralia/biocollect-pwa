@@ -37,8 +37,12 @@ export default function Routes({ isAuthenticated }: RoutesProps) {
           {
             path: 'project/:projectId',
             element: <Project />,
-            loader: ({ params }) => {
-              return api.biocollect.listSurveys(params.projectId || '');
+            loader: async ({ params, ...rest }) => {
+              const [project, surveys] = await Promise.all([
+                api.biocollect.getProject(params.projectId || ''),
+                api.biocollect.listSurveys(params.projectId || ''),
+              ]);
+              return { project, surveys };
             },
           },
           ...(isDev
