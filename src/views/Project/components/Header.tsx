@@ -14,7 +14,14 @@ import {
   Spoiler,
   Badge,
   Tooltip,
+  TypographyStylesProvider,
+  ActionIcon,
+  Button,
+  Stack,
+  BadgeProps,
+  UnstyledButton,
 } from '@mantine/core';
+import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
@@ -26,19 +33,36 @@ interface HeaderProps {
   mobile: boolean;
 }
 
-const ALADataBadge = () => (
+interface ALABadgeProps extends BadgeProps {
+  tooltipDisabled?: boolean;
+}
+
+const ALABadge = ({ tooltipDisabled, ...rest }: ALABadgeProps) => (
   <Tooltip
+    disabled={tooltipDisabled}
     position="bottom-start"
     label="This project is contributing data to the Atlas of Living Australia"
   >
     <Badge
+      {...rest}
       color="orange"
       leftSection={<Image height={20} width="auto" src={logoAla} />}
-      mt="md"
     >
       Contributing to the ALA
     </Badge>
   </Tooltip>
+);
+
+interface SpoilerControlProps {
+  hide?: boolean;
+}
+
+const SpoilerControl = ({ hide }: SpoilerControlProps) => (
+  <Center pt="lg">
+    <Button size="xs" variant="filled" radius="md" color="gray" miw={200}>
+      {hide ? 'Hide' : 'Show more'}
+    </Button>
+  </Center>
 );
 
 export default function Header({ project, mobile }: HeaderProps) {
@@ -68,14 +92,33 @@ export default function Header({ project, mobile }: HeaderProps) {
             textAlign: 'center',
             zIndex: 200,
           }}
+          withBorder
         >
           <Title order={2} lineClamp={3}>
             {project.name || 'The title / name of the project'}
           </Title>
-          <Title order={4} color="dimmed">
+          <Title order={3} color="dimmed" px="sm">
             {project.organisationName}
           </Title>
-          {!project.isExternal && <ALADataBadge />}
+          {!project.isExternal && (
+            <Center mt="md">
+              <ALABadge tooltipDisabled />
+            </Center>
+          )}
+          {project.urlWeb && (
+            <Button
+              component="a"
+              href={project.urlWeb}
+              target="_blank"
+              leftIcon={<IconExternalLink size={18} />}
+              variant="light"
+              color="gray"
+              size="sm"
+              mt="xl"
+            >
+              VIEW WEBSITE
+            </Button>
+          )}
         </Card>
       </Center>
       <Box p={36}>
@@ -89,8 +132,16 @@ export default function Header({ project, mobile }: HeaderProps) {
             </Text>
           </Breadcrumbs>
         </Center>
-        <Spoiler mt="md" maxHeight={200} showLabel="Show more" hideLabel="Hide">
-          <Text>{project.description}</Text>
+        <Spoiler
+          mt="md"
+          maxHeight={200}
+          styles={{ control: { width: '100%' } }}
+          showLabel={<SpoilerControl />}
+          hideLabel={<SpoilerControl hide />}
+        >
+          <TypographyStylesProvider>
+            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
+          </TypographyStylesProvider>
         </Spoiler>
       </Box>
     </Box>
@@ -114,17 +165,39 @@ export default function Header({ project, mobile }: HeaderProps) {
           </Text>
         </Breadcrumbs>
         <Title>{project.name}</Title>
-        <Title order={3} color="dimmed">
-          {project.organisationName}
-        </Title>
-        {!project.isExternal && <ALADataBadge />}
+        <Group align="start" spacing="sm" mt="xs" noWrap>
+          <Title order={3} color="dimmed">
+            {project.organisationName}
+          </Title>
+          {project.urlWeb && (
+            <ActionIcon
+              component="a"
+              href={project.urlWeb}
+              target="_blank"
+              radius="xl"
+              variant="transparent"
+            >
+              <IconExternalLink />
+            </ActionIcon>
+          )}
+        </Group>
+        {!project.isExternal && (
+          <Tooltip
+            position="bottom-start"
+            label="This project is contributing data to the Atlas of Living Australia"
+          >
+            <ALABadge mt="md" />
+          </Tooltip>
+        )}
         <ScrollArea.Autosize
           mt="xs"
           type="hover"
           offsetScrollbars
           maxHeight={125}
         >
-          <Text>{project.description}</Text>
+          <TypographyStylesProvider>
+            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
+          </TypographyStylesProvider>
         </ScrollArea.Autosize>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
