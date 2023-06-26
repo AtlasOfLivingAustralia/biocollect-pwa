@@ -1,17 +1,8 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Group,
-  Menu,
-  ScrollArea,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Box, Group, ScrollArea, Title, useMantineTheme } from '@mantine/core';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
-import Logger from 'helpers/logger';
 
 // import { Frame } from 'components';
 import { Header } from './components/Header';
@@ -28,7 +19,7 @@ export function Project() {
   const [survey, setSurvery] = useState<string | null>(null);
 
   const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md}px)`);
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 

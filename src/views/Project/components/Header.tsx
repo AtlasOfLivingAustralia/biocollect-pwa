@@ -24,6 +24,7 @@ import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
 
 import logoAla from 'assets/logo-ala.png';
+import { Background } from 'components';
 
 interface HeaderProps {
   project: BioCollectProject;
@@ -34,7 +35,7 @@ const ALABadge = (props: BadgeProps) => (
   <Badge
     {...props}
     color="orange"
-    leftSection={<Image height={20} width="auto" src={logoAla} />}
+    leftSection={<Image height={15} width="auto" src={logoAla} />}
   >
     Contributing to the ALA
   </Badge>
@@ -54,15 +55,19 @@ export function Header({ project, mobile }: HeaderProps) {
   return mobile ? (
     <Box>
       <Box style={{ position: 'relative' }}>
-        <Skeleton visible={!imageLoaded} radius={0}>
-          <Image
-            src={project.fullSizeImageUrl}
-            height="23vh"
-            withPlaceholder
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageLoaded(true)}
-          />
-        </Skeleton>
+        {project.fullSizeImageUrl ? (
+          <Skeleton visible={!imageLoaded} radius={0}>
+            <Image
+              src={project.fullSizeImageUrl}
+              height="23vh"
+              withPlaceholder
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageLoaded(true)}
+            />
+          </Skeleton>
+        ) : (
+          <Background h="23vh" />
+        )}
         <Wave style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
       </Box>
       <Center mt={-60}>
@@ -172,15 +177,19 @@ export function Header({ project, mobile }: HeaderProps) {
         </ScrollArea.Autosize>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
-        <Skeleton visible={!imageLoaded} radius={0}>
-          <Image
-            src={project.fullSizeImageUrl}
-            height={320}
-            withPlaceholder
-            onLoad={() => setImageLoaded(true)}
-            onError={() => setImageLoaded(true)}
-          />
-        </Skeleton>
+        {project.fullSizeImageUrl ? (
+          <Skeleton visible={!imageLoaded} radius={0}>
+            <Image
+              src={project.fullSizeImageUrl}
+              height={320}
+              withPlaceholder
+              onLoad={() => setImageLoaded(true)}
+              onError={() => setImageLoaded(true)}
+            />
+          </Skeleton>
+        ) : (
+          <Background h={320} />
+        )}
         <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
       </Box>
     </Group>

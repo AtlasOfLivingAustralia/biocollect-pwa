@@ -4,11 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite --mode development",
-    "start:test": "vite --mode testing",
-    "start:stage": "vite --mode staging",
-    "start:prod": "vite --mode production",
-    "build": "tsc && vite build",
+    "dev": "vite",
+    "build:production": "tsc && vite build",
+    "build:staging": "tsc && vite build --mode staging",
+    "build:testing": "tsc && vite build --mode testing",
+    "build:development": "tsc && vite build --mode development",
+    "lint": "eslint ./src",
     "preview": "vite preview"
   },
   "dependencies": {
