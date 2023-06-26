@@ -45,11 +45,7 @@ interface SpoilerControlProps {
 }
 
 const SpoilerControl = ({ hide }: SpoilerControlProps) => (
-  <Center pt="lg">
-    <Button size="xs" variant="filled" radius="md" color="gray" miw={200}>
-      {hide ? 'Hide' : 'Show more'}
-    </Button>
-  </Center>
+  <Center pt="lg">{hide ? 'Hide' : 'Show more'}</Center>
 );
 
 export function Header({ project, mobile }: HeaderProps) {

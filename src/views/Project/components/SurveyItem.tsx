@@ -1,11 +1,11 @@
-import { Card, Title, useMantineTheme } from '@mantine/core';
+import { Card, Text, Title, useMantineTheme } from '@mantine/core';
 import { BioCollectSurvey } from 'types';
 
-interface SurveyCardProps {
+interface SurveyItemProps {
   survey: BioCollectSurvey;
 }
 
-export function SurveyCard({ survey }: SurveyCardProps) {
+export function SurveyItem({ survey }: SurveyItemProps) {
   const theme = useMantineTheme();
   return (
     <Card
