@@ -4,7 +4,6 @@ import {
   BioCollectProjectSearch,
   BioCollectSurvey,
 } from 'types';
-import config from 'helpers/config';
 
 const formatProjects = async (search: BioCollectProjectSearch) => ({
   ...search,
@@ -30,9 +29,6 @@ export default {
     search?: string,
     geoSearchJSON?: object
   ): Promise<BioCollectProjectSearch> => {
-    // Retrieve the auth configuration
-    const { biocollect_url } = config.biocollect;
-
     // Define basic query parameters
     const params: { [key: string]: any } = {
       fq: 'isExternal:F',
@@ -56,19 +52,16 @@ export default {
 
     // Make the GET request
     const { data } = await axios.get<BioCollectProjectSearch>(
-      `${biocollect_url}/ws/project/search`,
+      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
       { params }
     );
 
     return await formatProjects(data);
   },
   getProject: async (projectId: string): Promise<BioCollectProject> => {
-    // Retrieve the auth configuration
-    const { biocollect_url } = config.biocollect;
-
     // Make the GET request
     const { data } = await axios.get<BioCollectProjectSearch>(
-      `${biocollect_url}/ws/project/search`,
+      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
       {
         params: {
           fq: `projectId:${projectId}`,
@@ -80,12 +73,9 @@ export default {
     return project;
   },
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
-    // Retrieve the auth configuration
-    const { biocollect_url } = config.biocollect;
-
     // Make the GET request
     const { data } = await axios.get<BioCollectSurvey[]>(
-      `${biocollect_url}/ws/survey/list/${projectId}`
+      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
     );
 
     return data;

@@ -7,12 +7,11 @@ import { useLocalStorage } from '@mantine/hooks';
 import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 
 // App-specific imports
-import config from 'helpers/config';
+import { WebStorageStateStore } from 'oidc-client-ts';
 import { themes } from 'theme';
-import App from './App';
 import { APIProvider } from 'helpers/api';
 import Logger from 'helpers/logger';
-import { WebStorageStateStore } from 'oidc-client-ts';
+import App from './App';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
@@ -30,11 +29,15 @@ function Main() {
   const toggleColourScheme = (value?: ColorScheme) =>
     setColourScheme(value || (colourScheme === 'dark' ? 'light' : 'dark'));
 
+  const [authRegion] = import.meta.env.VITE_AUTH_USER_POOL.split('_');
+
   return (
     <AuthProvider
-      client_id={config.auth.client_id}
-      redirect_uri={config.auth.redirect_uri}
-      authority={`https://cognito-idp.${config.auth.region}.amazonaws.com/${config.auth.user_pool_id}`}
+      client_id={import.meta.env.VITE_AUTH_CLIENT_ID}
+      redirect_uri={import.meta.env.VITE_AUTH_REDIRECT_URI}
+      authority={`https://cognito-idp.${authRegion}.amazonaws.com/${
+        import.meta.env.VITE_AUTH_USER_POOL
+      }`}
       onSigninCallback={(user) => {
         Logger.log('[Main] onSignInCallback', user);
         const params = new URLSearchParams(window.location.search);

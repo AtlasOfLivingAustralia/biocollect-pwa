@@ -1,7 +1,6 @@
 import { Box, Text, Group, Code, Title, Button } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useAuth } from 'react-oidc-context';
-import config from 'helpers/config';
 import { Frame } from 'components';
 
 export function Debug() {
@@ -20,7 +19,7 @@ export function Debug() {
       <Title mb="sm" mt="xl">
         API Configuration
       </Title>
-      <Code block>{JSON.stringify(config, null, 2)}</Code>
+      <Code block>{JSON.stringify(import.meta.env, null, 2)}</Code>
       <Title mb="sm" mt="xl">
         Frame Test
       </Title>

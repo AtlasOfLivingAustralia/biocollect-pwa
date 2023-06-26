@@ -165,12 +165,7 @@ export function Header({ project, mobile }: HeaderProps) {
           )}
         </Group>
         {!project.isExternal && <ALABadge mt="md" />}
-        <ScrollArea.Autosize
-          mt="xs"
-          type="hover"
-          offsetScrollbars
-          maxHeight={125}
-        >
+        <ScrollArea.Autosize mt="xs" type="hover" offsetScrollbars mah={125}>
           <TypographyStylesProvider>
             <Text dangerouslySetInnerHTML={{ __html: project.description }} />
           </TypographyStylesProvider>
