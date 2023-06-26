@@ -40,10 +40,10 @@ export function Project() {
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
-        height={125}
+        height={75}
         width="100%"
       />
-      <Box pb={36} bg={highlight}>
+      <Box py="xl" bg={highlight}>
         <Title px={36} order={2}>
           Surveys
         </Title>
@@ -64,7 +64,7 @@ export function Project() {
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
-        height={125}
+        height={75}
         width="100%"
       />
     </>
