@@ -35,6 +35,7 @@ export interface BioCollectProject {
     elect: string[];
     cmz: string[];
     state: string[];
+    radius: number;
     mvg: string;
     areaKmSq: number;
     nrm: string[];
@@ -68,6 +69,7 @@ export interface BioCollectProject {
   projectType: string;
   isMERIT: boolean;
   tags: string[];
+  containsActivity: boolean;
   noCost: boolean;
 }
 

@@ -169,7 +169,7 @@ export function Home() {
       {lastTotal && (
         <Center mt="xl">
           <Pagination
-            page={paramPage}
+            value={paramPage}
             total={Math.floor(lastTotal / paramMax)}
             onChange={handleChangePage}
           />
