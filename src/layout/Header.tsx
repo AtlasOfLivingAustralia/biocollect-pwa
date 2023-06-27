@@ -23,8 +23,8 @@ import {
 } from '@tabler/icons';
 
 // BioCollect logos
-import logoDark from 'assets/logo-dark-32x32.png';
-import logoLight from 'assets/logo-light-32x32.png';
+import logoDark from '/assets/logo-dark-32x32.png';
+import logoLight from '/assets/logo-light-32x32.png';
 
 export default function Header() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();

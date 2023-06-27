@@ -13,6 +13,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
     'icon/dark/32x32.png',
     'fonts/*.woff',
     'fonts/*.woff2',
+    'assets/*.png',
   ],
   manifest: {
     name: 'BioCollect',
@@ -39,7 +40,6 @@ const pwaOptions: Partial<VitePWAOptions> = {
         src: 'icon/light/512x512.png',
         sizes: '512x512',
         type: 'image/png',
-        purpose: 'any maskable',
       },
     ],
   },
@@ -48,6 +48,6 @@ const pwaOptions: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), visualizer() as any],
+  plugins: [react(), tsconfigPaths(), visualizer() as any, VitePWA(pwaOptions)],
   envDir: './config',
 });

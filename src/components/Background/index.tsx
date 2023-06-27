@@ -1,8 +1,8 @@
 import { PropsWithChildren } from 'react';
 import { Box, BoxProps, useMantineTheme } from '@mantine/core';
 
-import logoAlaBgLight from 'assets/logo-ala-background-light.png';
-import logoAlaBgDark from 'assets/logo-ala-background-dark.png';
+import logoAlaBgLight from '/assets/logo-ala-background-light.png';
+import logoAlaBgDark from '/assets/logo-ala-background-dark.png';
 import { useMediaQuery } from '@mantine/hooks';
 
 interface BackgroundProps extends PropsWithChildren<BoxProps> {

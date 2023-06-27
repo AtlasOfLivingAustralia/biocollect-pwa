@@ -23,7 +23,7 @@ import { Link } from 'react-router-dom';
 import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
 
-import logoAla from 'assets/logo-ala.png';
+import logoAla from '/assets/logo-ala.png';
 import { Background } from 'components';
 
 interface HeaderProps {
