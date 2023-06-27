@@ -100,7 +100,7 @@ export function Home() {
   // };
 
   return (
-    <Box p="xl">
+    <Box p={36}>
       <Group mb="lg">
         <Stack spacing={0}>
           <Title m={0}>Welcome, {auth.user?.profile.given_name}</Title>

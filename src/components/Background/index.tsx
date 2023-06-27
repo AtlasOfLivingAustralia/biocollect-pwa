@@ -5,7 +5,15 @@ import logoAlaBgLight from 'assets/logo-ala-background-light.png';
 import logoAlaBgDark from 'assets/logo-ala-background-dark.png';
 import { useMediaQuery } from '@mantine/hooks';
 
-export function Background({ children, ...rest }: PropsWithChildren<BoxProps>) {
+interface BackgroundProps extends PropsWithChildren<BoxProps> {
+  parallax?: boolean;
+}
+
+export function Background({
+  children,
+  parallax = true,
+  ...rest
+}: BackgroundProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
@@ -22,7 +30,7 @@ export function Background({ children, ...rest }: PropsWithChildren<BoxProps>) {
         backgroundRepeat: 'repeat',
         backgroundSize: 65,
         backgroundPosition: '-30px -30px',
-        backgroundAttachment: mobile ? 'scroll' : 'fixed',
+        backgroundAttachment: !mobile && parallax ? 'fixed' : 'scroll',
       }}
       {...rest}
     >
