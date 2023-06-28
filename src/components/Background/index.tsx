@@ -1,5 +1,10 @@
 import { PropsWithChildren } from 'react';
-import { Box, BoxProps, useMantineTheme } from '@mantine/core';
+import {
+  Box,
+  BoxProps,
+  MantineNumberSize,
+  useMantineTheme,
+} from '@mantine/core';
 
 import logoAlaBgLight from '/assets/logo-ala-background-light.png';
 import logoAlaBgDark from '/assets/logo-ala-background-dark.png';
@@ -7,11 +12,13 @@ import { useMediaQuery } from '@mantine/hooks';
 
 interface BackgroundProps extends PropsWithChildren<BoxProps> {
   parallax?: boolean;
+  radius?: MantineNumberSize;
 }
 
 export function Background({
   children,
   parallax = true,
+  radius = 0,
   ...rest
 }: BackgroundProps) {
   const theme = useMantineTheme();
@@ -31,6 +38,8 @@ export function Background({
         backgroundSize: 65,
         backgroundPosition: '-30px -30px',
         backgroundAttachment: !mobile && parallax ? 'fixed' : 'scroll',
+        borderRadius:
+          typeof radius === 'string' ? theme.radius[radius] : radius,
       }}
       {...rest}
     >

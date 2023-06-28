@@ -71,6 +71,7 @@ export interface BioCollectProject {
   tags: string[];
   containsActivity: boolean;
   noCost: boolean;
+  surveys: BioCollectSurvey[];
 }
 
 export interface BioCollectProjectSearch {
@@ -86,8 +87,10 @@ export interface BioCollectSurvey {
   documents: any[];
   publicAccess: boolean;
   restrictRecordToSites: boolean;
+  containsActivity: boolean;
   downloadFormTemplateUrl: string;
   sites: any[];
+  publishProject: string;
   methodDocUrl: string;
   lastUpdated: string;
   spatialAccuracy: string;
@@ -150,11 +153,32 @@ export interface Stats {
 }
 
 export interface MapLayersConfig {
-  delete: 'me';
+  baseLayers: {
+    displayText: string;
+    code: string;
+    isSelected: boolean;
+  }[];
+  overlays: {
+    showPropertyName: boolean;
+    alaName: string;
+    defaultSelected: boolean;
+    inLayerShapeList: boolean;
+    userAccessRestriction: string;
+    title: string;
+    changeLayerColour: boolean;
+    boundaryColour: string;
+    textColour: string;
+    fillColour: string;
+    alaId: string;
+    layerName: string;
+    opacity: string;
+  }[];
 }
 
 export interface Visibility {
   embargoOption: string;
+  embargoForDays: number;
+  embargoUntil: string;
   alaAdminEnforcedEmbargo: boolean;
 }
 
@@ -181,19 +205,19 @@ export interface SpeciesField {
 }
 
 export interface Config {
-  scientificNameField: string;
-  speciesLists: SpeciesList[];
-  speciesOptions: SpeciesOption[];
-  groupInfoVisible: boolean;
-  commonNameField: string;
-  singleInfoVisible: boolean;
-  allSpeciesInfoVisible: boolean;
-  type: string;
-  speciesDisplayFormat: string;
-  newSpeciesLists: NewSpeciesLists;
-  singleSpecies: SingleSpecies;
-  allSpeciesLists: AllSpeciesLists;
-  commonFields: string[];
+  scientificNameField?: string;
+  speciesLists?: SpeciesList[];
+  speciesOptions?: SpeciesOption[];
+  groupInfoVisible?: boolean;
+  commonNameField?: string;
+  singleInfoVisible?: boolean;
+  allSpeciesInfoVisible?: boolean;
+  type?: string;
+  speciesDisplayFormat?: string;
+  newSpeciesLists?: NewSpeciesLists;
+  singleSpecies?: SingleSpecies;
+  allSpeciesLists?: AllSpeciesLists;
+  commonFields?: string[];
 }
 
 export interface SpeciesList {

@@ -32,7 +32,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const loading = !Boolean(project);
 
   return (
-    <Grid.Col xl={2} lg={3} md={4} sm={6} xs={12}>
+    <Grid.Col xl={3} lg={4} md={6} sm={6} xs={12}>
       <Card
         className={styles.classes.card}
         radius="lg"
@@ -60,7 +60,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <Card.Section>
           <Divider opacity={0.8} />
         </Card.Section>
-        <Stack mt="md" style={{ flexGrow: 1 }} spacing="xs">
+        <Card.Section p="md">
           <Skeleton visible={loading}>
             <Text
               sx={(theme) => ({ fontFamily: theme.headings.fontFamily })}
@@ -70,13 +70,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
               {project?.name || 'Project Name'}
             </Text>
           </Skeleton>
-          <Skeleton visible={loading}>
-            <Text lineClamp={2}>
+          <Skeleton mt="xs" visible={loading}>
+            <Text size="sm" lineClamp={2}>
               {project?.description ||
                 'Project description that will typically span two lines'}
             </Text>
           </Skeleton>
-        </Stack>
+        </Card.Section>
       </Card>
     </Grid.Col>
   );

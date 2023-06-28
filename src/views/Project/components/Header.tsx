@@ -12,34 +12,22 @@ import {
   Card,
   Center,
   Spoiler,
-  Badge,
   TypographyStylesProvider,
   ActionIcon,
   Button,
-  BadgeProps,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
-import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
 
-import logoAla from '/assets/logo-ala.png';
 import { Background } from 'components';
+import { ALABadge } from 'components/ALABadge';
+import { Wave, Corner } from 'components/Wave';
 
 interface HeaderProps {
   project: BioCollectProject;
   mobile: boolean;
 }
-
-const ALABadge = (props: BadgeProps) => (
-  <Badge
-    {...props}
-    color="orange"
-    leftSection={<Image height={15} width="auto" src={logoAla} />}
-  >
-    Contributing to the ALA
-  </Badge>
-);
 
 interface SpoilerControlProps {
   hide?: boolean;

@@ -9,12 +9,10 @@ import {
   Group,
   Stack,
   Select,
-  SegmentedControl,
-  MediaQuery,
   Pagination,
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-import { IconSearch, IconLayoutGrid, IconListDetails } from '@tabler/icons';
+import { IconSearch } from '@tabler/icons';
 import { useAuth } from 'react-oidc-context';
 
 // Helper functions / components
@@ -24,7 +22,7 @@ import { getBool, getNumber, getString } from 'helpers/params';
 import Logger from 'helpers/logger';
 
 // Local components
-import { ProjectCard } from './components/ProjectCard';
+import { ProjectListItem } from './components/ProjectListItem';
 import { BioCollectProjectSearch } from 'types';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
@@ -68,30 +66,26 @@ export function Home() {
 
   // Handle for updating the max result count
   const handleChangeMax = (newMax: number) => {
-    const newParams: { [key: string]: string } = {
-      ...Object.fromEntries(params.entries()),
-      page: '1',
-      max: newMax.toString(),
-    };
-
-    setParams(newParams);
-
-    // Update the project search data to immediately reflect the changes
-    // if the max result count has been decreased
-    if (newMax < paramMax && projectSearch) {
-      setProjectSearch({
-        ...projectSearch,
-        projects: projectSearch.projects.slice(0, newMax),
-      });
-    }
+    params.set('page', '1');
+    params.set('max', newMax.toString());
+    setParams(params);
   };
 
   // Handle for updating the pagination
   const handleChangePage = (page: number) => {
-    setParams({
-      ...Object.fromEntries(params.entries()),
-      page: page.toString(),
-    });
+    params.set('page', page.toString());
+    setParams(params);
+  };
+
+  // Handle for updating the search parameter
+  const handleSearch = (query: string) => {
+    if (query !== null && query.length > 0) {
+      params.set('search', query);
+    } else {
+      params.delete('search');
+    }
+
+    setParams(params);
   };
 
   // Handle for updating the sort parameter
@@ -109,7 +103,15 @@ export function Home() {
       </Group>
       <Group position="apart" mb="lg">
         <Group mt="auto">
-          <TextInput icon={<IconSearch />} placeholder="Search Projects" />
+          <TextInput
+            radius="md"
+            icon={<IconSearch />}
+            placeholder="Search Projects"
+            onKeyDown={(e) => {
+              console.log('search', e.currentTarget.value);
+              if (e.key === 'Enter') handleSearch(e.currentTarget.value);
+            }}
+          />
         </Group>
         <Group spacing="xs">
           {/* <Select
@@ -124,29 +126,8 @@ export function Home() {
             ]}
             onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
           /> */}
-          <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-            <SegmentedControl
-              data={[
-                {
-                  value: 'gridView',
-                  label: (
-                    <Center>
-                      <IconLayoutGrid size={18} />
-                    </Center>
-                  ),
-                },
-                {
-                  value: 'listView',
-                  label: (
-                    <Center>
-                      <IconListDetails size={18} />
-                    </Center>
-                  ),
-                },
-              ]}
-            />
-          </MediaQuery>
           <Select
+            radius="md"
             style={{ maxWidth: 110 }}
             value={params.get('max') || '30'}
             data={['10', '20', '30', '50', '100'].map((max) => ({
@@ -158,15 +139,23 @@ export function Home() {
         </Group>
       </Group>
       <Grid>
-        {projectSearch
-          ? projectSearch.projects.map((project) => (
-              <ProjectCard key={project.projectId} project={project} />
-            ))
-          : range(paramMax).map((id) => (
-              <ProjectCard key={id} project={null} />
-            ))}
+        {(() => {
+          if (projectSearch) {
+            return projectSearch.total > 0 ? (
+              projectSearch.projects.map((project) => (
+                <ProjectListItem key={project.projectId} project={project} />
+              ))
+            ) : (
+              <Text>No projects</Text>
+            );
+          }
+
+          return range(paramMax).map((id) => (
+            <ProjectListItem key={id} project={null} />
+          ));
+        })()}
       </Grid>
-      {lastTotal && (
+      {lastTotal !== null && (
         <Center mt="xl">
           <Pagination
             value={paramPage}
