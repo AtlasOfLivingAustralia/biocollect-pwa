@@ -12,28 +12,66 @@ import {
   useMantineTheme,
   Chip,
   Button,
+  Tooltip,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
 import {
   IconArrowUpRight,
-  IconArrowsUpRight,
   IconDownload,
+  IconPencilPlus,
   IconPlus,
 } from '@tabler/icons';
 import { Background } from 'components';
 import { Corner } from 'components/Wave';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BioCollectProject } from 'types';
+import { BioCollectProject, BioCollectSurvey } from 'types';
 
-interface ProjectCardProps {
+interface ProjectItemSurveyProps {
+  survey?: BioCollectSurvey;
+}
+
+function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
+  const loading = !Boolean(survey);
+  const checked = false;
+
+  return (
+    <Group position="apart" spacing="xs">
+      <Skeleton visible={loading} radius="lg" maw={200}>
+        <Chip
+          checked={checked}
+          styles={{
+            label: {
+              padding: '0.625rem',
+            },
+          }}
+        >
+          {!checked && <IconDownload size="0.8rem" />}
+          <Text ml="xs" color="dimmed" weight="bold" size="xs">
+            {survey?.name}
+          </Text>
+        </Chip>
+      </Skeleton>
+      <Group spacing="xs">
+        <Skeleton visible={loading} w={28} radius="md">
+          <Tooltip position="left" label="Add Record" withArrow>
+            <ActionIcon radius="md" variant="light" color="blue">
+              <IconPlus size="1rem" />
+            </ActionIcon>
+          </Tooltip>
+        </Skeleton>
+      </Group>
+    </Group>
+  );
+}
+
+interface ProjectItemProps {
   project: BioCollectProject | null;
 }
 
-export function ProjectListItem({ project }: ProjectCardProps) {
+export function ProjectListItem({ project }: ProjectItemProps) {
   const theme = useMantineTheme();
   const loading = !Boolean(project);
-  const surveys = project?.surveys.map((survey) => survey.name) || [];
+  const surveys = project?.surveys || [];
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   return (
@@ -126,36 +164,20 @@ export function ProjectListItem({ project }: ProjectCardProps) {
             </Text>
           </Skeleton>
         </Box>
-        {(project?.surveys?.length || 0) > 0 && (
-          <Stack spacing={0} mt="auto">
-            <Divider mb="md" labelPosition="center" label="Surveys" />
-            <Stack px="md" mb="md" spacing="xs">
-              {[...surveys, ...surveys].map((survey, index) => (
-                <Group spacing="xs" position="apart">
-                  <Chip checked={false}>Test survey {index + 1}</Chip>
-                  <Group spacing="xs">
-                    <ActionIcon
-                      size="lg"
-                      radius="md"
-                      variant="light"
-                      color="blue"
-                    >
-                      <IconPlus size="1rem" />
-                    </ActionIcon>
-                    <ActionIcon
-                      size="lg"
-                      radius="md"
-                      variant="light"
-                      color="blue"
-                    >
-                      <IconDownload size="1rem" />
-                    </ActionIcon>
-                  </Group>
-                </Group>
-              ))}
-            </Stack>
+        <Stack spacing={0} mt="auto">
+          <Divider mb="md" labelPosition="center" label="Surveys" />
+          <Stack px="md" mb="md" spacing="xs">
+            {loading ? (
+              <ProjectItemSurvey />
+            ) : surveys.length > 0 ? (
+              surveys.map((survey) => (
+                <ProjectItemSurvey key={survey.id} survey={survey} />
+              ))
+            ) : (
+              <Text>No surveys available</Text>
+            )}
           </Stack>
-        )}
+        </Stack>
       </Paper>
     </Grid.Col>
   );

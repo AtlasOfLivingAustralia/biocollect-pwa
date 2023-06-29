@@ -94,7 +94,14 @@ export function Home() {
   // };
 
   return (
-    <Box p={36}>
+    <Box
+      sx={(theme) => ({
+        padding: 32,
+        [theme.fn.smallerThan('md')]: {
+          padding: 22,
+        },
+      })}
+    >
       <Group mb="lg">
         <Stack spacing={0}>
           <Title m={0}>Welcome, {auth.user?.profile.given_name}</Title>
