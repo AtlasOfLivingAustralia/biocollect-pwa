@@ -81,7 +81,7 @@ export function Header({ project, mobile }: HeaderProps) {
               <ALABadge />
             </Center>
           )}
-          {project.urlWeb && (
+          {project.urlWeb && navigator.onLine && (
             <Button
               component="a"
               href={project.urlWeb}
@@ -145,7 +145,7 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={3} color="dimmed">
             {project.organisationName}
           </Title>
-          {project.urlWeb && (
+          {project.urlWeb && navigator.onLine && (
             <ActionIcon
               component="a"
               href={project.urlWeb}
