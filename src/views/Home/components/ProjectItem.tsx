@@ -68,7 +68,7 @@ interface ProjectItemProps {
   project: BioCollectProject | null;
 }
 
-export function ProjectListItem({ project }: ProjectItemProps) {
+export function ProjectItem({ project }: ProjectItemProps) {
   const theme = useMantineTheme();
   const loading = !Boolean(project);
   const surveys = project?.surveys || [];
@@ -165,7 +165,15 @@ export function ProjectListItem({ project }: ProjectItemProps) {
           </Skeleton>
         </Box>
         <Stack spacing={0} mt="auto">
-          <Divider mb="md" labelPosition="center" label="Surveys" />
+          <Divider
+            mb="md"
+            labelPosition="center"
+            label={
+              <Skeleton visible={loading} w={42}>
+                Surveys
+              </Skeleton>
+            }
+          />
           <Stack px="md" mb="md" spacing="xs">
             {loading ? (
               <ProjectItemSurvey />

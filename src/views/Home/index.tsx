@@ -22,7 +22,7 @@ import { getBool, getNumber, getString } from 'helpers/params';
 import Logger from 'helpers/logger';
 
 // Local components
-import { ProjectListItem } from './components/ProjectListItem';
+import { ProjectItem } from './components/ProjectItem';
 import { BioCollectProjectSearch } from 'types';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
@@ -150,7 +150,7 @@ export function Home() {
           if (projectSearch) {
             return projectSearch.total > 0 ? (
               projectSearch.projects.map((project) => (
-                <ProjectListItem key={project.projectId} project={project} />
+                <ProjectItem key={project.projectId} project={project} />
               ))
             ) : (
               <Text>No projects</Text>
@@ -158,7 +158,7 @@ export function Home() {
           }
 
           return range(paramMax).map((id) => (
-            <ProjectListItem key={id} project={null} />
+            <ProjectItem key={id} project={null} />
           ));
         })()}
       </Grid>
