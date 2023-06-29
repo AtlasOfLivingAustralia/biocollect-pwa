@@ -52,9 +52,13 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
         </Chip>
       </Skeleton>
       <Group spacing="xs">
-        <Skeleton visible={loading} w={28} radius="md">
-          <Tooltip position="left" label="Add Record" withArrow>
-            <ActionIcon radius="md" variant="light" color="blue">
+        <Skeleton visible={loading} w={28}>
+          <Tooltip
+            position="left"
+            label={<Text size="xs">Add Record</Text>}
+            withArrow
+          >
+            <ActionIcon variant="light" color="blue">
               <IconPlus size="1rem" />
             </ActionIcon>
           </Tooltip>
@@ -142,13 +146,12 @@ export function ProjectItem({ project }: ProjectItemProps) {
                 {project?.name || 'Project Name'}
               </Text>
             </Skeleton>
-            <Skeleton mt="sm" visible={loading} radius="md">
+            <Skeleton mt="sm" visible={loading}>
               <Button
                 component={Link}
                 to={`/project/${project?.projectId}`}
                 rightIcon={<IconArrowUpRight size="0.8rem" />}
                 size="xs"
-                radius="md"
                 variant="outline"
               >
                 View Project

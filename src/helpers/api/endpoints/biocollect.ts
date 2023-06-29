@@ -201,7 +201,16 @@ export default (db: BioCollectDexie) => ({
       await db.projects.bulkPut(formatted.projects);
       return formatted;
     } else {
-      const projects = await db.projects.offset(offset).limit(max).toArray();
+      let query: any = db.projects;
+
+      // Append the search query
+      if (search && search.length > 0)
+        query = query
+          .where('name')
+          .startsWithAnyOfIgnoreCase(search?.split(' '));
+
+      // Perform the query
+      const projects = await query.offset(offset).limit(max).toArray();
 
       return {
         facets: [],
@@ -238,8 +247,6 @@ export default (db: BioCollectDexie) => ({
       const { data } = await axios.get<BioCollectSurvey[]>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
       );
-
-      console.log(JSON.stringify(data, null, 2));
 
       await db.surveys.bulkPut(data);
 

@@ -24,14 +24,22 @@ import Logger from 'helpers/logger';
 // Local components
 import { ProjectItem } from './components/ProjectItem';
 import { BioCollectProjectSearch } from 'types';
+import { useDebouncedState } from '@mantine/hooks';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
 export function Home() {
+  // URL parameters & state
+  const [params, setParams] = useSearchParams();
+  const paramMax = getNumber('max', 30, params);
+  const paramPage = getNumber('page', 1, params);
+  const paramSearch = getString('search', undefined, params);
+
+  // API data state
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);
-  const [params, setParams] = useSearchParams();
+  const [searchQuery, setSearchQuery] = useDebouncedState('', 350);
 
   // API Context
   const auth = useAuth();
@@ -61,9 +69,6 @@ export function Home() {
     fetchProjects();
   }, [params]);
 
-  const paramMax = getNumber('max', 30, params);
-  const paramPage = getNumber('page', 1, params);
-
   // Handle for updating the max result count
   const handleChangeMax = (newMax: number) => {
     params.set('page', '1');
@@ -77,21 +82,21 @@ export function Home() {
     setParams(params);
   };
 
-  // Handle for updating the search parameter
-  const handleSearch = (query: string) => {
-    if (query !== null && query.length > 0) {
-      params.set('search', query);
+  // Handling search querying
+  useEffect(() => {
+    if (searchQuery !== null && searchQuery.length > 0) {
+      params.set('search', searchQuery);
     } else {
       params.delete('search');
     }
 
     setParams(params);
-  };
+  }, [searchQuery]);
 
   // Handle for updating the sort parameter
-  // const handleChangeSort = (newSort: string) => {
-  //   setParams({ ...params, pSort: newSort });
-  // };
+  const handleChangeSort = (newSort: string) => {
+    setParams({ ...params, pSort: newSort });
+  };
 
   return (
     <Box
@@ -108,43 +113,85 @@ export function Home() {
           <Text>This is the home page</Text>
         </Stack>
       </Group>
-      <Group position="apart" mb="lg">
-        <Group mt="auto">
-          <TextInput
-            radius="md"
-            icon={<IconSearch />}
-            placeholder="Search Projects"
-            onKeyDown={(e) => {
-              console.log('search', e.currentTarget.value);
-              if (e.key === 'Enter') handleSearch(e.currentTarget.value);
-            }}
-          />
-        </Group>
-        <Group spacing="xs">
-          {/* <Select
-            style={{ maxWidth: 130 }}
-            value={params.get('pSort') || 'dateCreatedSort'}
-            label="Sort By"
-            data={[
-              { value: 'dateCreatedSort', label: 'Most Recent' },
-              { value: 'nameSort', label: 'Name' },
-              { value: '_score', label: 'Relevance' },
-              { value: 'organisationSort', label: 'Organisation' },
-            ]}
-            onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
-          /> */}
+      <Box
+        sx={(theme) => ({
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          [theme.fn.smallerThan('xs')]: {
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+          },
+        })}
+        mb="lg"
+      >
+        <TextInput
+          sx={(theme) => ({
+            flexGrow: 1,
+            maxWidth: 300,
+            marginRight: theme.spacing.xs,
+            [theme.fn.smallerThan('xs')]: {
+              width: '100%',
+              maxWidth: '100%',
+              marginBottom: theme.spacing.sm,
+              marginRight: 0,
+            },
+          })}
+          icon={<IconSearch />}
+          placeholder="Project Name"
+          defaultValue={paramSearch}
+          onChange={(e) => setSearchQuery(e.currentTarget.value)}
+          label={
+            <Text size="xs" weight="bold" color="dimmed">
+              Project Search
+            </Text>
+          }
+        />
+        <Group
+          sx={(theme) => ({
+            [theme.fn.smallerThan('xs')]: {
+              width: '100%',
+            },
+          })}
+          spacing="xs"
+          align="flex-end"
+        >
+          {navigator.onLine && (
+            <Select
+              w={135}
+              style={{ flexGrow: 1 }}
+              value={params.get('pSort') || 'dateCreatedSort'}
+              label={
+                <Text size="xs" weight="bold" color="dimmed">
+                  Sort By
+                </Text>
+              }
+              data={[
+                { value: 'dateCreatedSort', label: 'Most Recent' },
+                { value: 'nameSort', label: 'Name' },
+                { value: '_score', label: 'Relevance' },
+                { value: 'organisationSort', label: 'Organisation' },
+              ]}
+              onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
+            />
+          )}
           <Select
-            radius="md"
-            style={{ maxWidth: 110 }}
+            w={135}
+            style={{ flexGrow: 1 }}
             value={params.get('max') || '30'}
-            data={['10', '20', '30', '50', '100'].map((max) => ({
+            data={['10', '20', '30', '50'].map((max) => ({
               value: max,
               label: `${max} items`,
             }))}
             onChange={(max) => handleChangeMax(parseInt(max || '20', 10))}
+            label={
+              <Text size="xs" weight="bold" color="dimmed">
+                Result Count
+              </Text>
+            }
           />
         </Group>
-      </Group>
+      </Box>
       <Grid>
         {(() => {
           if (projectSearch) {

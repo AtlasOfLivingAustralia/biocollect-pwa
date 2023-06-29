@@ -10,7 +10,7 @@ export class BioCollectDexie extends Dexie {
   constructor() {
     super('biocollect');
     this.version(1).stores({
-      projects: '++projectId', // Primary key and indexed props
+      projects: '++projectId,name', // Primary key and indexed props
       surveys: '++id,projectId',
     });
   }

@@ -9,7 +9,6 @@ export function SurveyItem({ survey }: SurveyItemProps) {
   const theme = useMantineTheme();
   return (
     <Card
-      radius="md"
       shadow="md"
       withBorder
       bg={theme.colorScheme === 'dark' ? theme.colors.dark[5] : 'white'}
