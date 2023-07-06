@@ -48,6 +48,10 @@ const pwaOptions: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), tsconfigPaths(), visualizer() as any, VitePWA(pwaOptions)],
+  plugins: [
+    react(),
+    tsconfigPaths(),
+    visualizer() as any /*VitePWA(pwaOptions)*/,
+  ],
   envDir: './config',
 });

@@ -30,6 +30,19 @@ export default function Header() {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const auth = useAuth();
 
+  const signOut = async () => {
+    const params = new URLSearchParams({
+      client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
+      redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+      logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+    });
+
+    await auth.removeUser();
+    window.location.replace(
+      `${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`
+    );
+  };
+
   return (
     <MantineHeader height={71} p="md">
       <Group position="apart" px="sm">
@@ -108,7 +121,7 @@ export default function Header() {
                   Help
                 </Menu.Item>
                 <Menu.Item
-                  onClick={() => auth.signoutRedirect()}
+                  onClick={signOut}
                   icon={<IconLogout />}
                   disabled={auth.isLoading}
                   color="red"

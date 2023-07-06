@@ -185,7 +185,9 @@ export function ProjectItem({ project }: ProjectItemProps) {
                 <ProjectItemSurvey key={survey.id} survey={survey} />
               ))
             ) : (
-              <Text>No surveys available</Text>
+              <Text align="center" size="sm" color="dimmed" h={28.2}>
+                No surveys available
+              </Text>
             )}
           </Stack>
         </Stack>
