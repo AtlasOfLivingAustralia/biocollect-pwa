@@ -1,4 +1,4 @@
-import { Card, Title, useMantineTheme } from '@mantine/core';
+import { Button, Card, Title, useMantineTheme } from '@mantine/core';
 import { BioCollectSurvey } from 'types';
 
 interface SurveyCardProps {
@@ -7,6 +7,7 @@ interface SurveyCardProps {
 
 export function SurveyCard({ survey }: SurveyCardProps) {
   const theme = useMantineTheme();
+  console.log(survey);
   return (
     <Card
       radius="lg"
@@ -17,6 +18,7 @@ export function SurveyCard({ survey }: SurveyCardProps) {
       maw={325}
     >
       <Title order={5}>{survey.name}</Title>
+      <Button>Testin</Button>
     </Card>
   );
 }

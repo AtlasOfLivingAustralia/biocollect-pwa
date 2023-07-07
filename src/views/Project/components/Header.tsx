@@ -15,6 +15,7 @@ import {
   TypographyStylesProvider,
   ActionIcon,
   Button,
+  Tooltip,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
@@ -146,15 +147,17 @@ export function Header({ project, mobile }: HeaderProps) {
             {project.organisationName}
           </Title>
           {project.urlWeb && navigator.onLine && (
-            <ActionIcon
-              component="a"
-              href={project.urlWeb}
-              target="_blank"
-              radius="xl"
-              variant="transparent"
-            >
-              <IconExternalLink />
-            </ActionIcon>
+            <Tooltip label="Visit Website" position="right">
+              <ActionIcon
+                component="a"
+                href={project.urlWeb}
+                target="_blank"
+                radius="xl"
+                variant="transparent"
+              >
+                <IconExternalLink />
+              </ActionIcon>
+            </Tooltip>
           )}
         </Group>
         {!project.isExternal && <ALABadge mt="md" />}

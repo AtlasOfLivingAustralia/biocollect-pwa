@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import { Box, Group, ScrollArea, Title, useMantineTheme } from '@mantine/core';
+import {
+  Box,
+  Grid,
+  Group,
+  ScrollArea,
+  Title,
+  useMantineTheme,
+} from '@mantine/core';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 
@@ -23,6 +30,8 @@ export function Project() {
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 
+  console.log(project);
+
   return (
     <>
       <Header project={project} mobile={mobile} />
@@ -34,17 +43,17 @@ export function Project() {
         height={75}
         width="100%"
       />
-      <Box py="xl" bg={highlight}>
-        <Title px={36} order={2}>
+      <Box py="xl" px={36} bg={highlight}>
+        <Title order={2} mb="lg">
           Surveys
         </Title>
-        <ScrollArea maw="calc(100vw)">
-          <Group noWrap p="xl">
-            {surveys.map((survey) => (
-              <SurveyCard key={survey.id} survey={survey} />
-            ))}
-          </Group>
-        </ScrollArea>
+        <Grid>
+          {surveys.map((survey) => (
+            <Grid.Col key={survey.id}>
+              <SurveyCard survey={survey} />
+            </Grid.Col>
+          ))}
+        </Grid>
         {/* {survey && (
           <Frame
             src={`https://biocollect.ala.org.au/acsa/bioActivity/create/${survey}`}

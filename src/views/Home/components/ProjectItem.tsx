@@ -13,6 +13,8 @@ import {
   Chip,
   Button,
   Tooltip,
+  UnstyledButton,
+  ThemeIcon,
 } from '@mantine/core';
 import {
   IconArrowUpRight,
@@ -51,19 +53,20 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
           </Text>
         </Chip>
       </Skeleton>
-      <Group spacing="xs">
-        <Skeleton visible={loading} w={28}>
-          <Tooltip
-            position="left"
-            label={<Text size="xs">Add Record</Text>}
-            withArrow
-          >
-            <ActionIcon variant="light" color="blue">
+      <UnstyledButton>
+        <Group spacing="xs">
+          <Skeleton visible={loading} w={28}>
+            <ThemeIcon variant="light" color="blue">
               <IconPlus size="1rem" />
-            </ActionIcon>
-          </Tooltip>
-        </Skeleton>
-      </Group>
+            </ThemeIcon>
+          </Skeleton>
+          <Skeleton visible={loading} w={40}>
+            <Text size="xs" color="dimmed">
+              Record
+            </Text>
+          </Skeleton>
+        </Group>
+      </UnstyledButton>
     </Group>
   );
 }

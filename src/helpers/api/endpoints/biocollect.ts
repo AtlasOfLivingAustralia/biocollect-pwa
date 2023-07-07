@@ -6,16 +6,24 @@ import {
 } from 'types';
 import { BioCollectDexie } from '../dexie';
 
-const formatProjects = (projects: BioCollectProject[]) =>
-  projects.map((project) => ({
+const formatProjects = async (
+  projects: BioCollectProject[],
+  db: BioCollectDexie
+) => {
+  const surveys = await db.surveys.limit(1).toArray();
+  return projects.map((project) => ({
     ...project,
     name: project.name.trim(),
-    surveys: [],
+    surveys,
   }));
+};
 
-const formatProjectSearch = (search: BioCollectProjectSearch) => ({
+const formatProjectSearch = async (
+  search: BioCollectProjectSearch,
+  db: BioCollectDexie
+) => ({
   ...search,
-  projects: formatProjects(search.projects),
+  projects: await formatProjects(search.projects, db),
 });
 
 // type BioCollectProjectSort =
@@ -57,7 +65,7 @@ export default (db: BioCollectDexie) => ({
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
         { params }
       );
-      const formatted = formatProjectSearch(data);
+      const formatted = await formatProjectSearch(data, db);
 
       // Store the projects in IDB & return
       await db.projects.bulkPut(formatted.projects);
@@ -96,7 +104,7 @@ export default (db: BioCollectDexie) => ({
         }
       );
 
-      const [project] = formatProjects(data.projects);
+      const [project] = await formatProjects(data.projects, db);
       return project;
     }
 
