@@ -1,13 +1,6 @@
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
-import {
-  Box,
-  Grid,
-  Group,
-  ScrollArea,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Box, Grid, Text, Title, useMantineTheme } from '@mantine/core';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 
@@ -36,7 +29,7 @@ export function Project() {
     <>
       <Header project={project} mobile={mobile} />
       <Wave
-        style={{ marginTop: theme.spacing.xl, marginBottom: -36 }}
+        style={{ marginTop: theme.spacing.sm, marginBottom: -30 }}
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
@@ -47,12 +40,18 @@ export function Project() {
         <Title order={2} mb="lg">
           Surveys
         </Title>
-        <Grid>
-          {surveys.map((survey) => (
-            <Grid.Col key={survey.id}>
-              <SurveyCard survey={survey} />
+        <Grid gutter="xl">
+          {surveys.length > 0 ? (
+            surveys.map((survey) => (
+              <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
+                <SurveyCard survey={survey} />
+              </Grid.Col>
+            ))
+          ) : (
+            <Grid.Col span={12}>
+              <Text>No surveys</Text>
             </Grid.Col>
-          ))}
+          )}
         </Grid>
         {/* {survey && (
           <Frame

@@ -1,16 +1,20 @@
 import { createContext } from 'react';
-import { BioCollectProject } from 'types';
+import { BioCollectBioActivityView } from 'types';
 
-interface DrawerContext {
-  open: (projects: BioCollectProject[] | Promise<BioCollectProject[]>) => void;
+interface RecordsDrawerContext {
+  open: (
+    view: BioCollectBioActivityView,
+    fq?: { [filter: string]: string },
+    hub?: string
+  ) => void;
   close: () => void;
 }
 
 const defaultFunc = () => {
-  throw new Error('Drawer context not initialized');
+  throw new Error('Records drawer context not initialized');
 };
 
-export default createContext<DrawerContext>({
+export default createContext<RecordsDrawerContext>({
   open: defaultFunc,
   close: defaultFunc,
 });

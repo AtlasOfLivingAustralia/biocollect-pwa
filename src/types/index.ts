@@ -280,3 +280,11 @@ export interface Pagination {
   currentPage: string;
   info: string;
 }
+
+export type BioCollectBioActivityView =
+  | 'myrecords'
+  | 'project'
+  | 'projectrecords'
+  | 'myprojectrecords'
+  | 'userprojectactivityrecords'
+  | 'allrecords';

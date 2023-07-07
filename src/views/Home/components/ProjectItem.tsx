@@ -53,7 +53,13 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
           </Text>
         </Chip>
       </Skeleton>
-      <UnstyledButton>
+      <UnstyledButton
+        sx={{
+          ':hover': {
+            opacity: 0.6,
+          },
+        }}
+      >
         <Group spacing="xs">
           <Skeleton visible={loading} w={28}>
             <ThemeIcon variant="light" color="blue">

@@ -12,6 +12,7 @@ import { themes } from 'theme';
 import { APIProvider } from 'helpers/api';
 import Logger from 'helpers/logger';
 import App from './App';
+import { RecordsDrawerProvider } from 'helpers/drawer';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
@@ -66,7 +67,9 @@ function Main() {
             withGlobalStyles
             withNormalizeCSS
           >
-            <App />
+            <RecordsDrawerProvider>
+              <App />
+            </RecordsDrawerProvider>
           </MantineProvider>
         </ColorSchemeProvider>
       </APIProvider>
