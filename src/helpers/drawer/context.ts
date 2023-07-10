@@ -5,7 +5,7 @@ interface RecordsDrawerContext {
   open: (
     view: BioCollectBioActivityView,
     fq?: { [filter: string]: string },
-    hub?: string
+    recordsFor?: string
   ) => void;
   close: () => void;
 }

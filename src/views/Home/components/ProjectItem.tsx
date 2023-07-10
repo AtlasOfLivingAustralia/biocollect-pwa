@@ -8,20 +8,13 @@ import {
   Paper,
   Group,
   Divider,
-  ActionIcon,
   useMantineTheme,
   Chip,
   Button,
-  Tooltip,
   UnstyledButton,
   ThemeIcon,
 } from '@mantine/core';
-import {
-  IconArrowUpRight,
-  IconDownload,
-  IconPencilPlus,
-  IconPlus,
-} from '@tabler/icons';
+import { IconArrowUpRight, IconDownload, IconPlus } from '@tabler/icons';
 import { Background } from 'components';
 import { Corner } from 'components/Wave';
 import { useState } from 'react';
