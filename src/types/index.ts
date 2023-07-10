@@ -14,6 +14,10 @@ export interface Facet {
   type: string;
 }
 
+export interface FilterQueries {
+  [filter: string]: string;
+}
+
 /*
 	BioCollect API
 */
@@ -288,3 +292,54 @@ export type BioCollectBioActivityView =
   | 'myprojectrecords'
   | 'userprojectactivityrecords'
   | 'allrecords';
+
+export interface RecordMultimedia {
+  rightsHolder: string;
+  identifier: string;
+  license: string;
+  creator: string;
+  imageId: string;
+  rights: string;
+  format: string;
+  documentId: string;
+  title: string;
+  type: string;
+}
+
+export interface BioCollectRecord {
+  commonName: string;
+  multimedia: RecordMultimedia;
+  individualCount: number;
+  name: string;
+  coordinates: number[];
+  eventTime: string;
+  guid: string;
+  occurrenceID: string;
+  eventDate: string;
+}
+
+export interface BioCollectBioActivity {
+  activityId: string;
+  projectActivityId: string;
+  type: string;
+  status: string;
+  lastUpdated: string;
+  userId: string;
+  siteId: string;
+  name: string;
+  activityOwnerName: string;
+  embargoed: boolean;
+  embargoUntil: string;
+  records: BioCollectRecord[];
+  endDate: string;
+  projectName: string;
+  projectType: string;
+  projectId: string;
+  thumbnailUrl: string;
+  showCrud: boolean;
+  userCanModerate: boolean;
+}
+
+export interface BioCollectBioActivitySearch {
+  activities: BioCollectBioActivity[];
+}

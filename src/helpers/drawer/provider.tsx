@@ -1,26 +1,52 @@
-import { ReactElement, PropsWithChildren, useEffect } from 'react';
+import {
+  ReactElement,
+  PropsWithChildren,
+  useEffect,
+  useState,
+  useContext,
+} from 'react';
 import { useDisclosure } from '@mantine/hooks';
-import { BioCollectBioActivityView } from 'types';
+import {
+  BioCollectBioActivitySearch,
+  BioCollectBioActivityView,
+  FilterQueries,
+} from 'types';
 
 // Contexts
 import RecordsDrawerContext from './context';
 import { Drawer, Group, Title } from '@mantine/core';
 import { IconFiles } from '@tabler/icons';
+import { APIContext } from 'helpers/api';
 
 const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
+  const [activities, setActivities] =
+    useState<BioCollectBioActivitySearch | null>(null);
+  const [view, setView] = useState<BioCollectBioActivityView | null>(null);
+  const [filters, setFilters] = useState<FilterQueries>({});
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
+  const api = useContext(APIContext);
 
   // Callback function to open the records drawer
   const open = (
-    view: BioCollectBioActivityView,
-    fq?: { [filter: string]: string },
-    hub?: string
+    newView: BioCollectBioActivityView,
+    newFilters?: FilterQueries
   ) => {
-    console.log('Drawer open', view, fq, hub);
+    if (newView) setView(newView);
+    if (newFilters) setFilters(newFilters);
     openDrawer();
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    async function getActivities() {
+      if (view) {
+        const activities = await api.biocollect.searchActivities(view, filters);
+        console.log('activities', activities);
+        setActivities(activities);
+      }
+    }
+
+    if (view) getActivities();
+  }, [view, filters]);
 
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
@@ -41,7 +67,9 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
             </Group>
             <Drawer.CloseButton />
           </Drawer.Header>
-          <Drawer.Body>Drawer content</Drawer.Body>
+          <Drawer.Body>
+            {activities ? activities.activities.length : 'Loading'}
+          </Drawer.Body>
         </Drawer.Content>
       </Drawer.Root>
       {props.children}

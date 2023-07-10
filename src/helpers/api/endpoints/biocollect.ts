@@ -1,8 +1,11 @@
 import axios from 'axios';
 import {
+  BioCollectBioActivitySearch,
+  BioCollectBioActivityView,
   BioCollectProject,
   BioCollectProjectSearch,
   BioCollectSurvey,
+  FilterQueries,
 } from 'types';
 import { BioCollectDexie } from '../dexie';
 
@@ -123,6 +126,32 @@ export default (db: BioCollectDexie) => ({
       return data;
     } else {
       return await db.surveys.where('projectId').equals(projectId).toArray();
+    }
+  },
+
+  searchActivities: async (
+    view: BioCollectBioActivityView,
+    filters?: FilterQueries
+  ): Promise<BioCollectBioActivitySearch> => {
+    if (navigator.onLine) {
+      // Transform the FilterQueries object
+      const params = new URLSearchParams({
+        view,
+        ...(filters || {}),
+      });
+
+      // Make the GET request
+      const { data } = await axios.get<BioCollectBioActivitySearch>(
+        `${
+          import.meta.env.VITE_API_BIOCOLLECT
+        }/ws/bioactivity/search?${params.toString()}`
+      );
+
+      // await db.surveys.bulkPut(data);
+
+      return data;
+    } else {
+      return { activities: [] };
     }
   },
 });
