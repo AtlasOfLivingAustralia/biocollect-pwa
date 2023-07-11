@@ -13,11 +13,9 @@ const formatProjects = async (
   projects: BioCollectProject[],
   db: BioCollectDexie
 ) => {
-  const surveys = await db.surveys.limit(1).toArray();
   return projects.map((project) => ({
     ...project,
     name: project.name.trim(),
-    surveys,
   }));
 };
 

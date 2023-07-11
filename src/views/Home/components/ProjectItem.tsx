@@ -52,6 +52,10 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
             opacity: 0.6,
           },
         }}
+        component="a"
+        href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/create/${
+          survey?.projectActivityId
+        }`}
       >
         <Group spacing="xs">
           <Skeleton visible={loading} w={28}>

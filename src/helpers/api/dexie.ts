@@ -8,7 +8,7 @@ export class BioCollectDexie extends Dexie {
   surveys!: Table<BioCollectSurvey>;
 
   constructor() {
-    super('biocollect');
+    super(`biocollect-${import.meta.env.MODE}`);
     this.version(1).stores({
       projects: '++projectId,name', // Primary key and indexed props
       surveys: '++id,projectId',

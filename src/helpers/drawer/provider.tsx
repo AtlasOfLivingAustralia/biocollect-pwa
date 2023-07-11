@@ -6,7 +6,7 @@ import {
   useContext,
   Fragment,
 } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
@@ -23,6 +23,7 @@ import {
   Stack,
   Text,
   Title,
+  useMantineTheme,
 } from '@mantine/core';
 import { IconFiles } from '@tabler/icons';
 import { APIContext } from 'helpers/api';
@@ -41,13 +42,16 @@ function shallowEqual(obj1: any, obj2: any) {
 }
 
 const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
-  const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(
-    null
-  );
   const [recordsFor, setRecordsFor] = useState<string | null>(null);
   const [view, setView] = useState<BioCollectBioActivityView | null>(null);
   const [filters, setFilters] = useState<FilterQueries>({});
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
+  const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(
+    null
+  );
+
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const api = useContext(APIContext);
 
   // Callback function to open the records drawer
@@ -84,7 +88,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
       <Drawer.Root
         opened={opened}
         onClose={close}
-        position="bottom"
+        position={mobile ? 'bottom' : 'right'}
         keepMounted
       >
         <Drawer.Overlay />

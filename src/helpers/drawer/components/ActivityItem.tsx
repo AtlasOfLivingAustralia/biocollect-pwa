@@ -46,7 +46,15 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           </Skeleton>
         </Box>
       </Stack>
-      <ActionIcon variant="light" color="gray">
+      <ActionIcon
+        loading={loading}
+        variant="light"
+        color="gray"
+        component="a"
+        href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
+          activity?.activityId
+        }`}
+      >
         <IconEye size="1rem" />
       </ActionIcon>
     </Group>
