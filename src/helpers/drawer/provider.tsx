@@ -107,7 +107,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
             </Group>
             <Drawer.CloseButton />
           </Drawer.Header>
-          <Drawer.Body h="calc(100% - 70px)">
+          <Drawer.Body>
             <Stack pb="sm">
               {(() => {
                 if (search) {
@@ -126,10 +126,10 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                 }
 
                 return [0, 1, 2, 3, 4, 5, 6].map((num) => (
-                  <>
-                    <ActivityItem key={num} />
+                  <Fragment key={num}>
+                    <ActivityItem />
                     {num !== 6 && <Divider />}
-                  </>
+                  </Fragment>
                 ));
               })()}
             </Stack>

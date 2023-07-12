@@ -7,12 +7,21 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { IconEye } from '@tabler/icons';
+import { IconEdit, IconEye, IconUser } from '@tabler/icons';
 import { BioCollectBioActivity } from 'types';
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
 }
+
+const getInitials = (name: string) => {
+  return name
+    .toUpperCase()
+    .split(' ')
+    .map((part) => part.charAt(0))
+    .slice(0, 2)
+    .join('');
+};
 
 export function ActivityItem({ activity }: ActivityItemProps) {
   const loading = !activity;
@@ -36,7 +45,11 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             mih={26}
           >
             <Avatar size="sm" radius="lg">
-              JB
+              {activity?.activityOwnerName ? (
+                getInitials(activity.activityOwnerName)
+              ) : (
+                <IconUser />
+              )}
             </Avatar>
           </Skeleton>
           <Skeleton visible={loading} style={{ flexGrow: 1 }}>
@@ -46,17 +59,34 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           </Skeleton>
         </Box>
       </Stack>
-      <ActionIcon
-        loading={loading}
-        variant="light"
-        color="gray"
-        component="a"
-        href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
-          activity?.activityId
-        }`}
-      >
-        <IconEye size="1rem" />
-      </ActionIcon>
+      <Group spacing="xs">
+        {(loading || activity?.showCrud) && (
+          <Skeleton visible={loading} width={28} miw={28}>
+            <ActionIcon
+              variant="light"
+              color="gray"
+              component="a"
+              href={`${
+                import.meta.env.VITE_API_BIOCOLLECT
+              }/bioActivity/mobileEdit/${activity?.activityId}?mobile=true`}
+            >
+              <IconEdit size="1rem" />
+            </ActionIcon>
+          </Skeleton>
+        )}
+        <Skeleton visible={loading} width={28} miw={28}>
+          <ActionIcon
+            variant="light"
+            color="gray"
+            component="a"
+            href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
+              activity?.activityId
+            }?mobile=true`}
+          >
+            <IconEye size="1rem" />
+          </ActionIcon>
+        </Skeleton>
+      </Group>
     </Group>
   );
 }

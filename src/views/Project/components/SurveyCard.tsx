@@ -3,16 +3,14 @@ import {
   Box,
   Button,
   Card,
+  Chip,
   Group,
   Text,
-  ThemeIcon,
   Title,
-  UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import { IconCalendar, IconEye, IconPlus } from '@tabler/icons';
-import { RecordsDrawerContext } from 'helpers/drawer';
-import { useContext } from 'react';
+import { IconCalendar, IconDownload } from '@tabler/icons';
+import { SurveyActions } from 'components';
 import { BioCollectSurvey } from 'types';
 
 interface SurveyCardProps {
@@ -21,7 +19,7 @@ interface SurveyCardProps {
 
 export function SurveyCard({ survey }: SurveyCardProps) {
   const theme = useMantineTheme();
-  const drawer = useContext(RecordsDrawerContext);
+  const checked = false;
 
   return (
     <Card
@@ -49,43 +47,32 @@ export function SurveyCard({ survey }: SurveyCardProps) {
         </Text>
       </Box>
       <Group mt="md" position="apart">
-        <Button
-          variant="light"
-          size="xs"
-          onClick={() =>
-            drawer.open(
-              'project',
-              {
-                projectId: survey.projectId,
-                fq: `projectActivityNameFacet:${survey.name}`,
+        <Chip
+          checked={checked}
+          styles={{
+            label: {
+              padding: '0.8rem',
+              '& .mantine-Text-root': {
+                marginLeft: 2,
               },
-              `${survey.name} Survey`
-            )
-          }
-          leftIcon={<IconEye size="0.8rem" />}
-        >
-          View Records
-        </Button>
-        <UnstyledButton
-          sx={{
-            ':hover': {
-              opacity: 0.6,
             },
           }}
-          component="a"
-          href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/create/${
-            survey?.projectActivityId
-          }`}
+          onClick={() =>
+            window.open(
+              `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${
+                survey.projectActivityId
+              }`
+            )
+          }
         >
-          <Group spacing="xs">
-            <ThemeIcon variant="light" color="blue">
-              <IconPlus size="1rem" />
-            </ThemeIcon>
-            <Text size="xs" color="dimmed">
-              Record
-            </Text>
-          </Group>
-        </UnstyledButton>
+          {!checked && (
+            <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
+          )}
+          <Text ml="xs" color="dimmed" weight="bold" size="xs">
+            {checked ? 'Downloaded' : 'Download'}
+          </Text>
+        </Chip>
+        <SurveyActions survey={survey} />
       </Group>
     </Card>
   );

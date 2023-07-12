@@ -11,11 +11,9 @@ import {
   useMantineTheme,
   Chip,
   Button,
-  UnstyledButton,
-  ThemeIcon,
 } from '@mantine/core';
-import { IconArrowUpRight, IconDownload, IconPlus } from '@tabler/icons';
-import { Background } from 'components';
+import { IconArrowUpRight, IconDownload } from '@tabler/icons';
+import { SurveyActions, Background } from 'components';
 import { Corner } from 'components/Wave';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -36,40 +34,22 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
           checked={checked}
           styles={{
             label: {
-              padding: '0.625rem',
+              padding: '0.8rem',
+              '& .mantine-Text-root': {
+                marginLeft: 2,
+              },
             },
           }}
         >
-          {!checked && <IconDownload size="0.8rem" />}
+          {!checked && (
+            <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
+          )}
           <Text ml="xs" color="dimmed" weight="bold" size="xs">
             {survey?.name}
           </Text>
         </Chip>
       </Skeleton>
-      <UnstyledButton
-        sx={{
-          ':hover': {
-            opacity: 0.6,
-          },
-        }}
-        component="a"
-        href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/create/${
-          survey?.projectActivityId
-        }`}
-      >
-        <Group spacing="xs">
-          <Skeleton visible={loading} w={28}>
-            <ThemeIcon variant="light" color="blue">
-              <IconPlus size="1rem" />
-            </ThemeIcon>
-          </Skeleton>
-          <Skeleton visible={loading} w={40}>
-            <Text size="xs" color="dimmed">
-              Record
-            </Text>
-          </Skeleton>
-        </Group>
-      </UnstyledButton>
+      <SurveyActions survey={survey} />
     </Group>
   );
 }
