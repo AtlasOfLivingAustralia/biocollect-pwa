@@ -1,5 +1,18 @@
-import { MantineThemeOverride } from '@mantine/core';
+import { MantineThemeOverride, Tuple } from '@mantine/core';
 import palette from './palette';
+import Colour from 'color';
+
+function generateShades(colour: string, step = 0.125): Tuple<string, 10> {
+  const out = [];
+  const base = new Colour(colour);
+
+  for (let shade = 7; shade > -3; shade -= 1) {
+    const amount = Math.abs(step * shade);
+    out.push((shade < 0 ? base.darken(amount) : base.lighten(amount)).hex());
+  }
+
+  return out as Tuple<string, 10>;
+}
 
 const fontStack = `-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`;
 const defaults: MantineThemeOverride = {
@@ -8,10 +21,6 @@ const defaults: MantineThemeOverride = {
     fontFamily: `Lato, ${fontStack}`,
   },
   defaultRadius: 'md',
-  // colors: {
-  //   test: [],
-  // },
-  // primaryColor: 'test',
 };
 
 const themes: { [key: string]: MantineThemeOverride } = {
@@ -25,4 +34,4 @@ const themes: { [key: string]: MantineThemeOverride } = {
   },
 };
 
-export { palette, themes };
+export { palette, themes, generateShades };

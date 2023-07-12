@@ -1,30 +1,32 @@
-import { Box, Text, Group, Code, Title, Button } from '@mantine/core';
+import {
+  Box,
+  Text,
+  Group,
+  Code,
+  Title,
+  Button,
+  ColorSwatch,
+  ColorInput,
+  useMantineTheme,
+  Divider,
+} from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useAuth } from 'react-oidc-context';
-import { Frame } from 'components';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { APIContext } from 'helpers/api';
 import { useLiveQuery } from 'dexie-react-hooks';
+import { generateShades } from 'theme';
 
 export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
   const api = useContext(APIContext);
+  const [color, setColor] = useState<string>('#e8590c');
+  const theme = useMantineTheme();
 
-  const projects = useLiveQuery(async () => await api.db.projects.toArray());
-
-  const addTestRecord = async () => {
-    const project = await api.biocollect.getProject(
-      'd8865842-c231-4cc8-aab9-2fbc05c19905'
-    );
-    if (project) {
-      await api.db.projects.add(project);
-    }
-  };
-
-  const clearTestRecords = async () => {
-    await api.db.projects.clear();
-  };
+  const projects = useLiveQuery(
+    async () => await api.db.projects.limit(1).toArray()
+  );
 
   return (
     <Box p="xl">
@@ -50,11 +52,28 @@ export function Debug() {
       <Title mb="sm" mt="xl">
         IndexedDB
       </Title>
-      <Group mb="sm">
-        <Button onClick={addTestRecord}>Add test record</Button>
-        <Button onClick={clearTestRecords}>Clear test records</Button>
-      </Group>
       <Code block>{JSON.stringify(projects, null, 2)}</Code>
+      <Title>Colour</Title>
+      <ColorInput value={color} onChange={setColor} />
+      <Group>
+        {generateShades(color).map((shadeColour, index) => (
+          <ColorSwatch
+            key={shadeColour}
+            color={shadeColour}
+            size={index === 7 ? 40 : undefined}
+          />
+        ))}
+      </Group>
+      <Divider my="xs" />
+      <Group>
+        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
+          <ColorSwatch
+            key={index}
+            color={theme.colors.orange[index]}
+            size={index === 7 ? 40 : undefined}
+          />
+        ))}
+      </Group>
     </Box>
   );
 }

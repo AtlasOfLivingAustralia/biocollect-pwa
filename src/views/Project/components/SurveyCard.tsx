@@ -38,7 +38,9 @@ export function SurveyCard({ survey }: SurveyCardProps) {
         <Title order={5} mb={2}>
           {survey.name}
         </Title>
-        <Badge miw={70}>{survey.status}</Badge>
+        <Badge miw={70} color="dark">
+          {survey.status}
+        </Badge>
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <IconCalendar size="1rem" />

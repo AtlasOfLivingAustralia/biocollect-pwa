@@ -55,7 +55,7 @@ export default function Header() {
             />
           </Link>
           <Group spacing="xs">
-            <Badge radius="sm" color="grey">
+            <Badge radius="sm" color="blue">
               ver 0.0
             </Badge>
             {navigator.onLine ? (

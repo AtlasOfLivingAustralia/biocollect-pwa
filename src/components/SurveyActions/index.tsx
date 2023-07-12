@@ -1,4 +1,10 @@
-import { ActionIcon, Group, Skeleton, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Group,
+  Skeleton,
+  Text,
+  useMantineTheme,
+} from '@mantine/core';
 import { IconEye, IconPlus } from '@tabler/icons';
 import { RecordsDrawerContext } from 'helpers/drawer';
 import { useContext } from 'react';
@@ -10,6 +16,7 @@ interface SurveyActionsProps {
 
 export function SurveyActions({ survey }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
+  const theme = useMantineTheme();
   const loading = !survey;
 
   return (
@@ -22,7 +29,7 @@ export function SurveyActions({ survey }: SurveyActionsProps) {
       <Skeleton visible={loading} w={28}>
         <ActionIcon
           variant="light"
-          color="blue"
+          color={theme.primaryColor}
           onClick={
             survey &&
             (() => {
@@ -43,7 +50,7 @@ export function SurveyActions({ survey }: SurveyActionsProps) {
       <Skeleton visible={loading} w={28}>
         <ActionIcon
           variant="light"
-          color="blue"
+          color={theme.primaryColor}
           component="a"
           href={`${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
             survey?.projectActivityId
