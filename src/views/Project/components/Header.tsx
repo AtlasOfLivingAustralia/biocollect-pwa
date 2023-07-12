@@ -109,17 +109,23 @@ export function Header({ project, mobile }: HeaderProps) {
             </Text>
           </Breadcrumbs>
         </Center>
-        <Spoiler
-          mt="md"
-          maxHeight={200}
-          styles={{ control: { width: '100%' } }}
-          showLabel={<SpoilerControl />}
-          hideLabel={<SpoilerControl hide />}
-        >
-          <TypographyStylesProvider>
-            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
-          </TypographyStylesProvider>
-        </Spoiler>
+        {project.aim && (
+          <Spoiler
+            mt="md"
+            maxHeight={200}
+            styles={{ control: { width: '100%' } }}
+            showLabel={<SpoilerControl />}
+            hideLabel={<SpoilerControl hide />}
+          >
+            <TypographyStylesProvider>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: `<b>Aim: </b>${project.aim}`,
+                }}
+              />
+            </TypographyStylesProvider>
+          </Spoiler>
+        )}
       </Box>
     </Box>
   ) : (
@@ -161,11 +167,17 @@ export function Header({ project, mobile }: HeaderProps) {
           )}
         </Group>
         {!project.isExternal && <ALABadge mt="md" />}
-        <ScrollArea.Autosize mt="xs" type="hover" offsetScrollbars mah={125}>
-          <TypographyStylesProvider>
-            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
-          </TypographyStylesProvider>
-        </ScrollArea.Autosize>
+        {project.aim && (
+          <ScrollArea.Autosize mt="xs" type="hover" offsetScrollbars mah={125}>
+            <TypographyStylesProvider>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: `<b>Aim: </b>${project.aim}`,
+                }}
+              />
+            </TypographyStylesProvider>
+          </ScrollArea.Autosize>
+        )}
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
         {project.fullSizeImageUrl ? (
