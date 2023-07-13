@@ -85,6 +85,7 @@ export function Home() {
   // Handling search querying
   useEffect(() => {
     if (searchQuery !== null && searchQuery.length > 0) {
+      params.delete('page');
       params.set('search', searchQuery);
     } else {
       params.delete('search');

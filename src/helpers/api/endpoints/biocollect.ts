@@ -85,7 +85,7 @@ export default (db: BioCollectDexie) => ({
 
       return {
         facets: [],
-        total: await db.projects.count(),
+        total: await query.count(),
         projects,
       };
     }
