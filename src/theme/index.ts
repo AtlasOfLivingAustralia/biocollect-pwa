@@ -40,6 +40,19 @@ const themes: { [key: string]: MantineThemeOverride } = {
     primaryColor: 'alablue',
     colorScheme: 'dark',
   },
+  goofy: {
+    ...defaults,
+    headings: {
+      fontFamily: 'Comic Sans MS',
+    },
+    defaultRadius: 'xs',
+    fontSizes: {
+      xl: '1.8rem',
+    },
+    fontFamily: 'Papyrus',
+    primaryColor: 'pink',
+    colorScheme: 'light',
+  },
 };
 
 export { palette, themes, generateShades };

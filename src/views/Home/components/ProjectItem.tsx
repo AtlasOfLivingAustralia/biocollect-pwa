@@ -109,7 +109,10 @@ export function ProjectItem({ project }: ProjectItemProps) {
           >
             <Skeleton visible={loading}>
               <Text
-                sx={{ fontFamily: theme.headings.fontFamily }}
+                sx={{
+                  fontFamily: theme.headings.fontFamily,
+                  fontWeight: 700,
+                }}
                 size="xl"
                 lineClamp={2}
               >
