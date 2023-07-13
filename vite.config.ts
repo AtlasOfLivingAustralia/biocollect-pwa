@@ -4,6 +4,10 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 
+// Prefer localhost
+import dns from 'dns';
+dns.setDefaultResultOrder('verbatim');
+
 const pwaOptions: Partial<VitePWAOptions> = {
   mode: 'development',
   base: '/',

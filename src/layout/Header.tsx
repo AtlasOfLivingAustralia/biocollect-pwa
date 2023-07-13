@@ -6,8 +6,6 @@ import {
   Image,
   Button,
   UnstyledButton,
-  // MediaQuery,
-  useMantineColorScheme,
   Badge,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
@@ -18,16 +16,14 @@ import {
   IconBug,
   IconQuestionMark,
   IconLogout,
-  IconMoon,
-  IconSun,
 } from '@tabler/icons';
 
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
+import { themes } from 'theme';
 
 export default function Header() {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const auth = useAuth();
 
   const signOut = async () => {
@@ -51,22 +47,21 @@ export default function Header() {
             <Image
               width="auto"
               height={32}
-              src={colorScheme === 'dark' ? logoLight : logoDark}
+              src={
+                themes[import.meta.env.BIOCOLLECT_HUB || 'dark'].colorScheme ===
+                'dark'
+                  ? logoLight
+                  : logoDark
+              }
             />
           </Link>
           <Group spacing="xs">
             <Badge radius="sm" color="blue">
               ver 0.0
             </Badge>
-            {navigator.onLine ? (
-              <Badge radius="sm" color="green">
-                online
-              </Badge>
-            ) : (
-              <Badge radius="sm" color="red">
-                offline
-              </Badge>
-            )}
+            <Badge radius="sm" color={navigator.onLine ? 'green' : 'red'}>
+              {navigator.onLine ? 'online' : 'offline'}
+            </Badge>
           </Group>
         </Group>
         <Group>
@@ -92,15 +87,6 @@ export default function Header() {
                   icon={<IconPlus />}
                 >
                   Add your project
-                </Menu.Item>
-                <Menu.Divider />
-                <Menu.Label>Settings</Menu.Label>
-                <Menu.Item
-                  closeMenuOnClick={false}
-                  icon={colorScheme === 'dark' ? <IconMoon /> : <IconSun />}
-                  onClick={() => toggleColorScheme()}
-                >
-                  Toggle theme
                 </Menu.Item>
                 {import.meta.env.DEV && (
                   <>

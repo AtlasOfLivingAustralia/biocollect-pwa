@@ -10,26 +10,15 @@ import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { themes } from 'theme';
 import { APIProvider } from 'helpers/api';
+import { RecordsDrawerProvider } from 'helpers/drawer';
+
 import Logger from 'helpers/logger';
 import App from './App';
-import { RecordsDrawerProvider } from 'helpers/drawer';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
 
 function Main() {
-  const [colourScheme, setColourScheme] = useLocalStorage<ColorScheme>({
-    key: 'app-colour-scheme',
-    defaultValue: matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light',
-    getInitialValueInEffect: true,
-  });
-
-  // Helper function for switching the colour scheme
-  const toggleColourScheme = (value?: ColorScheme) =>
-    setColourScheme(value || (colourScheme === 'dark' ? 'light' : 'dark'));
-
   const [authRegion] = import.meta.env.VITE_AUTH_USER_POOL.split('_');
 
   return (
@@ -40,8 +29,8 @@ function Main() {
         import.meta.env.VITE_AUTH_USER_POOL
       }`}
       onSigninCallback={(user) => {
-        Logger.log('[Main] onSignInCallback', user);
         const params = new URLSearchParams(window.location.search);
+        Logger.log('[Main] onSignInCallback', user);
         if (hasAuthParams(window.location)) {
           params.delete('code');
           params.delete('state');
@@ -53,25 +42,22 @@ function Main() {
               window.location.pathname +
               params.toString()
           );
+        } else {
+          Logger.log('[Main] onSigninCallback', 'No auth params in location!');
         }
       }}
       userStore={userStore}
     >
       <APIProvider>
-        <ColorSchemeProvider
-          colorScheme={colourScheme}
-          toggleColorScheme={toggleColourScheme}
+        <MantineProvider
+          theme={themes[import.meta.env.VITE_BIOCOLLECT_HUB || 'dark']}
+          withGlobalStyles
+          withNormalizeCSS
         >
-          <MantineProvider
-            theme={themes[colourScheme]}
-            withGlobalStyles
-            withNormalizeCSS
-          >
-            <RecordsDrawerProvider>
-              <App />
-            </RecordsDrawerProvider>
-          </MantineProvider>
-        </ColorSchemeProvider>
+          <RecordsDrawerProvider>
+            <App />
+          </RecordsDrawerProvider>
+        </MantineProvider>
       </APIProvider>
     </AuthProvider>
   );

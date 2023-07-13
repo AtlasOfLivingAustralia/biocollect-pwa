@@ -32,6 +32,14 @@ const themes: { [key: string]: MantineThemeOverride } = {
     ...defaults,
     colorScheme: 'dark',
   },
+  ala: {
+    ...defaults,
+    colors: {
+      alablue: generateShades('#009080'),
+    },
+    primaryColor: 'alablue',
+    colorScheme: 'dark',
+  },
 };
 
 export { palette, themes, generateShades };
