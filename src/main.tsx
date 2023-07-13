@@ -1,9 +1,4 @@
-import {
-  MantineProvider,
-  ColorSchemeProvider,
-  ColorScheme,
-} from '@mantine/core';
-import { useLocalStorage } from '@mantine/hooks';
+import { MantineProvider } from '@mantine/core';
 import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 
 // App-specific imports
@@ -14,6 +9,7 @@ import { RecordsDrawerProvider } from 'helpers/drawer';
 
 import Logger from 'helpers/logger';
 import App from './App';
+import { FrameProvider } from 'helpers/frame';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
@@ -55,7 +51,9 @@ function Main() {
           withNormalizeCSS
         >
           <RecordsDrawerProvider>
-            <App />
+            <FrameProvider>
+              <App />
+            </FrameProvider>
           </RecordsDrawerProvider>
         </MantineProvider>
       </APIProvider>

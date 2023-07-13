@@ -9,11 +9,10 @@ import {
   Group,
   Divider,
   useMantineTheme,
-  Chip,
   Button,
 } from '@mantine/core';
-import { IconArrowUpRight, IconDownload } from '@tabler/icons';
-import { SurveyActions, Background } from 'components';
+import { IconArrowUpRight } from '@tabler/icons';
+import { SurveyActions, Background, DownloadChip } from 'components';
 import { Corner } from 'components/Wave';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -25,29 +24,14 @@ interface ProjectItemSurveyProps {
 
 function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
   const loading = !Boolean(survey);
-  const checked = false;
 
   return (
     <Group position="apart" spacing="xs">
       <Skeleton visible={loading} radius="lg" maw={200}>
-        <Chip
-          checked={checked}
-          styles={{
-            label: {
-              padding: '0.8rem',
-              '& .mantine-Text-root': {
-                marginLeft: 2,
-              },
-            },
-          }}
-        >
-          {!checked && (
-            <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-          )}
-          <Text ml="xs" color="dimmed" weight="bold" size="xs">
-            {survey?.name}
-          </Text>
-        </Chip>
+        <DownloadChip
+          projectActivityId={survey?.projectActivityId || ''}
+          label={survey?.name || 'Survey Name'}
+        />
       </Skeleton>
       <SurveyActions survey={survey} />
     </Group>
