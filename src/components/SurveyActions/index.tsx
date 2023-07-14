@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import {
   ActionIcon,
   Group,
@@ -6,9 +7,10 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { IconEye, IconPlus } from '@tabler/icons';
-import { RecordsDrawerContext } from 'helpers/drawer';
-import { useContext } from 'react';
 import { BioCollectSurvey } from 'types';
+
+import { RecordsDrawerContext } from 'helpers/drawer';
+import { FrameContext } from 'helpers/frame';
 
 interface SurveyActionsProps {
   survey?: BioCollectSurvey;
@@ -16,6 +18,7 @@ interface SurveyActionsProps {
 
 export function SurveyActions({ survey }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
+  const frame = useContext(FrameContext);
   const theme = useMantineTheme();
   const loading = !survey;
 
@@ -51,10 +54,16 @@ export function SurveyActions({ survey }: SurveyActionsProps) {
         <ActionIcon
           variant="light"
           color={theme.primaryColor}
-          component="a"
-          href={`${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
-            survey?.projectActivityId
-          }`}
+          onClick={
+            survey &&
+            (() => {
+              frame.open(
+                `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
+                  survey.projectActivityId
+                }`
+              );
+            })
+          }
         >
           <IconPlus size="1rem" />
         </ActionIcon>

@@ -50,11 +50,11 @@ function Main() {
           withGlobalStyles
           withNormalizeCSS
         >
-          <RecordsDrawerProvider>
-            <FrameProvider>
+          <FrameProvider>
+            <RecordsDrawerProvider>
               <App />
-            </FrameProvider>
-          </RecordsDrawerProvider>
+            </RecordsDrawerProvider>
+          </FrameProvider>
         </MantineProvider>
       </APIProvider>
     </AuthProvider>

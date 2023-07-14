@@ -8,7 +8,10 @@ import {
   Text,
 } from '@mantine/core';
 import { IconEdit, IconEye, IconUser } from '@tabler/icons';
+import { FrameContext } from 'helpers/frame';
+import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';
+import { RecordsDrawerContext } from '..';
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
@@ -24,6 +27,8 @@ const getInitials = (name: string) => {
 };
 
 export function ActivityItem({ activity }: ActivityItemProps) {
+  const drawer = useContext(RecordsDrawerContext);
+  const frame = useContext(FrameContext);
   const loading = !activity;
 
   return (
@@ -65,10 +70,17 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             <ActionIcon
               variant="light"
               color="gray"
-              component="a"
-              href={`${
-                import.meta.env.VITE_API_BIOCOLLECT
-              }/bioActivity/mobileEdit/${activity?.activityId}?mobile=true`}
+              onClick={
+                activity &&
+                (() => {
+                  drawer.close();
+                  frame.open(
+                    `${
+                      import.meta.env.VITE_API_BIOCOLLECT
+                    }/bioActivity/mobileEdit/${activity.activityId}?mobile=true`
+                  );
+                })
+              }
             >
               <IconEdit size="1rem" />
             </ActionIcon>
@@ -78,10 +90,17 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           <ActionIcon
             variant="light"
             color="gray"
-            component="a"
-            href={`${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
-              activity?.activityId
-            }?mobile=true`}
+            onClick={
+              activity &&
+              (() => {
+                drawer.close();
+                frame.open(
+                  `${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
+                    activity.activityId
+                  }?mobile=true`
+                );
+              })
+            }
           >
             <IconEye size="1rem" />
           </ActionIcon>

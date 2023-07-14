@@ -91,7 +91,15 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         position={mobile ? 'bottom' : 'right'}
         keepMounted
       >
-        <Drawer.Overlay />
+        <Drawer.Overlay
+          blur={3}
+          opacity={0.55}
+          color={
+            theme.colorScheme === 'dark'
+              ? theme.colors.dark[6]
+              : theme.colors.gray[2]
+          }
+        />
         <Drawer.Content>
           <Drawer.Header>
             <Group spacing="md">
