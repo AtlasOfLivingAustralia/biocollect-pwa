@@ -60,7 +60,8 @@ export function SurveyActions({ survey }: SurveyActionsProps) {
               frame.open(
                 `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
                   survey.projectActivityId
-                }`
+                }`,
+                `Add Record - ${survey.name}`
               );
             })
           }

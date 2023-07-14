@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 
 interface FrameContext {
-  open: (src: string) => void;
+  open: (src: string, title?: string) => void;
   close: () => void;
 }
 

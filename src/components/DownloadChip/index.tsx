@@ -2,18 +2,15 @@ import { useContext } from 'react';
 import { Chip, Text } from '@mantine/core';
 import { IconDownload } from '@tabler/icons';
 import { FrameContext } from 'helpers/frame';
+import { BioCollectSurvey } from 'types';
 
 interface FrameProps {
-  projectActivityId: string;
+  survey?: BioCollectSurvey;
   label?: string;
   downloaded?: boolean;
 }
 
-export function DownloadChip({
-  projectActivityId,
-  label,
-  downloaded,
-}: FrameProps) {
+export function DownloadChip({ survey, label, downloaded }: FrameProps) {
   const frame = useContext(FrameContext);
 
   return (
@@ -29,9 +26,10 @@ export function DownloadChip({
       }}
       onClick={() =>
         frame.open(
-          `${
-            import.meta.env.VITE_API_BIOCOLLECT
-          }/pwa?projectActivityId=${projectActivityId}`
+          `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${
+            survey?.projectActivityId
+          }`,
+          `Downloading - ${survey?.name}`
         )
       }
     >

@@ -77,7 +77,10 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                   frame.open(
                     `${
                       import.meta.env.VITE_API_BIOCOLLECT
-                    }/bioActivity/mobileEdit/${activity.activityId}?mobile=true`
+                    }/bioActivity/mobileEdit/${
+                      activity.activityId
+                    }?mobile=true`,
+                    `Edit Record - ${activity.name}`
                   );
                 })
               }
@@ -97,7 +100,8 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                 frame.open(
                   `${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
                     activity.activityId
-                  }?mobile=true`
+                  }?mobile=true`,
+                  `View Record - ${activity.name}`
                 );
               })
             }

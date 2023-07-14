@@ -28,10 +28,7 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
   return (
     <Group position="apart" spacing="xs">
       <Skeleton visible={loading} radius="lg" maw={200}>
-        <DownloadChip
-          projectActivityId={survey?.projectActivityId || ''}
-          label={survey?.name || 'Survey Name'}
-        />
+        <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
       </Skeleton>
       <SurveyActions survey={survey} />
     </Group>

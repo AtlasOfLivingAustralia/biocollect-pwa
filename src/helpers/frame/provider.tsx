@@ -2,20 +2,22 @@ import { ReactElement, PropsWithChildren, useState } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 // Contexts
-import { Modal, useMantineTheme } from '@mantine/core';
+import { Modal, Text, useMantineTheme } from '@mantine/core';
 import { Frame } from 'components';
 import FrameContext from './context';
 
 const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
+  const [title, setTitle] = useState<string | undefined>();
   const [src, setSrc] = useState<string>('');
   const [opened, { open: openFrame, close }] = useDisclosure(false);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
   // Callback function to open the records drawer
-  const open = (newSrc: string) => {
+  const open = (newSrc: string, title?: string) => {
     if (newSrc) {
       setSrc(newSrc);
+      setTitle(title);
       openFrame();
     }
   };
@@ -26,7 +28,14 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         fullScreen={mobile}
         opened={opened}
         onClose={close}
-        title="Web Application"
+        title={
+          <Text
+            size="lg"
+            sx={(theme) => ({ fontFamily: theme.headings.fontFamily })}
+          >
+            {title || 'BioCollect'}
+          </Text>
+        }
         size="xl"
         overlayProps={{
           color:

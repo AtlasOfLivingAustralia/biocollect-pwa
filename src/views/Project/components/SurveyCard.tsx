@@ -46,7 +46,7 @@ export function SurveyCard({ survey }: SurveyCardProps) {
         </Text>
       </Box>
       <Group mt="md" position="apart">
-        <DownloadChip projectActivityId={survey.projectActivityId} />
+        <DownloadChip survey={survey} />
         <SurveyActions survey={survey} />
       </Group>
     </Card>
