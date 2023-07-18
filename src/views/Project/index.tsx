@@ -82,37 +82,31 @@ export function Project() {
         <Grid gutter="xl" pb="xl">
           {project.description && (
             <Grid.Col xs={12} sm={12} md={6} lg={6} xl={4}>
-              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
-                <Group align="center" mb="lg">
-                  <IconInfoCircle />
-                  <Title order={4}>Description</Title>
-                </Group>
-                <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
-                  <Text size="sm">{project.description}</Text>
-                </ScrollArea.Autosize>
-              </Paper>
+              <Group align="center" mb="lg">
+                <IconInfoCircle />
+                <Title order={4}>Description</Title>
+              </Group>
+              <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
+                <Text size="sm">{project.description}</Text>
+              </ScrollArea.Autosize>
             </Grid.Col>
           )}
           {project.scienceType.length > 0 && (
             <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
-                <Group align="center" mb="lg">
-                  <IconFlask2 />
-                  <Title order={4}>Science Type</Title>
-                </Group>
-                <ScienceTypes types={project.scienceType} />
-              </Paper>
+              <Group align="center" mb="lg">
+                <IconFlask2 />
+                <Title order={4}>Science Type</Title>
+              </Group>
+              <ScienceTypes types={project.scienceType} />
             </Grid.Col>
           )}
           {project.links.length > 0 && (
             <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
-                <Group align="center" mb="lg">
-                  <IconSocial />
-                  <Title order={4}>Science Type</Title>
-                </Group>
-                <SocialLinks links={project.links} />
-              </Paper>
+              <Group align="center" mb="lg">
+                <IconSocial />
+                <Title order={4}>Science Type</Title>
+              </Group>
+              <SocialLinks links={project.links} />
             </Grid.Col>
           )}
         </Grid>
