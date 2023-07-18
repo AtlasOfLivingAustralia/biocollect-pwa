@@ -16,12 +16,23 @@ import {
   ActionIcon,
   Button,
   Tooltip,
+  Badge,
+  Stack,
 } from '@mantine/core';
-import { IconExternalLink } from '@tabler/icons';
+import {
+  IconBabyCarriage,
+  IconBooks,
+  IconCurrencyDollarOff,
+  IconExternalLink,
+  IconHammer,
+  IconHome,
+  IconRobot,
+  TablerIcon,
+} from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import { BioCollectProject } from 'types';
 
-import { Background } from 'components';
+import { Background, TimeSpan } from 'components';
 import { ALABadge } from 'components/ALABadge';
 import { Wave, Corner } from 'components/Wave';
 
@@ -37,6 +48,58 @@ interface SpoilerControlProps {
 const SpoilerControl = ({ hide }: SpoilerControlProps) => (
   <Center pt="lg">{hide ? 'Hide' : 'Show more'}</Center>
 );
+
+interface ProjectTagItem {
+  icon: TablerIcon;
+  name: string;
+}
+
+const ProjectTagData: { [key: string]: ProjectTagItem } = {
+  isSciStarter: {
+    icon: IconRobot,
+    name: 'From SciStarter',
+  },
+  noCost: {
+    icon: IconCurrencyDollarOff,
+    name: 'Free',
+  },
+  hasTeachingMaterials: {
+    icon: IconBooks,
+    name: 'Teaching Materials',
+  },
+  isSuitableForChildren: {
+    icon: IconBabyCarriage,
+    name: 'For Children',
+  },
+  isHome: {
+    icon: IconHome,
+    name: 'Home',
+  },
+  isDIY: {
+    icon: IconHammer,
+    name: 'DIY',
+  },
+};
+
+interface ProjectTagProps {
+  tag: string;
+}
+
+const ProjectTag = ({ tag }: ProjectTagProps) => {
+  const data = ProjectTagData[tag];
+  if (!data) return null;
+
+  const { icon: Icon, name } = data;
+
+  return (
+    <Badge
+      color="gray"
+      leftSection={<Icon style={{ marginTop: 4 }} size="0.8rem" />}
+    >
+      {name}
+    </Badge>
+  );
+};
 
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -57,12 +120,11 @@ export function Header({ project, mobile }: HeaderProps) {
         ) : (
           <Background h="23vh" />
         )}
-        <Wave style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
+        <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Center mt={-60}>
+      <Stack mt={-60} align="center">
         <Card
           shadow="md"
-          radius="lg"
           style={{
             width: 'calc(75vw)',
             maxWidth: 400,
@@ -82,6 +144,13 @@ export function Header({ project, mobile }: HeaderProps) {
               <ALABadge />
             </Center>
           )}
+          {project.tags.length > 0 && (
+            <Group mt="xs" spacing="xs" position="center">
+              {project.tags.map((tag) => (
+                <ProjectTag key={tag} tag={tag} />
+              ))}
+            </Group>
+          )}
           {project.urlWeb && navigator.onLine && (
             <Button
               component="a"
@@ -97,8 +166,13 @@ export function Header({ project, mobile }: HeaderProps) {
             </Button>
           )}
         </Card>
-      </Center>
-      <Box p={36}>
+        <TimeSpan
+          start={project.startDate}
+          end={project.endDate}
+          style={{ flexGrow: 1 }}
+        />
+      </Stack>
+      <Box px={36} pt="xl" pb="sm">
         <Center>
           <Breadcrumbs mb="md">
             <Anchor component={Link} to=".." size="sm">
@@ -120,7 +194,7 @@ export function Header({ project, mobile }: HeaderProps) {
             <TypographyStylesProvider>
               <Text
                 dangerouslySetInnerHTML={{
-                  __html: `<b>Aim: </b>${project.aim}`,
+                  __html: `<b>Project Aim - </b>${project.aim}`,
                 }}
               />
             </TypographyStylesProvider>
@@ -166,18 +240,28 @@ export function Header({ project, mobile }: HeaderProps) {
             </Tooltip>
           )}
         </Group>
-        {!project.isExternal && <ALABadge mt="md" />}
+        {(!project.isExternal || project.tags.length > 0) && (
+          <Group mt="md" mb="xl" spacing="xs">
+            {!project.isExternal && <ALABadge />}
+            {project.tags.map((tag) => (
+              <ProjectTag key={tag} tag={tag} />
+            ))}
+          </Group>
+        )}
         {project.aim && (
-          <ScrollArea.Autosize mt="xs" type="hover" offsetScrollbars mah={125}>
+          <ScrollArea.Autosize type="hover" offsetScrollbars mah={125}>
             <TypographyStylesProvider>
               <Text
                 dangerouslySetInnerHTML={{
-                  __html: `<b>Aim: </b>${project.aim}`,
+                  __html: `<b>Project Aim - </b>${project.aim}`,
                 }}
               />
             </TypographyStylesProvider>
           </ScrollArea.Autosize>
         )}
+        <Group mt="sm">
+          <TimeSpan start={project.startDate} end={project.endDate} />
+        </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
         {project.fullSizeImageUrl ? (
@@ -193,7 +277,7 @@ export function Header({ project, mobile }: HeaderProps) {
         ) : (
           <Background h={320} />
         )}
-        <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+        <Corner style={{ position: 'absolute', bottom: 0 }} />
       </Box>
     </Group>
   );
