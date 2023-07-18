@@ -48,10 +48,12 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
       {startDate &&
         endDate &&
         (() => {
-          const value =
+          const value = Math.min(
             ((endDate.getTime() - Date.now()) /
               (endDate.getTime() - startDate.getTime())) *
-            100;
+              100,
+            100
+          );
 
           return (
             <Progress

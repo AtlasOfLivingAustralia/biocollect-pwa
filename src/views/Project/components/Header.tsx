@@ -16,25 +16,20 @@ import {
   ActionIcon,
   Button,
   Tooltip,
-  Badge,
   Stack,
+  Badge,
 } from '@mantine/core';
-import {
-  IconBabyCarriage,
-  IconBooks,
-  IconCurrencyDollarOff,
-  IconExternalLink,
-  IconHammer,
-  IconHome,
-  IconRobot,
-  TablerIcon,
-} from '@tabler/icons';
+import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
 import { BioCollectProject } from 'types';
 
 import { Background, TimeSpan } from 'components';
 import { ALABadge } from 'components/ALABadge';
 import { Wave, Corner } from 'components/Wave';
+
+// Local components
+import { SocialLinks } from './SocialLinks';
+import { ProjectTag } from './ProjectTag';
 
 interface HeaderProps {
   project: BioCollectProject;
@@ -48,58 +43,6 @@ interface SpoilerControlProps {
 const SpoilerControl = ({ hide }: SpoilerControlProps) => (
   <Center pt="lg">{hide ? 'Hide' : 'Show more'}</Center>
 );
-
-interface ProjectTagItem {
-  icon: TablerIcon;
-  name: string;
-}
-
-const ProjectTagData: { [key: string]: ProjectTagItem } = {
-  isSciStarter: {
-    icon: IconRobot,
-    name: 'From SciStarter',
-  },
-  noCost: {
-    icon: IconCurrencyDollarOff,
-    name: 'Free',
-  },
-  hasTeachingMaterials: {
-    icon: IconBooks,
-    name: 'Teaching Materials',
-  },
-  isSuitableForChildren: {
-    icon: IconBabyCarriage,
-    name: 'For Children',
-  },
-  isHome: {
-    icon: IconHome,
-    name: 'Home',
-  },
-  isDIY: {
-    icon: IconHammer,
-    name: 'DIY',
-  },
-};
-
-interface ProjectTagProps {
-  tag: string;
-}
-
-const ProjectTag = ({ tag }: ProjectTagProps) => {
-  const data = ProjectTagData[tag];
-  if (!data) return null;
-
-  const { icon: Icon, name } = data;
-
-  return (
-    <Badge
-      color="gray"
-      leftSection={<Icon style={{ marginTop: 4 }} size="0.8rem" />}
-    >
-      {name}
-    </Badge>
-  );
-};
 
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -139,13 +82,12 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={3} color="dimmed" px="sm">
             {project.organisationName}
           </Title>
-          {!project.isExternal && (
-            <Center mt="md">
-              <ALABadge />
-            </Center>
-          )}
-          {project.tags.length > 0 && (
-            <Group mt="xs" spacing="xs" position="center">
+          {(!project.isExternal || project.tags.length > 0) && (
+            <Group mt="lg" spacing="xs" position="center">
+              {!project.isExternal && <ALABadge />}
+              {project.difficulty && (
+                <Badge color="blue">{project.difficulty} difficulty</Badge>
+              )}
               {project.tags.map((tag) => (
                 <ProjectTag key={tag} tag={tag} />
               ))}
@@ -157,7 +99,6 @@ export function Header({ project, mobile }: HeaderProps) {
               href={project.urlWeb}
               target="_blank"
               leftIcon={<IconExternalLink size={18} />}
-              variant="light"
               color="gray"
               size="sm"
               mt="xl"
@@ -243,6 +184,9 @@ export function Header({ project, mobile }: HeaderProps) {
         {(!project.isExternal || project.tags.length > 0) && (
           <Group mt="md" mb="xl" spacing="xs">
             {!project.isExternal && <ALABadge />}
+            {project.difficulty && (
+              <Badge color="blue">{project.difficulty} difficulty</Badge>
+            )}
             {project.tags.map((tag) => (
               <ProjectTag key={tag} tag={tag} />
             ))}
@@ -261,6 +205,7 @@ export function Header({ project, mobile }: HeaderProps) {
         )}
         <Group mt="sm">
           <TimeSpan start={project.startDate} end={project.endDate} />
+          <SocialLinks links={project.links} />
         </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>

@@ -1,8 +1,10 @@
 import { useLoaderData } from 'react-router-dom';
 import {
   Box,
+  Card,
   Grid,
   Group,
+  Paper,
   ScrollArea,
   Text,
   Title,
@@ -15,7 +17,14 @@ import { useMediaQuery } from '@mantine/hooks';
 import { Header } from './components/Header';
 import { Wave } from 'components/Wave';
 import { SurveyCard } from './components/SurveyCard';
-import { IconClipboardList, IconInfoCircle } from '@tabler/icons';
+import {
+  IconClipboardList,
+  IconFlask2,
+  IconInfoCircle,
+  IconSocial,
+} from '@tabler/icons';
+import { ScienceTypes } from './components/ScienceTypes';
+import { SocialLinks } from './components/SocialLinks';
 
 interface ProjectLoaderData {
   project: BioCollectProject;
@@ -71,15 +80,41 @@ export function Project() {
       />
       <Box pb="xl" px={36}>
         <Grid gutter="xl" pb="xl">
-          <Grid.Col xs={12} sm={12} md={6} lg={6} xl={4}>
-            <Group align="center" mb="lg">
-              <IconInfoCircle />
-              <Title order={4}>Description</Title>
-            </Group>
-            <ScrollArea.Autosize type="hover" offsetScrollbars mah={175}>
-              <Text>{project.description}</Text>
-            </ScrollArea.Autosize>
-          </Grid.Col>
+          {project.description && (
+            <Grid.Col xs={12} sm={12} md={6} lg={6} xl={4}>
+              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
+                <Group align="center" mb="lg">
+                  <IconInfoCircle />
+                  <Title order={4}>Description</Title>
+                </Group>
+                <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
+                  <Text size="sm">{project.description}</Text>
+                </ScrollArea.Autosize>
+              </Paper>
+            </Grid.Col>
+          )}
+          {project.scienceType.length > 0 && (
+            <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
+              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
+                <Group align="center" mb="lg">
+                  <IconFlask2 />
+                  <Title order={4}>Science Type</Title>
+                </Group>
+                <ScienceTypes types={project.scienceType} />
+              </Paper>
+            </Grid.Col>
+          )}
+          {project.links.length > 0 && (
+            <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
+              <Paper p="md" radius="lg" shadow="md" h="100%" withBorder>
+                <Group align="center" mb="lg">
+                  <IconSocial />
+                  <Title order={4}>Science Type</Title>
+                </Group>
+                <SocialLinks links={project.links} />
+              </Paper>
+            </Grid.Col>
+          )}
         </Grid>
       </Box>
     </>

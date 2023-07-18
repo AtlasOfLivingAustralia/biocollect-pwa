@@ -21,6 +21,24 @@ export interface FilterQueries {
 /*
 	BioCollect API
 */
+export type ProjectLinkRole =
+  | 'facebook'
+  | 'flickr'
+  | 'googlePlus'
+  | 'instagram'
+  | 'linkedIn'
+  | 'pinterest'
+  | 'rssFeed'
+  | 'tumblr'
+  | 'twitter'
+  | 'vimeo'
+  | 'youtube';
+
+export interface ProjectLink {
+  role: ProjectLinkRole;
+  url: string;
+}
+
 export interface BioCollectProject {
   projectId: string;
   aim: string;
@@ -58,7 +76,7 @@ export interface BioCollectProject {
   isExternal: false;
   isSciStarter: false;
   keywords: string[] | null;
-  links: string[];
+  links: ProjectLink[];
   name: string;
   organisationId: string;
   organisationName: string;
