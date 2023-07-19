@@ -73,14 +73,10 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
 
   useEffect(() => {
     async function getActivities() {
-      if (view) {
-        const data = await api.biocollect.searchActivities(view, filters);
-
-        setTimeout(() => setSearch(data), 2000);
-      }
+      if (view) setSearch(await api.biocollect.searchActivities(view, filters));
     }
 
-    if (view) getActivities();
+    getActivities();
   }, [view, filters]);
 
   return (

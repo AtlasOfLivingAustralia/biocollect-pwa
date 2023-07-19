@@ -146,8 +146,8 @@ export function Header({ project, mobile }: HeaderProps) {
   ) : (
     <Group position="apart" align="start">
       <Box
-        p={36}
-        pr={0}
+        py={36}
+        pl={36}
         style={{
           overflowWrap: 'break-word',
           width: 'calc(100vw - 530px)',
@@ -205,7 +205,6 @@ export function Header({ project, mobile }: HeaderProps) {
         )}
         <Group mt="sm">
           <TimeSpan start={project.startDate} end={project.endDate} />
-          <SocialLinks links={project.links} />
         </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>

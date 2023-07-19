@@ -39,13 +39,11 @@ export function Project() {
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 
-  console.log(project, surveys);
-
   return (
     <>
       <Header project={project} mobile={mobile} />
       <Wave
-        style={{ marginTop: theme.spacing.sm, marginBottom: -30 }}
+        style={{ marginTop: theme.spacing.xl, marginBottom: -30 }}
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
@@ -82,31 +80,37 @@ export function Project() {
         <Grid gutter="xl" pb="xl">
           {project.description && (
             <Grid.Col xs={12} sm={12} md={6} lg={6} xl={4}>
-              <Group align="center" mb="lg">
-                <IconInfoCircle />
-                <Title order={4}>Description</Title>
-              </Group>
-              <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
-                <Text size="sm">{project.description}</Text>
-              </ScrollArea.Autosize>
+              <Paper p="md" withBorder radius="lg" h="100%">
+                <Group align="center" mb="lg">
+                  <IconInfoCircle />
+                  <Title order={4}>Description</Title>
+                </Group>
+                <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
+                  <Text size="sm">{project.description}</Text>
+                </ScrollArea.Autosize>
+              </Paper>
             </Grid.Col>
           )}
           {project.scienceType.length > 0 && (
             <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Group align="center" mb="lg">
-                <IconFlask2 />
-                <Title order={4}>Science Type</Title>
-              </Group>
-              <ScienceTypes types={project.scienceType} />
+              <Paper p="md" withBorder radius="lg" h="100%">
+                <Group align="center" mb="lg">
+                  <IconFlask2 />
+                  <Title order={4}>Science Type</Title>
+                </Group>
+                <ScienceTypes types={project.scienceType} />
+              </Paper>
             </Grid.Col>
           )}
           {project.links.length > 0 && (
             <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Group align="center" mb="lg">
-                <IconSocial />
-                <Title order={4}>Science Type</Title>
-              </Group>
-              <SocialLinks links={project.links} />
+              <Paper p="md" withBorder radius="lg" h="100%">
+                <Group align="center" mb="lg">
+                  <IconSocial />
+                  <Title order={4}>Social Links</Title>
+                </Group>
+                <SocialLinks links={project.links} />
+              </Paper>
             </Grid.Col>
           )}
         </Grid>

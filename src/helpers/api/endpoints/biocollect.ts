@@ -145,7 +145,8 @@ export default (db: BioCollectDexie) => ({
         }/ws/bioactivity/search?${params.toString()}`
       );
 
-      // await db.surveys.bulkPut(data);
+      await db.activities.bulkPut(data.activities);
+      console.log('put done', data.activities);
 
       return data;
     } else {

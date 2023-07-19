@@ -73,7 +73,7 @@ interface ScienceTypesProps {
 
 export function ScienceTypes({ types }: ScienceTypesProps) {
   return (
-    <Group spacing="xs">
+    <Group spacing="lg">
       {types.map((type) => {
         const Icon = typeToIcon[type];
         return (

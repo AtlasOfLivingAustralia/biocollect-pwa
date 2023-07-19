@@ -1,5 +1,7 @@
-import { ActionIcon, Group, Paper } from '@mantine/core';
+import { ActionIcon, Group, GroupProps, Paper, Tooltip } from '@mantine/core';
 import {
+  IconBrandAndroid,
+  IconBrandApple,
   IconBrandFacebook,
   IconBrandFlickr,
   IconBrandGoogle,
@@ -27,29 +29,35 @@ const roleToIcon: { [key: string]: TablerIcon } = {
   twitter: IconBrandTwitter,
   vimeo: IconBrandVimeo,
   youtube: IconBrandYoutube,
+  iTunes: IconBrandApple,
+  android: IconBrandAndroid,
 };
 
-interface SocialLinksProps {
+interface SocialLinksProps extends GroupProps {
   links: ProjectLink[];
 }
 
-export function SocialLinks({ links }: SocialLinksProps) {
+export function SocialLinks({ links, ...rest }: SocialLinksProps) {
   return (
-    <Group spacing="xs">
+    <Group spacing="xs" {...rest}>
       {links.map((link) => {
         const Icon = roleToIcon[link.role];
+        if (!Icon) return null;
+
         return (
-          <ActionIcon
-            key={link.role}
-            component="a"
-            href={link.url}
-            target="_blank"
-            variant="outline"
-            size="lg"
-            radius="md"
-          >
-            <Icon />
-          </ActionIcon>
+          <Tooltip label={link.role} position="top">
+            <ActionIcon
+              key={link.role}
+              component="a"
+              href={link.url}
+              target="_blank"
+              variant="filled"
+              size="xl"
+              radius="lg"
+            >
+              <Icon />
+            </ActionIcon>
+          </Tooltip>
         );
       })}
     </Group>
