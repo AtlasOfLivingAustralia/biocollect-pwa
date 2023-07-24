@@ -65,9 +65,6 @@ export default function Header() {
           </Group>
         </Group>
         <Group>
-          {/* <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
-            <TextInput icon={<IconSearch />} placeholder="Search Projects" />
-          </MediaQuery> */}
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
               <Menu.Target>
@@ -79,14 +76,6 @@ export default function Header() {
                 <Menu.Label>Projects</Menu.Label>
                 <Menu.Item component={Link} to="/" icon={<IconSearch />}>
                   Search projects
-                </Menu.Item>
-                <Menu.Item
-                  component="a"
-                  href="https://biocollect.ala.org.au/acsa/project/create"
-                  target="_blank"
-                  icon={<IconPlus />}
-                >
-                  Add your project
                 </Menu.Item>
                 {import.meta.env.DEV && (
                   <>
