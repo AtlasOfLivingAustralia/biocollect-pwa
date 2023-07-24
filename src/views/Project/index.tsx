@@ -1,11 +1,13 @@
 import { useLoaderData } from 'react-router-dom';
 import {
+  Accordion,
   Box,
-  Card,
+  Divider,
   Grid,
   Group,
   Paper,
   ScrollArea,
+  Stack,
   Text,
   Title,
   useMantineTheme,
@@ -20,11 +22,11 @@ import { SurveyCard } from './components/SurveyCard';
 import {
   IconClipboardList,
   IconFlask2,
+  IconHeartHandshake,
   IconInfoCircle,
-  IconSocial,
+  IconPhone,
 } from '@tabler/icons';
 import { ScienceTypes } from './components/ScienceTypes';
-import { SocialLinks } from './components/SocialLinks';
 
 interface ProjectLoaderData {
   project: BioCollectProject;
@@ -76,40 +78,113 @@ export function Project() {
         height={75}
         width="100%"
       />
-      <Box pb="xl" px={36}>
+      <Box py="xl" mb="xl" px={36}>
         <Grid gutter="xl" pb="xl">
-          {project.description && (
-            <Grid.Col xs={12} sm={12} md={6} lg={6} xl={4}>
-              <Paper p="md" withBorder radius="lg" h="100%">
+          <Grid.Col xs={12} sm={12} md={8} lg={8} xl={9}>
+            <Accordion variant="contained">
+              {project.description && (
+                <Accordion.Item value="description">
+                  <Accordion.Control>
+                    <Group align="center">
+                      <IconInfoCircle />
+                      <Title order={4}>Description</Title>
+                    </Group>
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <Text size="sm">{project.description}</Text>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )}
+              {project.scienceType.length > 0 && (
+                <Accordion.Item value="scienceType">
+                  <Accordion.Control>
+                    <Group align="center">
+                      <IconFlask2 />
+                      <Title order={4}>Science Type</Title>
+                    </Group>
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <ScienceTypes types={project.scienceType} />
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )}
+              {(project.projectEquipment ||
+                project.projectTask ||
+                project.projectHowToParticipate) && (
+                <Accordion.Item value="getInvolved">
+                  <Accordion.Control>
+                    <Group align="center">
+                      <IconHeartHandshake />
+                      <Title order={4}>Get Involved</Title>
+                    </Group>
+                  </Accordion.Control>
+                  <Accordion.Panel>
+                    <Stack spacing="xs">
+                      {project.projectEquipment && (
+                        <Stack spacing={0}>
+                          <Text weight="bold" size="sm">
+                            Equipment
+                          </Text>
+                          <Text color="dimmed" size="sm">
+                            {project.projectEquipment}
+                          </Text>
+                        </Stack>
+                      )}
+                      {project.projectTask && (
+                        <Stack spacing={0}>
+                          <Text weight="bold" size="sm">
+                            Tasks
+                          </Text>
+                          <Text color="dimmed" size="sm">
+                            {project.projectTask}
+                          </Text>
+                        </Stack>
+                      )}
+                      {project.projectTask && (
+                        <Stack spacing={0}>
+                          <Text weight="bold" size="sm">
+                            How to Participate
+                          </Text>
+                          <Text color="dimmed" size="sm">
+                            {project.projectHowToParticipate}
+                          </Text>
+                        </Stack>
+                      )}
+                    </Stack>
+                  </Accordion.Panel>
+                </Accordion.Item>
+              )}
+            </Accordion>
+          </Grid.Col>
+          {(project.contactName || project.contactDetails) && (
+            <Grid.Col xs={12} sm={12} md={4} lg={4} xl={3}>
+              <Paper p="md" withBorder radius="md">
                 <Group align="center" mb="lg">
-                  <IconInfoCircle />
-                  <Title order={4}>Description</Title>
+                  <IconPhone />
+                  <Title order={4}>Contact</Title>
                 </Group>
-                <ScrollArea.Autosize type="always" offsetScrollbars mah={175}>
-                  <Text size="sm">{project.description}</Text>
-                </ScrollArea.Autosize>
-              </Paper>
-            </Grid.Col>
-          )}
-          {project.scienceType.length > 0 && (
-            <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Paper p="md" withBorder radius="lg" h="100%">
-                <Group align="center" mb="lg">
-                  <IconFlask2 />
-                  <Title order={4}>Science Type</Title>
-                </Group>
-                <ScienceTypes types={project.scienceType} />
-              </Paper>
-            </Grid.Col>
-          )}
-          {project.links.length > 0 && (
-            <Grid.Col xs={12} sm={6} md={6} lg={6} xl={4}>
-              <Paper p="md" withBorder radius="lg" h="100%">
-                <Group align="center" mb="lg">
-                  <IconSocial />
-                  <Title order={4}>Social Links</Title>
-                </Group>
-                <SocialLinks links={project.links} />
+                <Stack>
+                  {project.contactName && (
+                    <Stack spacing={0}>
+                      <Text weight="bold" size="sm">
+                        Contact Name
+                      </Text>
+                      <Text color="dimmed" size="sm">
+                        {project.contactName}
+                      </Text>
+                    </Stack>
+                  )}
+                  {project.contactDetails && (
+                    <Stack spacing={0}>
+                      <Text weight="bold" size="sm">
+                        Contact Details
+                      </Text>
+                      <Text color="dimmed" size="sm">
+                        {project.contactDetails}
+                      </Text>
+                    </Stack>
+                  )}
+                </Stack>
               </Paper>
             </Grid.Col>
           )}

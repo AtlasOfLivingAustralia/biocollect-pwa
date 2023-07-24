@@ -36,7 +36,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
             {title || 'BioCollect'}
           </Text>
         }
-        size="xl"
+        size={1100}
         overlayProps={{
           color:
             theme.colorScheme === 'dark'
@@ -46,7 +46,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
           blur: 3,
         }}
       >
-        <Frame src={src} />
+        <Frame src={src} height={600} />
       </Modal>
       {props.children}
     </FrameContext.Provider>

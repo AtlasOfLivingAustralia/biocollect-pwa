@@ -1,4 +1,4 @@
-import { Group, Text, ThemeIcon } from '@mantine/core';
+import { Group, Paper, Text, ThemeIcon } from '@mantine/core';
 import {
   IconActivity,
   IconActivityHeartbeat,
@@ -73,18 +73,20 @@ interface ScienceTypesProps {
 
 export function ScienceTypes({ types }: ScienceTypesProps) {
   return (
-    <Group spacing="lg">
+    <Group spacing="sm">
       {types.map((type) => {
         const Icon = typeToIcon[type];
         return (
-          <Group key={type} spacing="xs">
-            <ThemeIcon variant="light" size="lg" radius="lg">
-              <Icon />
-            </ThemeIcon>
-            <Text size="sm" color="dimmed">
-              {type}
-            </Text>
-          </Group>
+          <Paper withBorder key={type} p={6}>
+            <Group spacing="xs">
+              <ThemeIcon variant="light" size="md" radius="lg">
+                <Icon size="1rem" />
+              </ThemeIcon>
+              <Text size="sm" color="dimmed">
+                {type}
+              </Text>
+            </Group>
+          </Paper>
         );
       })}
     </Group>

@@ -91,6 +91,13 @@ export interface BioCollectProject {
   projectType: string;
   isMERIT: boolean;
   tags: string[];
+  projectEquipment?: string;
+  projectHowToParticipate?: string;
+  projectLogoImageCredit?: string;
+  projectLogoImage?: string;
+  contactName?: string;
+  contactDetails?: string;
+  projectTask?: string;
   containsActivity: boolean;
   noCost: boolean;
   surveys: BioCollectSurvey[];

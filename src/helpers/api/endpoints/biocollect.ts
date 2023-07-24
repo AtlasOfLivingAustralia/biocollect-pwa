@@ -46,7 +46,8 @@ export default (db: BioCollectDexie) => ({
       // Define basic query parameters
       const params: { [key: string]: any } = {
         fq: 'isExternal:F',
-        initiator: 'biocollect',
+        // initiator: 'biocollect',
+        initiator: 'seed',
         sort,
         mobile: true,
         max,

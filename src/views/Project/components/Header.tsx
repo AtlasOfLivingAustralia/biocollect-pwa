@@ -18,6 +18,7 @@ import {
   Tooltip,
   Stack,
   Badge,
+  Divider,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons';
 import { Link } from 'react-router-dom';
@@ -65,7 +66,7 @@ export function Header({ project, mobile }: HeaderProps) {
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Stack mt={-60} align="center">
+      <Stack mt={-60} align="center" spacing="xl">
         <Card
           shadow="md"
           style={{
@@ -105,6 +106,12 @@ export function Header({ project, mobile }: HeaderProps) {
             >
               VIEW WEBSITE
             </Button>
+          )}
+          {project.links.length > 0 && (
+            <>
+              <Divider mt="xl" mb="lg" variant="dashed" />
+              <SocialLinks links={project.links} position="center" />
+            </>
           )}
         </Card>
         <TimeSpan
@@ -203,8 +210,12 @@ export function Header({ project, mobile }: HeaderProps) {
             </TypographyStylesProvider>
           </ScrollArea.Autosize>
         )}
-        <Group mt="sm">
+        <Divider mt="xl" mb="lg" variant="dashed" />
+        <Group mt="sm" position="apart" align="flex-start">
           <TimeSpan start={project.startDate} end={project.endDate} />
+          {project.links.length > 0 && (
+            <SocialLinks links={project.links} align="flex-start" />
+          )}
         </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
