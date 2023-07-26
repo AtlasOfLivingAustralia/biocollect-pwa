@@ -9,6 +9,9 @@ import {
 } from 'types';
 import { BioCollectDexie } from '../dexie';
 
+const escapeRegExp = (input: string) =>
+  input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 const formatProjects = async (
   projects: BioCollectProject[],
   db: BioCollectDexie
@@ -40,7 +43,7 @@ export default (db: BioCollectDexie) => ({
     sort: string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
-    geoSearchJSON?: object
+    hasDownloadedSurveys = false
   ): Promise<BioCollectProjectSearch> => {
     if (navigator.onLine) {
       // Define basic query parameters
@@ -58,10 +61,6 @@ export default (db: BioCollectDexie) => ({
       // Append user search
       if (search && search.length > 0) params['q'] = search;
 
-      // Append GeoJSON search
-      if (geoSearchJSON)
-        params['geoSearchJSON'] = JSON.stringify(geoSearchJSON);
-
       // Make the GET request
       const { data } = await axios.get<BioCollectProjectSearch>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
@@ -73,13 +72,24 @@ export default (db: BioCollectDexie) => ({
       await db.projects.bulkPut(formatted.projects);
       return formatted;
     } else {
-      let query: any = db.projects;
+      let query = db.projects.toCollection();
 
       // Append the search query
       if (search && search.length > 0)
-        query = query
-          .where('name')
-          .startsWithAnyOfIgnoreCase(search?.split(' '));
+        query = query.and(({ name }) =>
+          new RegExp(`.*${escapeRegExp(search)}.*`).test(name)
+        );
+
+      //
+      if (hasDownloadedSurveys) {
+        const projectsWithSurveys = (
+          await db.surveys.where('pwaDownloaded').equals(1).toArray()
+        ).map(({ projectId }) => projectId);
+
+        query = query.and(({ projectId }) =>
+          projectsWithSurveys.includes(projectId)
+        );
+      }
 
       // Perform the query
       const projects = await query.offset(offset).limit(max).toArray();
@@ -147,7 +157,6 @@ export default (db: BioCollectDexie) => ({
       );
 
       await db.activities.bulkPut(data.activities);
-      console.log('put done', data.activities);
 
       return data;
     } else {

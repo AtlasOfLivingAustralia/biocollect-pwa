@@ -140,7 +140,7 @@ export function Project() {
                           </Text>
                         </Stack>
                       )}
-                      {project.projectTask && (
+                      {project.projectHowToParticipate && (
                         <Stack spacing={0}>
                           <Text weight="bold" size="sm">
                             How to Participate

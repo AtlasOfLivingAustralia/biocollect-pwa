@@ -1,25 +1,51 @@
-import { ReactElement, PropsWithChildren, useState } from 'react';
+import { ReactElement, PropsWithChildren, useState, useEffect } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 // Contexts
-import { Modal, Text, useMantineTheme } from '@mantine/core';
+import { Button, Center, Modal, Text, useMantineTheme } from '@mantine/core';
+import { isFrame } from 'helpers/funcs';
 import { Frame } from 'components';
-import FrameContext from './context';
+import Logger from 'helpers/logger';
+import FrameContext, { FrameCallbacks } from './context';
 
-const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
+const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const [title, setTitle] = useState<string | undefined>();
   const [src, setSrc] = useState<string>('');
+  const [callbacks, setCallbacks] = useState<FrameCallbacks>();
   const [opened, { open: openFrame, close }] = useDisclosure(false);
+
+  // Confirmation state
+  const [canConfirm, setCanConfirm] = useState<boolean>(false);
+
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
-  // Callback function to open the records drawer
-  const open = (newSrc: string, title?: string) => {
-    if (newSrc) {
-      setSrc(newSrc);
-      setTitle(title);
-      openFrame();
+  useEffect(() => {
+    if (callbacks?.confirm && !isFrame()) {
+      // Define a message handler to listen for download events
+      const messageHandler = (event: MessageEvent<string>) => {
+        if (event.data === 'downloaded') {
+          Logger.log('Recieved PWA downloaded event!');
+          setCanConfirm(true);
+        }
+      };
+
+      // Subscribe & setup unmount callback
+      window.addEventListener('message', messageHandler);
+      return () => window.removeEventListener('message', messageHandler);
     }
+  }, [callbacks]);
+
+  // Callback function to open the records drawer
+  const open = (newSrc: string, title: string, callbacks?: FrameCallbacks) => {
+    setSrc(newSrc);
+    setTitle(title);
+
+    // Update confirmation state
+    setCallbacks(callbacks);
+    setCanConfirm(false);
+
+    openFrame();
   };
 
   return (
@@ -46,11 +72,18 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
           blur: 3,
         }}
       >
-        <Frame src={src} height={600} />
+        <Frame src={src} height={500} />
+        {callbacks?.confirm && (
+          <Center mt="sm">
+            <Button onClick={callbacks.confirm} loading={!canConfirm}>
+              Confirm Download
+            </Button>
+          </Center>
+        )}
       </Modal>
       {props.children}
     </FrameContext.Provider>
   );
 };
 
-export default RecordsDrawerProvider;
+export default FrameProvider;

@@ -10,6 +10,7 @@ import {
   Divider,
   useMantineTheme,
   Button,
+  Chip,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons';
 import { SurveyActions, Background, DownloadChip } from 'components';
@@ -28,7 +29,11 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
   return (
     <Group position="apart" spacing="xs">
       <Skeleton visible={loading} radius="lg" maw={200}>
-        <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
+        {loading || !survey ? (
+          <Chip>Placeholder Chip</Chip>
+        ) : (
+          <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
+        )}
       </Skeleton>
       <SurveyActions survey={survey} />
     </Group>

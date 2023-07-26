@@ -16,14 +16,18 @@ import {
   IconBug,
   IconQuestionMark,
   IconLogout,
+  IconFileUpload,
 } from '@tabler/icons';
 
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
 import { themes } from 'theme';
+import { useContext } from 'react';
+import { FrameContext } from 'helpers/frame';
 
 export default function Header() {
+  const frame = useContext(FrameContext);
   const auth = useAuth();
 
   const signOut = async () => {
@@ -73,9 +77,19 @@ export default function Header() {
                 </Avatar>
               </Menu.Target>
               <Menu.Dropdown>
-                <Menu.Label>Projects</Menu.Label>
                 <Menu.Item component={Link} to="/" icon={<IconSearch />}>
                   Search projects
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    frame.open(
+                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
+                      'Unpublished Records'
+                    )
+                  }
+                  icon={<IconFileUpload />}
+                >
+                  Unpublished records
                 </Menu.Item>
                 {import.meta.env.DEV && (
                   <>
@@ -98,7 +112,7 @@ export default function Header() {
                 <Menu.Item
                   onClick={signOut}
                   icon={<IconLogout />}
-                  disabled={auth.isLoading}
+                  disabled={auth.isLoading || !navigator.onLine}
                   color="red"
                 >
                   Sign Out
