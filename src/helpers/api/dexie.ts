@@ -2,15 +2,21 @@ import Dexie, { Table } from 'dexie';
 import {
   BioCollectBioActivity,
   BioCollectProject,
-  BioCollectPWASurvey,
+  BioCollectSurvey,
 } from 'types';
+
+interface Cached {
+  surveyId: string;
+  cached: number;
+}
 
 export class BioCollectDexie extends Dexie {
   // 'friends' is added by dexie when declaring the stores()
   // We just tell the typing system this is the case
   projects!: Table<BioCollectProject>;
-  surveys!: Table<BioCollectPWASurvey>;
+  surveys!: Table<BioCollectSurvey>;
   activities!: Table<BioCollectBioActivity>;
+  cached!: Table<Cached>;
 
   constructor() {
     super(`biocollect-${import.meta.env.MODE}`);
@@ -18,6 +24,7 @@ export class BioCollectDexie extends Dexie {
       projects: '++projectId,name', // Primary key and indexed props
       surveys: '++id,projectId,pwaDownloaded',
       activities: '++activityId,projectId,projectActivityId,userId',
+      cached: '++surveyId,cached',
     });
   }
 }

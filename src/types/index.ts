@@ -174,10 +174,6 @@ export interface BioCollectSurvey {
   speciesIdentification: string;
 }
 
-export interface BioCollectPWASurvey extends BioCollectSurvey {
-  pwaDownloaded?: number;
-}
-
 export interface Stats {
   activityCount: number;
   activityLastUpdated: string;

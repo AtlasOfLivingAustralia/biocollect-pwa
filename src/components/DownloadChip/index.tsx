@@ -3,11 +3,11 @@ import { Chip, Text } from '@mantine/core';
 import { IconDownload } from '@tabler/icons';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
-import { BioCollectPWASurvey } from 'types';
+import { BioCollectSurvey } from 'types';
 import { useLiveQuery } from 'dexie-react-hooks';
 
 interface FrameProps {
-  survey: BioCollectPWASurvey;
+  survey: BioCollectSurvey;
   label?: string;
 }
 
@@ -16,7 +16,7 @@ export function DownloadChip({ survey, label }: FrameProps) {
   const api = useContext(APIContext);
 
   const downloaded = useLiveQuery(async () =>
-    Boolean((await api.db.surveys.get(survey.id))?.pwaDownloaded)
+    Boolean((await api.db.cached.get(survey.id))?.cached)
   );
 
   return (
@@ -40,8 +40,11 @@ export function DownloadChip({ survey, label }: FrameProps) {
         frame.open(`http://localhost:5173`, `Downloading - ${survey?.name}`, {
           confirm: async () => {
             if (survey) {
-              await api.db.surveys.update(survey.id, { pwaDownloaded: 1 });
-              console.log(survey.id, 'Surveys updated');
+              const out = await api.db.cached.put({
+                surveyId: survey.id,
+                cached: 1,
+              });
+              console.log(survey.id, 'Surveys updated', out);
             }
 
             frame.close();
