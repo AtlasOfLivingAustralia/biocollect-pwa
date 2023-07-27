@@ -37,19 +37,20 @@ export function DownloadChip({ survey, label }: FrameProps) {
         //   }`,
         //   `Downloading - ${survey?.name}`
         // )
-        frame.open(`http://localhost:5173`, `Downloading - ${survey?.name}`, {
-          confirm: async () => {
-            if (survey) {
-              const out = await api.db.cached.put({
-                surveyId: survey.id,
-                projectId: survey.projectId,
-              });
-              console.log(survey.id, 'Surveys updated', out);
-            }
+        if (!downloaded) {
+          frame.open(`http://localhost:5173`, `Downloading - ${survey?.name}`, {
+            confirm: async () => {
+              if (survey) {
+                const out = await api.db.cached.put({
+                  surveyId: survey.id,
+                  projectId: survey.projectId,
+                });
+              }
 
-            frame.close();
-          },
-        });
+              frame.close();
+            },
+          });
+        }
       }}
     >
       {!downloaded && <IconDownload size="0.8rem" style={{ marginRight: 8 }} />}

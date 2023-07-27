@@ -10,6 +10,8 @@ import {
   Stack,
   Select,
   Pagination,
+  Checkbox,
+  Paper,
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
 import { IconSearch } from '@tabler/icons';
@@ -34,6 +36,7 @@ export function Home() {
   const paramMax = getNumber('max', 30, params);
   const paramPage = getNumber('page', 1, params);
   const paramSearch = getString('search', undefined, params);
+  const paramOffline = getBool('offline', true, params);
 
   // API data state
   const [projectSearch, setProjectSearch] =
@@ -56,7 +59,8 @@ export function Home() {
           paramMax,
           getString('pSort', 'dateCreatedSort', params),
           getBool('isUserPage', false, params),
-          getString('search', undefined, params)
+          getString('search', undefined, params),
+          paramOffline
         );
         setProjectSearch(data);
         setLastTotal(data.total);
@@ -82,6 +86,17 @@ export function Home() {
     setParams(params);
   };
 
+  // Handle for updating the sort parameter
+  const handleChangeSort = (pSort: string) => {
+    setParams({ ...params, pSort });
+  };
+
+  // Handle for updating the sort parameter
+  const handleChangeOffline = (offline: boolean) => {
+    params.set('offline', offline.toString());
+    setParams(params);
+  };
+
   // Handling search querying
   useEffect(() => {
     if (searchQuery !== null && searchQuery.length > 0) {
@@ -93,11 +108,6 @@ export function Home() {
 
     setParams(params);
   }, [searchQuery]);
-
-  // Handle for updating the sort parameter
-  const handleChangeSort = (newSort: string) => {
-    setParams({ ...params, pSort: newSort });
-  };
 
   return (
     <Box
@@ -157,9 +167,9 @@ export function Home() {
           spacing="xs"
           align="flex-end"
         >
-          {navigator.onLine && (
+          {navigator.onLine ? (
             <Select
-              w={135}
+              w={140}
               style={{ flexGrow: 1 }}
               value={params.get('pSort') || 'dateCreatedSort'}
               label={
@@ -175,9 +185,17 @@ export function Home() {
               ]}
               onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
             />
+          ) : (
+            <Paper py={7} px="xs" w={150} style={{ flexGrow: 1 }} withBorder>
+              <Checkbox
+                label="Offline Surveys"
+                checked={paramOffline}
+                onClick={(e) => handleChangeOffline(!paramOffline)}
+              />
+            </Paper>
           )}
           <Select
-            w={135}
+            w={140}
             style={{ flexGrow: 1 }}
             value={params.get('max') || '30'}
             data={['10', '20', '30', '50'].map((max) => ({
