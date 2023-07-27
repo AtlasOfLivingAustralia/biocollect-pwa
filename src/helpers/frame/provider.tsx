@@ -2,7 +2,7 @@ import { ReactElement, PropsWithChildren, useState, useEffect } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 // Contexts
-import { Button, Center, Modal, Text, useMantineTheme } from '@mantine/core';
+import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
 import { isFrame } from 'helpers/funcs';
 import { Frame } from 'components';
 import Logger from 'helpers/logger';
@@ -74,11 +74,14 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
       >
         <Frame src={src} height={500} />
         {callbacks?.confirm && (
-          <Center mt="sm">
+          <Group mt="sm" position="center" spacing="xs">
             <Button onClick={callbacks.confirm} loading={!canConfirm}>
               Confirm Download
             </Button>
-          </Center>
+            <Button onClick={close} color="gray">
+              Cancel
+            </Button>
+          </Group>
         )}
       </Modal>
       {props.children}
