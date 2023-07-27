@@ -7,7 +7,7 @@ import {
 
 interface Cached {
   surveyId: string;
-  cached: number;
+  projectId: string;
 }
 
 export class BioCollectDexie extends Dexie {
@@ -24,7 +24,7 @@ export class BioCollectDexie extends Dexie {
       projects: '++projectId,name', // Primary key and indexed props
       surveys: '++id,projectId,pwaDownloaded',
       activities: '++activityId,projectId,projectActivityId,userId',
-      cached: '++surveyId,cached',
+      cached: '++surveyId,projectId',
     });
   }
 }

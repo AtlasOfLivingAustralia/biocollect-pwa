@@ -45,9 +45,8 @@ export function SocialLinks({ links, ...rest }: SocialLinksProps) {
         if (!Icon) return null;
 
         return (
-          <Tooltip label={link.role} position="top">
+          <Tooltip key={link.role} label={link.role} position="top">
             <ActionIcon
-              key={link.role}
               component="a"
               href={link.url}
               target="_blank"

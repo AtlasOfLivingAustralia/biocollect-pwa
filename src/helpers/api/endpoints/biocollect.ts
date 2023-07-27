@@ -43,7 +43,7 @@ export default (db: BioCollectDexie) => ({
     sort: string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
-    hasDownloadedSurveys = false
+    hasDownloadedSurveys = true
   ): Promise<BioCollectProjectSearch> => {
     if (navigator.onLine) {
       // Define basic query parameters
@@ -80,11 +80,11 @@ export default (db: BioCollectDexie) => ({
           new RegExp(`.*${escapeRegExp(search)}.*`).test(name)
         );
 
-      //
+      // Get a list of downloaded surveys
       if (hasDownloadedSurveys) {
-        const projectsWithSurveys = (
-          await db.surveys.where('pwaDownloaded').equals(1).toArray()
-        ).map(({ projectId }) => projectId);
+        const projectsWithSurveys = await db.cached
+          .orderBy('projectId')
+          .uniqueKeys();
 
         query = query.and(({ projectId }) =>
           projectsWithSurveys.includes(projectId)

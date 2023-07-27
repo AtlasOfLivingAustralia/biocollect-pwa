@@ -16,7 +16,7 @@ export function DownloadChip({ survey, label }: FrameProps) {
   const api = useContext(APIContext);
 
   const downloaded = useLiveQuery(async () =>
-    Boolean((await api.db.cached.get(survey.id))?.cached)
+    Boolean(await api.db.cached.get(survey.id))
   );
 
   return (
@@ -42,7 +42,7 @@ export function DownloadChip({ survey, label }: FrameProps) {
             if (survey) {
               const out = await api.db.cached.put({
                 surveyId: survey.id,
-                cached: 1,
+                projectId: survey.projectId,
               });
               console.log(survey.id, 'Surveys updated', out);
             }
