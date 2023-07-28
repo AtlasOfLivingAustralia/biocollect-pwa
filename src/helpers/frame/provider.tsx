@@ -1,4 +1,11 @@
-import { ReactElement, PropsWithChildren, useState, useEffect } from 'react';
+import {
+  ReactElement,
+  PropsWithChildren,
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+} from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 // Contexts
@@ -7,26 +14,34 @@ import { isFrame } from 'helpers/funcs';
 import { Frame } from 'components';
 import Logger from 'helpers/logger';
 import FrameContext, { FrameCallbacks } from './context';
+import { useAuth } from 'react-oidc-context';
+
+interface FrameEvent {
+  event: 'download-complete' | 'download-removed';
+}
 
 const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const [title, setTitle] = useState<string | undefined>();
   const [src, setSrc] = useState<string>('');
+  const [canConfirm, setCanConfirm] = useState<boolean>(false);
   const [callbacks, setCallbacks] = useState<FrameCallbacks>();
   const [opened, { open: openFrame, close }] = useDisclosure(false);
 
-  // Confirmation state
-  const [canConfirm, setCanConfirm] = useState<boolean>(false);
-
+  // Refs & theming
+  const frameRef = useRef<HTMLIFrameElement>(null);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const auth = useAuth();
 
   useEffect(() => {
     if (callbacks?.confirm && !isFrame()) {
       // Define a message handler to listen for download events
-      const messageHandler = (event: MessageEvent<string>) => {
-        if (event.data === 'downloaded') {
-          Logger.log('Recieved PWA downloaded event!');
+      const messageHandler = (event: MessageEvent<FrameEvent>) => {
+        Logger.log(event);
+        if (event.data.event === 'download-complete') {
           setCanConfirm(true);
+        } else if (event.data.event === 'download-removed') {
+          setCanConfirm(false);
         }
       };
 
@@ -46,6 +61,21 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
     setCanConfirm(false);
 
     openFrame();
+  };
+
+  // Callback function to pass user credentials when IFrame has loaded
+  const handleLoad = () => {
+    if (frameRef?.current?.contentWindow)
+      frameRef.current.contentWindow.postMessage(
+        {
+          event: 'credentials',
+          data: {
+            userId: auth.user?.profile['custom:userid'],
+            token: auth.user?.access_token,
+          },
+        },
+        '*'
+      );
   };
 
   return (
@@ -72,7 +102,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           blur: 3,
         }}
       >
-        <Frame src={src} height={500} />
+        <Frame ref={frameRef} src={src} onLoad={handleLoad} />
         {callbacks?.confirm && (
           <Group mt="sm" position="center" spacing="xs">
             <Button onClick={callbacks.confirm} loading={!canConfirm}>
