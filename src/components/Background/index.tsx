@@ -6,23 +6,37 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 
-import logoAlaBgLight from '/assets/logo-ala-background-light.png';
-import logoAlaBgDark from '/assets/logo-ala-background-dark.png';
+import logoLight from '/assets/logo-ala-background-light.png';
+import logoLightTrans from '/assets/logo-ala-background-light-trans.png';
+import logoDark from '/assets/logo-ala-background-dark.png';
+import logoDarkTrans from '/assets/logo-ala-background-dark-trans.png';
+
 import { useMediaQuery } from '@mantine/hooks';
 
 interface BackgroundProps extends PropsWithChildren<BoxProps> {
   parallax?: boolean;
+  semiTransparent?: boolean;
   radius?: MantineNumberSize;
 }
 
 export function Background({
   children,
   parallax = true,
+  semiTransparent = false,
   radius = 0,
   ...rest
 }: BackgroundProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+
+  const logoAlaBg =
+    theme.colorScheme === 'light'
+      ? semiTransparent
+        ? logoLightTrans
+        : logoLight
+      : semiTransparent
+      ? logoDarkTrans
+      : logoDark;
 
   return (
     <Box
@@ -31,9 +45,7 @@ export function Background({
           theme.colorScheme === 'dark'
             ? theme.colors.dark[6]
             : theme.colors.gray[2],
-        backgroundImage: `url(${
-          theme.colorScheme === 'light' ? logoAlaBgLight : logoAlaBgDark
-        })`,
+        backgroundImage: `url(${logoAlaBg})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 65,
         backgroundPosition: '-30px -30px',
