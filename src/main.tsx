@@ -26,7 +26,9 @@ function Main() {
       }`}
       onSigninCallback={(user) => {
         const params = new URLSearchParams(window.location.search);
+
         Logger.log('[Main] onSignInCallback', user);
+
         if (hasAuthParams(window.location)) {
           params.delete('code');
           params.delete('state');
