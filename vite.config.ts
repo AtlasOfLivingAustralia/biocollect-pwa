@@ -2,15 +2,48 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { visualizer } from 'rollup-plugin-visualizer';
+
+// PWA Imports
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
+import { RouteMatchCallback } from 'workbox-core';
+import { RuntimeCaching } from 'workbox-build';
 
 // Prefer localhost
 import dns from 'dns';
 dns.setDefaultResultOrder('verbatim');
 
+// Helper function for runtime cachine
+const getCache = ({
+  cacheName,
+  urlPattern,
+}: {
+  cacheName: string;
+  urlPattern: string | RegExp | RouteMatchCallback;
+}): RuntimeCaching => ({
+  urlPattern,
+  handler: 'CacheFirst' as const,
+  options: {
+    cacheName,
+    expiration: {
+      maxEntries: 500,
+      maxAgeSeconds: 60 * 60 * 24 * 7 * 2, // 2 weeks
+    },
+    cacheableResponse: {
+      statuses: [200],
+    },
+  },
+});
+
 const pwaOptions: Partial<VitePWAOptions> = {
-  mode: 'development',
   base: '/',
+  workbox: {
+    runtimeCaching: [
+      getCache({
+        urlPattern: /^https:\/\/biocollect(-dev|-test|-)*.ala.org.au\/document/,
+        cacheName: 'biocollect-documents',
+      }),
+    ],
+  },
   includeAssets: [
     'index.css',
     'icon/light/*.png',
@@ -52,10 +85,6 @@ const pwaOptions: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    visualizer() as any /*VitePWA(pwaOptions)*/,
-  ],
+  plugins: [react(), tsconfigPaths(), visualizer() as any, VitePWA(pwaOptions)],
   envDir: './config',
 });
