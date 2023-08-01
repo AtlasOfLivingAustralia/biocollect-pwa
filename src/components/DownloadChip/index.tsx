@@ -31,17 +31,15 @@ export function DownloadChip({ survey, label }: FrameProps) {
         },
       }}
       onClick={() => {
-        // frame.open(
-        //   `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${
-        //     survey?.projectActivityId
-        //   }`,
-        //   `Downloading - ${survey?.name}`
-        // )
-        if (!downloaded) {
-          frame.open(`http://localhost:5173`, `Downloading - ${survey?.name}`, {
+        frame.open(
+          `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${
+            survey?.projectActivityId
+          }`,
+          `Downloading - ${survey?.name}`,
+          {
             confirm: async () => {
               if (survey) {
-                const out = await api.db.cached.put({
+                await api.db.cached.put({
                   surveyId: survey.id,
                   projectId: survey.projectId,
                 });
@@ -49,8 +47,8 @@ export function DownloadChip({ survey, label }: FrameProps) {
 
               frame.close();
             },
-          });
-        }
+          }
+        );
       }}
     >
       {!downloaded && <IconDownload size="0.8rem" style={{ marginRight: 8 }} />}

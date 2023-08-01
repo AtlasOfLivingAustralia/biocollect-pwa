@@ -35,11 +35,11 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
   useEffect(() => {
     if (callbacks?.confirm && !isFrame()) {
       // Define a message handler to listen for download events
-      const messageHandler = (event: MessageEvent<FrameEvent>) => {
-        Logger.log(event);
-        if (event.data.event === 'download-complete') {
+      const messageHandler = ({ data }: MessageEvent<FrameEvent>) => {
+        Logger.log(data);
+        if (data.event === 'download-complete') {
           setCanConfirm(true);
-        } else if (event.data.event === 'download-removed') {
+        } else if (data.event === 'download-removed') {
           setCanConfirm(false);
         }
       };
@@ -75,6 +75,8 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         },
         '*'
       );
+
+    Logger.info('Sent credentials to iFrame popup');
   };
 
   return (

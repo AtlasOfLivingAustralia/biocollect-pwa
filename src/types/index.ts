@@ -100,7 +100,7 @@ export interface BioCollectProject {
   projectTask?: string;
   containsActivity: boolean;
   noCost: boolean;
-  surveys: BioCollectSurvey[];
+  activities: BioCollectSurvey[];
 }
 
 export interface BioCollectProjectSearch {

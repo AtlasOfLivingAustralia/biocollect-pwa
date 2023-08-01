@@ -120,8 +120,8 @@ export function Home() {
     >
       <Group mb="lg">
         <Stack spacing={0}>
-          <Title m={0}>Welcome, {auth.user?.profile.given_name}</Title>
-          <Text>This is the home page</Text>
+          <Text color="dimmed">Welcome,</Text>
+          <Title m={0}>{auth.user?.profile.given_name}</Title>
         </Stack>
       </Group>
       <Box
