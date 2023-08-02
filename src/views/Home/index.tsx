@@ -139,16 +139,24 @@ export function Home() {
             ));
           })()}
         </Grid>
-        {lastTotal !== null && (
-          <Center mt="xl">
-            <Pagination
-              value={paramPage}
-              total={Math.floor(lastTotal / paramMax)}
-              onChange={handleChangePage}
-            />
-          </Center>
-        )}
       </Box>
+      <Wave
+        preserveAspectRatio="none"
+        waveColour={highlight}
+        waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
+        height={75}
+        width="100%"
+      />
+      {lastTotal !== null && (
+        <Center pb="xl">
+          <Pagination
+            mb="md"
+            value={paramPage}
+            total={Math.floor(lastTotal / paramMax)}
+            onChange={handleChangePage}
+          />
+        </Center>
+      )}
     </>
   );
 }
