@@ -6,7 +6,7 @@ import {
   useContext,
   Fragment,
 } from 'react';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { shallowEqual, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
@@ -28,18 +28,6 @@ import {
 import { IconFiles } from '@tabler/icons';
 import { APIContext } from 'helpers/api';
 import { ActivityItem } from './components/ActivityItem';
-
-function shallowEqual(obj1: any, obj2: any) {
-  const k1 = Object.keys(obj1);
-  const k2 = Object.keys(obj2);
-
-  if (k1.length !== k2.length) return false;
-  for (let key of k1) {
-    if (obj1[key] !== obj2[key]) return false;
-  }
-
-  return true;
-}
 
 const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const [recordsFor, setRecordsFor] = useState<string | null>(null);

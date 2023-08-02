@@ -2,11 +2,9 @@ import { useLoaderData } from 'react-router-dom';
 import {
   Accordion,
   Box,
-  Divider,
   Grid,
   Group,
   Paper,
-  ScrollArea,
   Stack,
   Text,
   Title,

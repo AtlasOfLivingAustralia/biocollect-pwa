@@ -8,17 +8,15 @@ import {
 
 // App views
 import { Home, Project, SignIn, Debug } from 'views';
+import { useAuth } from 'react-oidc-context';
+import { APIContext } from 'helpers/api';
 import Logger from 'helpers/logger';
 import Layout from 'layout';
-import { APIContext } from 'helpers/api';
-
-interface RoutesProps {
-  isAuthenticated: boolean;
-}
 
 const isDev = import.meta.env.DEV;
 
-export default function Routes({ isAuthenticated }: RoutesProps) {
+export default function Routes() {
+  const { isAuthenticated } = useAuth();
   const api = useContext(APIContext);
   Logger.log(`[Routes] isAuthenticated = ${isAuthenticated}`);
 

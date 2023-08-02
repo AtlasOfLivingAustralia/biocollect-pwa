@@ -29,14 +29,13 @@ export function Background({
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
-  const logoAlaBg =
-    theme.colorScheme === 'light'
-      ? semiTransparent
-        ? logoLightTrans
-        : logoLight
-      : semiTransparent
-      ? logoDarkTrans
-      : logoDark;
+  // Determine which background image variant to use
+  let logoAlaBg;
+  if (theme.colorScheme === 'light') {
+    logoAlaBg = semiTransparent ? logoLightTrans : logoLight;
+  } else if (theme.colorScheme === 'dark') {
+    logoAlaBg = semiTransparent ? logoDarkTrans : logoDark;
+  }
 
   return (
     <Box

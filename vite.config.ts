@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { visualizer } from 'rollup-plugin-visualizer';
 
 // PWA Imports
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';

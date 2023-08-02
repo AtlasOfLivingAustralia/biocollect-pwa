@@ -11,8 +11,7 @@ interface Cached {
 }
 
 export class BioCollectDexie extends Dexie {
-  // 'friends' is added by dexie when declaring the stores()
-  // We just tell the typing system this is the case
+  // For TypeScript types
   projects!: Table<BioCollectProject>;
   surveys!: Table<BioCollectSurvey>;
   activities!: Table<BioCollectBioActivity>;

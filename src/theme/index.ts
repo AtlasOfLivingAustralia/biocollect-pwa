@@ -1,58 +1,36 @@
-import { MantineThemeOverride, Tuple } from '@mantine/core';
-import palette from './palette';
-import Colour from 'color';
+import { MantineThemeOverride } from '@mantine/core';
+import { generateShades } from './shades';
+import * as palette from './palette';
 
-function generateShades(colour: string, step = 0.125): Tuple<string, 10> {
-  const out = [];
-  const base = new Colour(colour);
-
-  for (let shade = 7; shade > -3; shade -= 1) {
-    const amount = Math.abs(step * shade);
-    out.push((shade < 0 ? base.darken(amount) : base.lighten(amount)).hex());
-  }
-
-  return out as Tuple<string, 10>;
-}
-
-const fontStack = `-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`;
-const defaults: MantineThemeOverride = {
-  fontFamily: `Roboto, ${fontStack}`,
-  headings: {
-    fontFamily: `Lato, ${fontStack}`,
-  },
+const generateTheme = (
+  theme: MantineThemeOverride = {}
+): MantineThemeOverride => ({
+  // Default theme settings
   defaultRadius: 'md',
-};
+  fontFamily: `Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
+  headings: {
+    fontFamily: `Lato, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
+  },
+  // Additional ALA colours
+  colors: {
+    ...theme.colors,
+    ...palette.primary,
+    ...palette.secondary,
+    ...palette.extended,
+  },
+  ...theme,
+});
 
 const themes: { [key: string]: MantineThemeOverride } = {
-  light: {
-    ...defaults,
-    colorScheme: 'light',
-  },
-  dark: {
-    ...defaults,
-    colorScheme: 'dark',
-  },
-  ala: {
-    ...defaults,
+  light: generateTheme({ colorScheme: 'light' }),
+  dark: generateTheme({ colorScheme: 'dark' }),
+  ala: generateTheme({
     colors: {
       alablue: generateShades('#009080'),
     },
     primaryColor: 'alablue',
     colorScheme: 'dark',
-  },
-  goofy: {
-    ...defaults,
-    headings: {
-      fontFamily: 'Comic Sans MS',
-    },
-    defaultRadius: 'xs',
-    fontSizes: {
-      xl: '1.8rem',
-    },
-    fontFamily: 'Papyrus',
-    primaryColor: 'pink',
-    colorScheme: 'light',
-  },
+  }),
 };
 
-export { palette, themes, generateShades };
+export { themes, palette, generateShades };

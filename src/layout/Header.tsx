@@ -12,7 +12,6 @@ import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 import {
   IconSearch,
-  IconPlus,
   IconBug,
   IconQuestionMark,
   IconLogout,

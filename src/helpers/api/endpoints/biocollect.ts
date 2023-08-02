@@ -30,17 +30,17 @@ const formatProjectSearch = async (
   projects: await formatProjects(search.projects, db),
 });
 
-// type BioCollectProjectSort =
-//   | 'dateCreatedSort'
-//   | 'nameSort'
-//   | '_score'
-//   | 'organisationSort';
+type BioCollectProjectSort =
+  | 'dateCreatedSort'
+  | 'nameSort'
+  | '_score'
+  | 'organisationSort';
 
 export default (db: BioCollectDexie) => ({
   projectSearch: async (
     offset = 0,
     max = 30,
-    sort: string = 'dateCreatedSort',
+    sort: BioCollectProjectSort | string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
     hasDownloadedSurveys = true

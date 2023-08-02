@@ -4,12 +4,14 @@ import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 // App-specific imports
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { themes } from 'theme';
+
+// Helpers
 import { APIProvider } from 'helpers/api';
 import { RecordsDrawerProvider } from 'helpers/drawer';
-
-import Logger from 'helpers/logger';
-import App from './App';
 import { FrameProvider } from 'helpers/frame';
+import Logger from 'helpers/logger';
+
+import App from './App';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
