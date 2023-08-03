@@ -1,48 +1,43 @@
-import { useEffect, useState } from 'react';
-import { useAuth } from 'react-oidc-context';
-import { Skeleton, Text } from '@mantine/core';
-import axios from 'axios';
+import { Ref, forwardRef, useState } from 'react';
+import { Skeleton, useMantineTheme } from '@mantine/core';
 
-interface FrameProps {
-  src: string;
-  baseUrl: string;
-  width?: number | string;
-  height?: number | string;
-}
+type IFrameProps = Omit<
+  React.DetailedHTMLProps<
+    React.IframeHTMLAttributes<HTMLIFrameElement>,
+    HTMLIFrameElement
+  >,
+  'style'
+>;
 
-export function Frame(props: FrameProps) {
-  const auth = useAuth();
-  const [pageData, setPageData] = useState<string | undefined>();
+export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(
+  ({ onLoad, ...props }, ref) => {
+    const [loaded, setLoaded] = useState<boolean>(false);
+    const theme = useMantineTheme();
 
-  useEffect(() => {
-    async function fetchUrl() {
-      const res = await axios.get<string>(props.src || '');
-      const data = res.data
-        .replaceAll('href="/assets', `href="${props.baseUrl}/assets`)
-        .replaceAll('href="/acsa', `href="${props.baseUrl}/acsa`)
-        .replaceAll('src="/assets', `src="${props.baseUrl}/assets`)
-        .replaceAll('|| "/acsa/ajax', `|| "${props.baseUrl}/acsa/ajax`)
-        .replaceAll(': "/acsa', `: "${props.baseUrl}/acsa`)
-        .replaceAll(':"/acsa', `: "${props.baseUrl}/acsa`)
-        .replaceAll(':"/assets', `: "${props.baseUrl}/assets`)
-        .replaceAll(': "/ws', `: "${props.baseUrl}/ws`)
-        .replaceAll(': "/search', `: "${props.baseUrl}/search`);
+    const width = props.width || '100%';
+    const height = props.height || 500;
 
-      console.log('text', data);
-      setPageData(data);
-    }
-
-    fetchUrl();
-  }, []);
-
-  const width = props.width || '100%';
-  const height = props.height || 500;
-
-  return (
-    <Skeleton visible={!Boolean(pageData)} width={width} height={height}>
-      {pageData && (
-        <iframe width={width} height={height} srcDoc={pageData}></iframe>
-      )}
-    </Skeleton>
-  );
-}
+    return (
+      <Skeleton visible={!loaded} width={width} height={height}>
+        <iframe
+          ref={ref}
+          width={width}
+          height={height}
+          style={{
+            border: `1px solid ${
+              theme.colorScheme === 'dark'
+                ? theme.colors.dark[5]
+                : theme.colors.gray[4]
+            }`,
+            borderRadius: theme.radius.md,
+          }}
+          {...props}
+          onLoad={(event) => {
+            setLoaded(true);
+            if (onLoad) onLoad(event);
+          }}
+        ></iframe>
+      </Skeleton>
+    );
+  }
+);

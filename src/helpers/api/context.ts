@@ -1,8 +1,15 @@
 import { createContext } from 'react';
 import biocollect from './endpoints/biocollect';
+import { BioCollectDexie } from './dexie';
 
 interface APIContext {
-  biocollect: typeof biocollect;
+  db: BioCollectDexie;
+  biocollect: ReturnType<typeof biocollect>;
 }
 
-export default createContext<APIContext>({ biocollect });
+const dexie = new BioCollectDexie();
+
+export default createContext<APIContext>({
+  db: dexie,
+  biocollect: biocollect(dexie),
+});

@@ -8,7 +8,7 @@ import Logger from 'helpers/logger';
 function App() {
   const { isLoading, isAuthenticated } = useAuth();
   Logger.log(
-    `[App] isLoading = ${isLoading}, isAuthenticated = ${isAuthenticated}`
+    `[App] isLoading: ${isLoading} | isAuthenticated: ${isAuthenticated}`
   );
 
   if (isLoading) {
@@ -19,7 +19,7 @@ function App() {
     );
   }
 
-  return <Routes isAuthenticated={isAuthenticated} />;
+  return <Routes />;
 }
 
 export default App;

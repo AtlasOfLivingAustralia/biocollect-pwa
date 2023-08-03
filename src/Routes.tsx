@@ -7,27 +7,23 @@ import {
 } from 'react-router-dom';
 
 // App views
-import { Home, Project, SignIn, Debug } from 'views';
-import Logger from 'helpers/logger';
-import Layout from 'layout';
+import { Home, Project, SignIn, Error, Debug } from 'views';
+import { useAuth } from 'react-oidc-context';
 import { APIContext } from 'helpers/api';
-
-interface RoutesProps {
-  isAuthenticated: boolean;
-}
+import Layout from 'layout';
 
 const isDev = import.meta.env.DEV;
 
-export default function Routes({ isAuthenticated }: RoutesProps) {
+export default function Routes() {
+  const { isAuthenticated } = useAuth();
   const api = useContext(APIContext);
-  Logger.log(`[Routes] isAuthenticated = ${isAuthenticated}`);
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
     createBrowserRouter([
       {
         path: '/',
         element: <Layout />,
-        errorElement: <Text>404 yall</Text>,
+        errorElement: <Error />,
         loader: () => (isAuthenticated ? null : redirect('/signin')),
         children: [
           {

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-import { Box, ScrollArea } from '@mantine/core';
+import { Box, Center, Loader, ScrollArea } from '@mantine/core';
 import { Outlet, useNavigation } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 import {
   NavigationProgress,
   startNavigationProgress,
@@ -10,6 +11,7 @@ import {
 import Header from './Header';
 
 export default function Layout() {
+  const { isLoading } = useAuth();
   const { state } = useNavigation();
 
   useEffect(() => {
@@ -20,6 +22,14 @@ export default function Layout() {
       completeNavigationProgress();
     }
   }, [state]);
+
+  if (isLoading) {
+    return (
+      <Center sx={{ width: '100vw', height: '100vh' }}>
+        <Loader />
+      </Center>
+    );
+  }
 
   return (
     <>

@@ -8,8 +8,10 @@ interface WaveProps extends React.SVGProps<SVGSVGElement> {
     | 'body'
     | 'bodyFull'
     | 'bodyBottom'
-    | 'bodyBottomFull';
+    | 'bodyBottomFull'
+    | 'side';
   waveColour?: string;
+  vertical?: boolean;
 }
 
 // Simple wave
@@ -26,20 +28,27 @@ const waves = {
     'M0,64L60,85.3C120,107,240,149,360,144C480,139,600,85,720,74.7C840,64,960,96,1080,96C1200,96,1320,64,1380,48L1440,32L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z',
   bodyBottomFull:
     'M0,160L34.3,154.7C68.6,149,137,139,206,112C274.3,85,343,43,411,58.7C480,75,549,149,617,154.7C685.7,160,754,96,823,85.3C891.4,75,960,117,1029,160C1097.1,203,1166,245,1234,240C1302.9,235,1371,181,1406,154.7L1440,128L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z',
+  side: 'M0,0L60,5.3C120,11,240,21,360,69.3C480,117,600,203,720,213.3C840,224,960,160,1080,154.7C1200,149,1320,203,1380,229.3L1440,256L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z',
 };
 
-export function Wave({ waveType, waveColour, ...rest }: WaveProps) {
+export function Wave({ waveType, waveColour, vertical, ...rest }: WaveProps) {
   const theme = useMantineTheme();
   return (
-    <svg {...rest} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-      <path
-        fill={
-          waveColour ||
-          (theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#ffffff')
-        }
-        fillOpacity="1"
-        d={waves[waveType || 'new']}
-      ></path>
+    <svg
+      {...rest}
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox={vertical ? '0 0 320 1440' : '0 0 1440 320'}
+    >
+      <g transform={vertical ? 'matrix(0 1 -1 0 320 -0)' : undefined}>
+        <path
+          fill={
+            waveColour ||
+            (theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#ffffff')
+          }
+          fillOpacity="1"
+          d={waves[waveType || 'new']}
+        ></path>
+      </g>
     </svg>
   );
 }

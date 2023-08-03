@@ -2,19 +2,15 @@ import { useContext, useState, useEffect } from 'react';
 import {
   Grid,
   Center,
-  TextInput,
   Box,
   Text,
   Title,
   Group,
   Stack,
-  Select,
-  SegmentedControl,
-  MediaQuery,
   Pagination,
+  useMantineTheme,
 } from '@mantine/core';
 import { useSearchParams } from 'react-router-dom';
-import { IconSearch, IconLayoutGrid, IconListDetails } from '@tabler/icons';
 import { useAuth } from 'react-oidc-context';
 
 // Helper functions / components
@@ -24,16 +20,30 @@ import { getBool, getNumber, getString } from 'helpers/params';
 import Logger from 'helpers/logger';
 
 // Local components
-import { ProjectCard } from './components/ProjectCard';
+import { ProjectItem } from './components/ProjectItem';
 import { BioCollectProjectSearch } from 'types';
+import { useMediaQuery } from '@mantine/hooks';
+import { Wave } from 'components/Wave';
+import { SearchControls } from './components/SearchControls';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
 export function Home() {
+  // URL parameters & state
+  const [params, setParams] = useSearchParams();
+  const paramMax = getNumber('max', 30, params);
+  const paramPage = getNumber('page', 1, params);
+  const paramOffline = getBool('offline', true, params);
+
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const highlight =
+    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
+
+  // API data state
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);
-  const [params, setParams] = useSearchParams();
 
   // API Context
   const auth = useAuth();
@@ -50,7 +60,8 @@ export function Home() {
           paramMax,
           getString('pSort', 'dateCreatedSort', params),
           getBool('isUserPage', false, params),
-          getString('search', undefined, params)
+          getString('search', undefined, params),
+          paramOffline
         );
         setProjectSearch(data);
         setLastTotal(data.total);
@@ -63,118 +74,89 @@ export function Home() {
     fetchProjects();
   }, [params]);
 
-  const paramMax = getNumber('max', 30, params);
-  const paramPage = getNumber('page', 1, params);
-
-  // Handle for updating the max result count
-  const handleChangeMax = (newMax: number) => {
-    const newParams: { [key: string]: string } = {
-      ...Object.fromEntries(params.entries()),
-      page: '1',
-      max: newMax.toString(),
-    };
-
-    setParams(newParams);
-
-    // Update the project search data to immediately reflect the changes
-    // if the max result count has been decreased
-    if (newMax < paramMax && projectSearch) {
-      setProjectSearch({
-        ...projectSearch,
-        projects: projectSearch.projects.slice(0, newMax),
-      });
-    }
-  };
-
   // Handle for updating the pagination
   const handleChangePage = (page: number) => {
-    setParams({
-      ...Object.fromEntries(params.entries()),
-      page: page.toString(),
-    });
+    params.set('page', page.toString());
+    setParams(params);
   };
 
-  // Handle for updating the sort parameter
-  // const handleChangeSort = (newSort: string) => {
-  //   setParams({ ...params, pSort: newSort });
-  // };
-
   return (
-    <Box p="xl">
-      <Group mb="lg">
-        <Stack spacing={0}>
-          <Title m={0}>Welcome, {auth.user?.profile.given_name}</Title>
-          <Text>This is the home page</Text>
+    <>
+      {mobile ? (
+        <Stack py="xl" px={mobile ? 22 : 36}>
+          <Group position={mobile ? 'center' : 'apart'}>
+            <Stack spacing={0} align={mobile ? 'center' : 'flex-start'}>
+              <Text color="dimmed">Welcome back,</Text>
+              <Title m={0}>{auth.user?.profile.given_name}</Title>
+            </Stack>
+          </Group>
+          <SearchControls params={params} setParams={setParams} />
         </Stack>
-      </Group>
-      <Group position="apart" mb="lg">
-        <Group mt="auto">
-          <TextInput icon={<IconSearch />} placeholder="Search Projects" />
-        </Group>
-        <Group spacing="xs">
-          {/* <Select
-            style={{ maxWidth: 130 }}
-            value={params.get('pSort') || 'dateCreatedSort'}
-            label="Sort By"
-            data={[
-              { value: 'dateCreatedSort', label: 'Most Recent' },
-              { value: 'nameSort', label: 'Name' },
-              { value: '_score', label: 'Relevance' },
-              { value: 'organisationSort', label: 'Organisation' },
-            ]}
-            onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
-          /> */}
-          <MediaQuery smallerThan="sm" styles={{ display: 'none' }}>
-            <SegmentedControl
-              data={[
-                {
-                  value: 'gridView',
-                  label: (
-                    <Center>
-                      <IconLayoutGrid size={18} />
-                    </Center>
-                  ),
-                },
-                {
-                  value: 'listView',
-                  label: (
-                    <Center>
-                      <IconListDetails size={18} />
-                    </Center>
-                  ),
-                },
-              ]}
-            />
-          </MediaQuery>
-          <Select
-            style={{ maxWidth: 110 }}
-            value={params.get('max') || '30'}
-            data={['10', '20', '30', '50', '100'].map((max) => ({
-              value: max,
-              label: `${max} items`,
-            }))}
-            onChange={(max) => handleChangeMax(parseInt(max || '20', 10))}
-          />
-        </Group>
-      </Group>
-      <Grid>
-        {projectSearch
-          ? projectSearch.projects.map((project) => (
-              <ProjectCard key={project.projectId} project={project} />
-            ))
-          : range(paramMax).map((id) => (
-              <ProjectCard key={id} project={null} />
-            ))}
-      </Grid>
-      {lastTotal && (
-        <Center mt="xl">
+      ) : (
+        <Box py="xl" px={mobile ? 22 : 36}>
+          <Group position={mobile ? 'center' : 'apart'}>
+            <Stack spacing={0} align={mobile ? 'center' : 'flex-start'}>
+              <Text color="dimmed">Welcome back,</Text>
+              <Title m={0}>{auth.user?.profile.given_name}</Title>
+            </Stack>
+            <SearchControls params={params} setParams={setParams} />
+          </Group>
+        </Box>
+      )}
+      <Wave
+        preserveAspectRatio="none"
+        waveColour={highlight}
+        waveType={mobile ? 'body' : 'bodyFull'}
+        height={75}
+        width="100%"
+      />
+      <Box
+        sx={(theme) => ({
+          background: highlight,
+          marginTop: -8,
+          padding: 32,
+          paddingTop: 0,
+          [theme.fn.smallerThan('md')]: {
+            padding: 22,
+            paddingTop: 0,
+          },
+        })}
+      >
+        <Grid>
+          {(() => {
+            if (projectSearch) {
+              return projectSearch.total > 0 ? (
+                projectSearch.projects.map((project) => (
+                  <ProjectItem key={project.projectId} project={project} />
+                ))
+              ) : (
+                <Text>No projects</Text>
+              );
+            }
+
+            return range(paramMax).map((id) => (
+              <ProjectItem key={id} project={null} />
+            ));
+          })()}
+        </Grid>
+      </Box>
+      <Wave
+        preserveAspectRatio="none"
+        waveColour={highlight}
+        waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
+        height={75}
+        width="100%"
+      />
+      {lastTotal !== null && (
+        <Center pb="xl">
           <Pagination
-            page={paramPage}
+            mb="md"
+            value={paramPage}
             total={Math.floor(lastTotal / paramMax)}
             onChange={handleChangePage}
           />
         </Center>
       )}
-    </Box>
+    </>
   );
 }

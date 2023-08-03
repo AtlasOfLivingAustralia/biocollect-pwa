@@ -1,0 +1,1 @@
+export { isFrame } from './isFrame';
