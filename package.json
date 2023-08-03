@@ -10,7 +10,8 @@
     "build:testing": "tsc && vite build --mode testing",
     "build:development": "tsc && vite build --mode development",
     "lint": "eslint ./src",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Tests here...\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
