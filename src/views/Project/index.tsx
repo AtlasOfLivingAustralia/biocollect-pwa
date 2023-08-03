@@ -39,8 +39,6 @@ export function Project() {
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 
-  throw new Error('testing');
-
   return (
     <>
       <Header project={project} mobile={mobile} />
