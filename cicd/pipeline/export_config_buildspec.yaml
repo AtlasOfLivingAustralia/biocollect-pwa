@@ -59,7 +59,7 @@ phases:
 
 artifacts:
   files:
-    - cicd/app/avsb.yaml
+    - cicd/app/biocollect-pwa.yaml
     - cicd/app/waf.yaml
     - cicd/pipeline/template_config.json
     - cicd/pipeline/waf_template_config.json
