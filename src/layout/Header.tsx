@@ -24,10 +24,12 @@ import logoLight from '/assets/logo-light-32x32.png';
 import { themes } from 'theme';
 import { useContext } from 'react';
 import { FrameContext } from 'helpers/frame';
+import { useOnLine } from 'helpers/funcs';
 
 export default function Header() {
   const frame = useContext(FrameContext);
   const auth = useAuth();
+  const onLine = useOnLine();
 
   const signOut = async () => {
     const params = new URLSearchParams({
@@ -62,8 +64,8 @@ export default function Header() {
             <Badge radius="sm" color="blue">
               ver 0.0
             </Badge>
-            <Badge radius="sm" color={navigator.onLine ? 'green' : 'red'}>
-              {navigator.onLine ? 'online' : 'offline'}
+            <Badge radius="sm" color={onLine ? 'green' : 'red'}>
+              {onLine ? 'online' : 'offline'}
             </Badge>
           </Group>
         </Group>
@@ -111,7 +113,7 @@ export default function Header() {
                 <Menu.Item
                   onClick={signOut}
                   icon={<IconLogout />}
-                  disabled={auth.isLoading || !navigator.onLine}
+                  disabled={auth.isLoading || !onLine}
                   color="red"
                 >
                   Sign Out
