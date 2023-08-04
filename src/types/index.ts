@@ -100,7 +100,7 @@ export interface BioCollectProject {
   projectTask?: string;
   containsActivity: boolean;
   noCost: boolean;
-  activities: BioCollectSurvey[];
+  projectActivities: BioCollectSurvey[];
 }
 
 export interface BioCollectProjectSearch {
@@ -141,6 +141,7 @@ export interface BioCollectSurvey {
   allowAdditionalSurveySites: boolean;
   projectId: string;
   startDate: string;
+  endDate: string;
   canEditAdminSelectedSites: boolean;
   status: string;
   methodUrl: string;

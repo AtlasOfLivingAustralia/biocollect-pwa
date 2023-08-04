@@ -47,7 +47,7 @@ interface ProjectItemProps {
 export function ProjectItem({ project }: ProjectItemProps) {
   const theme = useMantineTheme();
   const loading = !Boolean(project);
-  const surveys = project?.activities || [];
+  const surveys = project?.projectActivities || [];
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   return (
