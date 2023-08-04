@@ -17,8 +17,6 @@ import { useAuth } from 'react-oidc-context';
 import { APIContext } from 'helpers/api';
 import { getBool, getNumber, getString } from 'helpers/params';
 
-import Logger from 'helpers/logger';
-
 // Local components
 import { ProjectItem } from './components/ProjectItem';
 import { BioCollectProjectSearch } from 'types';
@@ -26,6 +24,7 @@ import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
 import { SearchControls } from './components/SearchControls';
 import { IconArchive } from '@tabler/icons';
+import { useOnLine } from 'helpers/funcs';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
@@ -45,6 +44,7 @@ export function Home() {
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);
+  const onLine = useOnLine();
 
   // API Context
   const auth = useAuth();
@@ -68,12 +68,12 @@ export function Home() {
         setLastTotal(data.total);
       } catch (error) {
         // TODO: Error handling
-        Logger.error(error);
+        console.error(error);
       }
     }
 
     fetchProjects();
-  }, [params]);
+  }, [params, onLine]);
 
   // Handle for updating the pagination
   const handleChangePage = (page: number) => {

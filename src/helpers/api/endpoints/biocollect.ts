@@ -72,6 +72,17 @@ export default (db: BioCollectDexie) => ({
       await db.projects.bulkPut(formatted.projects);
       return formatted;
     } else {
+      // Fix for WebKit empty DB issue
+      // https://github.com/dexie/Dexie.js/issues/1052
+      if (hasDownloadedSurveys && (await db.cached.count()) === 0) {
+        return {
+          facets: [],
+          total: 0,
+          projects: [],
+        };
+      }
+
+      // Create the base collection query
       let query = db.projects.toCollection();
 
       // Append the search query

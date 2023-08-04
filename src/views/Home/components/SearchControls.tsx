@@ -133,7 +133,7 @@ export function SearchControls({
             <Checkbox
               label="Offline Surveys"
               checked={paramOffline}
-              onClick={(e) => handleChangeOffline(!paramOffline)}
+              onChange={(e) => handleChangeOffline(!paramOffline)}
             />
           </Paper>
         )}
