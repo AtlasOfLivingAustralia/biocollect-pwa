@@ -35,11 +35,9 @@ export default function Layout() {
     <>
       <NavigationProgress stepInterval={0} />
       <Header />
-      <ScrollArea type="hover" style={{ height: 'calc(100vh - 71px)' }}>
-        <Box style={{ width: '100vw' }}>
-          <Outlet />
-        </Box>
-      </ScrollArea>
+      <Box pt={71}>
+        <Outlet />
+      </Box>
     </>
   );
 }

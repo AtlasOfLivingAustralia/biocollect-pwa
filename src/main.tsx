@@ -9,7 +9,6 @@ import { themes } from 'theme';
 import { APIProvider } from 'helpers/api';
 import { RecordsDrawerProvider } from 'helpers/drawer';
 import { FrameProvider } from 'helpers/frame';
-import Logger from 'helpers/logger';
 
 import App from './App';
 
@@ -29,7 +28,7 @@ function Main() {
       onSigninCallback={(user) => {
         const params = new URLSearchParams(window.location.search);
 
-        Logger.log('[Main] onSignInCallback', user);
+        console.log('[Main] onSignInCallback', user);
 
         if (hasAuthParams(window.location)) {
           params.delete('code');
@@ -43,7 +42,7 @@ function Main() {
               params.toString()
           );
         } else {
-          Logger.log('[Main] onSigninCallback', 'No auth params in location!');
+          console.log('[Main] onSigninCallback', 'No auth params in location!');
         }
       }}
       userStore={userStore}

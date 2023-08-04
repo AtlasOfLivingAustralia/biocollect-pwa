@@ -11,7 +11,6 @@ import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
 import { isFrame } from 'helpers/funcs';
 import { Frame } from 'components';
-import Logger from 'helpers/logger';
 import FrameContext, { FrameCallbacks } from './context';
 import { useAuth } from 'react-oidc-context';
 
@@ -36,7 +35,6 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
     if (callbacks?.confirm && !isFrame()) {
       // Define a message handler to listen for download events
       const messageHandler = ({ data }: MessageEvent<FrameEvent>) => {
-        Logger.log(data);
         if (data.event === 'download-complete') {
           setCanConfirm(true);
         } else if (data.event === 'download-removed') {
@@ -75,8 +73,6 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         },
         '*'
       );
-
-    Logger.info('Sent credentials to iFrame popup');
   };
 
   return (
@@ -102,6 +98,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           opacity: 0.55,
           blur: 3,
         }}
+        zIndex={1000}
       >
         <Frame ref={frameRef} src={src} onLoad={handleLoad} />
         {callbacks?.confirm && (

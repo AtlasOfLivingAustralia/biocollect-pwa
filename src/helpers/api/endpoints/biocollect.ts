@@ -12,22 +12,24 @@ import { BioCollectDexie } from '../dexie';
 const escapeRegExp = (input: string) =>
   input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const formatProjects = async (
-  projects: BioCollectProject[],
-  db: BioCollectDexie
-) => {
+const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
+  surveys.filter(
+    ({ startDate, endDate }) =>
+      new Date(startDate).getTime() <= Date.now() &&
+      (!endDate || new Date(endDate).getTime() >= Date.now())
+  );
+
+const formatProjects = (projects: BioCollectProject[]) => {
   return projects.map((project) => ({
     ...project,
     name: project.name.trim(),
+    projectActivities: filterActiveSurveys(project.projectActivities),
   }));
 };
 
-const formatProjectSearch = async (
-  search: BioCollectProjectSearch,
-  db: BioCollectDexie
-) => ({
+const formatProjectSearch = (search: BioCollectProjectSearch) => ({
   ...search,
-  projects: await formatProjects(search.projects, db),
+  projects: formatProjects(search.projects),
 });
 
 type BioCollectProjectSort =
@@ -66,12 +68,23 @@ export default (db: BioCollectDexie) => ({
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
         { params }
       );
-      const formatted = await formatProjectSearch(data, db);
+      const formatted = await formatProjectSearch(data);
 
       // Store the projects in IDB & return
       await db.projects.bulkPut(formatted.projects);
       return formatted;
     } else {
+      // Fix for WebKit empty DB issue
+      // https://github.com/dexie/Dexie.js/issues/1052
+      if (hasDownloadedSurveys && (await db.cached.count()) === 0) {
+        return {
+          facets: [],
+          total: 0,
+          projects: [],
+        };
+      }
+
+      // Create the base collection query
       let query = db.projects.toCollection();
 
       // Append the search query
@@ -116,7 +129,7 @@ export default (db: BioCollectDexie) => ({
         }
       );
 
-      const [project] = await formatProjects(data.projects, db);
+      const [project] = formatProjects(data.projects);
       return project;
     }
 
@@ -126,13 +139,15 @@ export default (db: BioCollectDexie) => ({
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
     if (navigator.onLine) {
       // Make the GET request
-      const { data } = await axios.get<BioCollectSurvey[]>(
+      let { data: surveys } = await axios.get<BioCollectSurvey[]>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
       );
 
-      await db.surveys.bulkPut(data);
+      // Filter out non-active surveys (not within date range)
+      surveys = filterActiveSurveys(surveys);
+      await db.surveys.bulkPut(surveys);
 
-      return data;
+      return surveys;
     } else {
       return await db.surveys.where('projectId').equals(projectId).toArray();
     }

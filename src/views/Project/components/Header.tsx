@@ -31,6 +31,7 @@ import { Wave, Corner } from 'components/Wave';
 // Local components
 import { SocialLinks } from './SocialLinks';
 import { ProjectTag } from './ProjectTag';
+import { useOnLine } from 'helpers/funcs';
 
 interface HeaderProps {
   project: BioCollectProject;
@@ -47,6 +48,7 @@ const SpoilerControl = ({ hide }: SpoilerControlProps) => (
 
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const onLine = useOnLine();
 
   return mobile ? (
     <Box>
@@ -94,7 +96,7 @@ export function Header({ project, mobile }: HeaderProps) {
               ))}
             </Group>
           )}
-          {project.urlWeb && navigator.onLine && (
+          {project.urlWeb && onLine && (
             <Button
               component="a"
               href={project.urlWeb}
@@ -174,7 +176,7 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={3} color="dimmed">
             {project.organisationName}
           </Title>
-          {project.urlWeb && navigator.onLine && (
+          {project.urlWeb && onLine && (
             <Tooltip label="Visit Website" position="right">
               <ActionIcon
                 component="a"

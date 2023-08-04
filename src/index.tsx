@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Main from './main';
-import Logger from 'helpers/logger';
 
 const strictMode = true;
-Logger.log(`App Mode: ${import.meta.env.MODE}`);
+console.log(`App Mode: ${import.meta.env.MODE}`);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   strictMode ? (

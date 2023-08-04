@@ -17,6 +17,7 @@ import { getBool, getString } from 'helpers/params';
 
 // Local components
 import { useDebouncedState } from '@mantine/hooks';
+import { useOnLine } from 'helpers/funcs';
 
 interface SearchControlsProps extends BoxProps {
   params: URLSearchParams;
@@ -28,9 +29,9 @@ export function SearchControls({
   setParams,
   ...rest
 }: SearchControlsProps) {
-  // URL parameters & state
   const paramSearch = getString('search', undefined, params);
   const paramOffline = getBool('offline', true, params);
+  const onLine = useOnLine();
 
   // API data state
   const [searchQuery, setSearchQuery] = useDebouncedState('', 350);
@@ -109,7 +110,7 @@ export function SearchControls({
         spacing="xs"
         align="flex-end"
       >
-        {navigator.onLine ? (
+        {onLine ? (
           <Select
             w={140}
             style={{ flexGrow: 1 }}
@@ -132,7 +133,7 @@ export function SearchControls({
             <Checkbox
               label="Offline Surveys"
               checked={paramOffline}
-              onClick={(e) => handleChangeOffline(!paramOffline)}
+              onChange={(e) => handleChangeOffline(!paramOffline)}
             />
           </Paper>
         )}
