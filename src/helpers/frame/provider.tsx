@@ -98,6 +98,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           opacity: 0.55,
           blur: 3,
         }}
+        zIndex={1000}
       >
         <Frame ref={frameRef} src={src} onLoad={handleLoad} />
         {callbacks?.confirm && (
