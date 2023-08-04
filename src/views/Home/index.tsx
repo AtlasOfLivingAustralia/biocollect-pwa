@@ -25,6 +25,7 @@ import { BioCollectProjectSearch } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
 import { SearchControls } from './components/SearchControls';
+import { IconArchive } from '@tabler/icons';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
@@ -130,7 +131,23 @@ export function Home() {
                   <ProjectItem key={project.projectId} project={project} />
                 ))
               ) : (
-                <Text>No projects</Text>
+                <Grid.Col span={12}>
+                  <Stack align="center" spacing={8}>
+                    <IconArchive size="4rem" />
+                    <Text
+                      mt="md"
+                      sx={(theme) => ({
+                        fontFamily: theme.headings.fontFamily,
+                      })}
+                      size="xl"
+                    >
+                      No projects found
+                    </Text>
+                    <Text color="dimmed">
+                      Try refining your search criteria
+                    </Text>
+                  </Stack>
+                </Grid.Col>
               );
             }
 
