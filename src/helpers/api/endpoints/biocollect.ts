@@ -13,11 +13,11 @@ const escapeRegExp = (input: string) =>
   input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
-  surveys.filter(
+  surveys?.filter(
     ({ startDate, endDate }) =>
       new Date(startDate).getTime() <= Date.now() &&
       (!endDate || new Date(endDate).getTime() >= Date.now())
-  );
+  ) || [];
 
 const formatProjects = (projects: BioCollectProject[]) => {
   return projects.map((project) => ({
