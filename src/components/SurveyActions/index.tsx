@@ -40,7 +40,7 @@ export function SurveyActions({ survey }: SurveyActionsProps) {
                 'project',
                 {
                   projectId: survey.projectId,
-                  fq: `projectActivityNameFacet:${survey.name}`,
+                  projectActivityId: survey.projectActivityId,
                 },
                 `${survey.name} Survey`
               );
