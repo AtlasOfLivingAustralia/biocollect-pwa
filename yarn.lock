@@ -2104,6 +2104,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/modals@npm:^6.0.19":
+  version: 6.0.19
+  resolution: "@mantine/modals@npm:6.0.19"
+  dependencies:
+    "@mantine/utils": 6.0.19
+  peerDependencies:
+    "@mantine/core": 6.0.19
+    "@mantine/hooks": 6.0.19
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 34c85c65ab3a184b20b38bdcede574f0acfd8eacee5dc3a01fc89442e5208b6b760f514272c229fb6b18f5ee58cfa0eacd9d427c884a20110c74005584bdf579
+  languageName: node
+  linkType: hard
+
 "@mantine/nprogress@npm:^6.0.14":
   version: 6.0.14
   resolution: "@mantine/nprogress@npm:6.0.14"
@@ -2138,6 +2152,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0"
   checksum: 2e495b80bf39d3e443c17f24cac6c5745a50c13f777383c325dc8a31dd91ddd614f8411a7fdf5268e85a14741dc574c6de15d22e1616ca62e7ebfcccc4eb2e17
+  languageName: node
+  linkType: hard
+
+"@mantine/utils@npm:6.0.19":
+  version: 6.0.19
+  resolution: "@mantine/utils@npm:6.0.19"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: c33e2eba6d78e2b07c222c79a086da9d43a39a1fb8e409b10ab5775f6855325fd30c56b17fd67f9a827497eff2fdc22fff4b9190c2d7069b2c58565d63b3a450
   languageName: node
   linkType: hard
 
@@ -2970,6 +2993,7 @@ __metadata:
     "@emotion/react": ^11.11.1
     "@mantine/core": ^6.0.14
     "@mantine/hooks": ^6.0.14
+    "@mantine/modals": ^6.0.19
     "@mantine/nprogress": ^6.0.14
     "@tabler/icons": ^1.119.0
     "@types/color": ^3.0.3
