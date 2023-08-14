@@ -16,6 +16,7 @@ import {
 // Contexts
 import RecordsDrawerContext from './context';
 import {
+  Button,
   Center,
   Divider,
   Drawer,
@@ -25,7 +26,9 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { IconFiles } from '@tabler/icons';
+import { FrameContext } from 'helpers/frame';
+
+import { IconExternalLink, IconFiles } from '@tabler/icons';
 import { APIContext } from 'helpers/api';
 import { ActivityItem } from './components/ActivityItem';
 
@@ -41,16 +44,17 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const api = useContext(APIContext);
+  const frame = useContext(FrameContext);
 
   // Callback function to open the records drawer
   const open = (
     newView: BioCollectBioActivityView,
     newFilters?: FilterQueries,
-    recordsFor?: string
+    newRecordsFor?: string
   ) => {
     if (newView) setView(newView);
     if (newFilters) setFilters(newFilters);
-    if (recordsFor) setRecordsFor(recordsFor);
+    if (newRecordsFor) setRecordsFor(newRecordsFor);
 
     // Equality check to reset UI state to loading
     if (view !== newView || !shallowEqual(filters, newFilters || {}))
@@ -101,6 +105,44 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
           </Drawer.Header>
           <Drawer.Body>
             <Stack pb="sm">
+              {filters.projectActivityId && (
+                <>
+                  <Text
+                    size="sm"
+                    transform="uppercase"
+                    color="dimmed"
+                    weight="bold"
+                  >
+                    Unpublished
+                  </Text>
+                  <Button
+                    leftIcon={<IconExternalLink size="1rem" />}
+                    mb="xs"
+                    variant="outline"
+                    onClick={() => {
+                      close();
+                      frame.open(
+                        `${
+                          import.meta.env.VITE_API_BIOCOLLECT
+                        }/pwa/offlineList?projectActivityId=${
+                          filters.projectActivityId
+                        }`,
+                        'Unpublished Records'
+                      );
+                    }}
+                  >
+                    View unpublished records
+                  </Button>
+                </>
+              )}
+              <Text
+                size="sm"
+                transform="uppercase"
+                color="dimmed"
+                weight="bold"
+              >
+                Published
+              </Text>
               {(() => {
                 if (search) {
                   return search.activities.length > 0 ? (
