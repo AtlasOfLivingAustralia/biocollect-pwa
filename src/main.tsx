@@ -11,6 +11,7 @@ import { RecordsDrawerProvider } from 'helpers/drawer';
 import { FrameProvider } from 'helpers/frame';
 
 import App from './App';
+import { ModalsProvider } from '@mantine/modals';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
@@ -53,11 +54,13 @@ function Main() {
           withGlobalStyles
           withNormalizeCSS
         >
-          <FrameProvider>
-            <RecordsDrawerProvider>
-              <App />
-            </RecordsDrawerProvider>
-          </FrameProvider>
+          <ModalsProvider>
+            <FrameProvider>
+              <RecordsDrawerProvider>
+                <App />
+              </RecordsDrawerProvider>
+            </FrameProvider>
+          </ModalsProvider>
         </MantineProvider>
       </APIProvider>
     </AuthProvider>
