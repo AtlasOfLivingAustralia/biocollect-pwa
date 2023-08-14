@@ -153,7 +153,7 @@ export function Header({ project, mobile }: HeaderProps) {
       </Box>
     </Box>
   ) : (
-    <Group position="apart" align="start">
+    <Group position="apart" align="start" spacing={0}>
       <Box
         py={36}
         pl={36}
