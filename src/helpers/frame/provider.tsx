@@ -71,7 +71,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
             token: auth.user?.access_token,
           },
         },
-        '*'
+        import.meta.env.VITE_API_BIOCOLLECT
       );
   };
 
