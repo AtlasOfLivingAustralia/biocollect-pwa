@@ -16,6 +16,7 @@ import {
   IconQuestionMark,
   IconLogout,
   IconFileUpload,
+  IconUser,
 } from '@tabler/icons';
 
 // BioCollect logos
@@ -24,7 +25,7 @@ import logoLight from '/assets/logo-light-32x32.png';
 import { themes } from 'theme';
 import { useContext } from 'react';
 import { FrameContext } from 'helpers/frame';
-import { useOnLine } from 'helpers/funcs';
+import { getInitials, useOnLine } from 'helpers/funcs';
 
 export default function Header() {
   const frame = useContext(FrameContext);
@@ -74,7 +75,14 @@ export default function Header() {
             <Menu position="bottom-end">
               <Menu.Target>
                 <Avatar component={UnstyledButton} radius="xl" variant="filled">
-                  JB
+                  {auth.user?.profile.given_name &&
+                  auth.user?.profile.family_name ? (
+                    getInitials(
+                      `${auth.user?.profile.given_name} ${auth.user?.profile.family_name}`
+                    )
+                  ) : (
+                    <IconUser size="1rem" />
+                  )}
                 </Avatar>
               </Menu.Target>
               <Menu.Dropdown>

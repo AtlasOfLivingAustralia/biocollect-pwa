@@ -12,19 +12,11 @@ import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';
 import { RecordsDrawerContext } from '..';
+import { getInitials } from 'helpers/funcs';
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
 }
-
-const getInitials = (name: string) => {
-  return name
-    .toUpperCase()
-    .split(' ')
-    .map((part) => part.charAt(0))
-    .slice(0, 2)
-    .join('');
-};
 
 export function ActivityItem({ activity }: ActivityItemProps) {
   const drawer = useContext(RecordsDrawerContext);
