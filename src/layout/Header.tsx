@@ -45,7 +45,7 @@ export default function Header() {
   };
 
   return (
-    <MantineHeader height={71} p="md" pos="fixed" zIndex={100}>
+    <MantineHeader height={71} p="md" pos="fixed" zIndex={200}>
       <Group position="apart" px="sm">
         <Group>
           <Link to="/">
