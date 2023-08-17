@@ -4,6 +4,7 @@ import {
   RouterProvider,
   redirect,
   createBrowserRouter,
+  defer,
 } from 'react-router-dom';
 
 // App views
@@ -17,6 +18,9 @@ const isDev = import.meta.env.DEV;
 export default function Routes() {
   const { isAuthenticated } = useAuth();
   const api = useContext(APIContext);
+  const isInitialRouteProject = useRef(
+    window.location.pathname.startsWith('/project/')
+  );
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
     createBrowserRouter([
@@ -34,11 +38,22 @@ export default function Routes() {
             path: 'project/:projectId',
             element: <Project />,
             loader: async ({ params, ...rest }) => {
-              const [project, surveys] = await Promise.all([
+              const initialProject = isInitialRouteProject.current;
+              if (isInitialRouteProject.current)
+                isInitialRouteProject.current = false;
+
+              // Create an array of requests to fire
+              const requests = [
                 api.biocollect.getProject(params.projectId || ''),
                 api.biocollect.listSurveys(params.projectId || ''),
-              ]);
-              return { project, surveys };
+              ];
+
+              // Defer based on whether the initial route is the project route
+              return defer({
+                data: initialProject
+                  ? Promise.all(requests)
+                  : await Promise.all(requests),
+              });
             },
           },
           ...(isDev

@@ -1,9 +1,11 @@
-import { useLoaderData } from 'react-router-dom';
+import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
 import {
   Accordion,
   Box,
+  Center,
   Grid,
   Group,
+  Loader,
   Paper,
   Stack,
   Text,
@@ -25,15 +27,34 @@ import {
   IconPhone,
 } from '@tabler/icons';
 import { ScienceTypes } from './components/ScienceTypes';
+import { Suspense } from 'react';
 
 interface ProjectLoaderData {
   project: BioCollectProject;
   surveys: BioCollectSurvey[];
 }
 
-export function Project() {
-  const { project, surveys } = useLoaderData() as ProjectLoaderData;
+type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 
+export function Project() {
+  const { data } = useLoaderData() as any;
+  return (
+    <Suspense
+      fallback={
+        <Center h="calc(100vh - 71px)">
+          <Loader />
+        </Center>
+      }
+    >
+      <Await resolve={data}>
+        <ProjectBody />
+      </Await>
+    </Suspense>
+  );
+}
+
+function ProjectBody() {
+  const [project, surveys] = useAsyncValue() as ProjectLoaderArr;
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight =
