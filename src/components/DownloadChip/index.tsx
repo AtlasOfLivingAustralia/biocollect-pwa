@@ -1,11 +1,12 @@
 import { useContext } from 'react';
-import { Chip, Text, Title } from '@mantine/core';
+import { Chip, Text, Title, useMantineTheme } from '@mantine/core';
 import { IconDownload } from '@tabler/icons';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
 import { BioCollectSurvey } from 'types';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { modals } from '@mantine/modals';
+import { useMediaQuery } from '@mantine/hooks';
 
 interface FrameProps {
   survey: BioCollectSurvey;
@@ -15,6 +16,8 @@ interface FrameProps {
 export function DownloadChip({ survey, label }: FrameProps) {
   const frame = useContext(FrameContext);
   const api = useContext(APIContext);
+  const theme = useMantineTheme();
+  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
   const downloaded = useLiveQuery(async () =>
     Boolean(await api.db.cached.get(survey.id))
@@ -88,7 +91,14 @@ export function DownloadChip({ survey, label }: FrameProps) {
       onClick={handleChipClick}
     >
       {!downloaded && <IconDownload size="0.8rem" style={{ marginRight: 8 }} />}
-      <Text ml="xs" color="dimmed" weight="bold" size="xs">
+      <Text
+        ml="xs"
+        color="dimmed"
+        weight="bold"
+        size="xs"
+        maw={mobile ? 115 : 200}
+        truncate
+      >
         {label || (downloaded ? 'Downloaded' : 'Download')}
       </Text>
     </Chip>

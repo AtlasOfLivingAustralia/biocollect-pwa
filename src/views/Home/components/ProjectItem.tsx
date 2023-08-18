@@ -11,6 +11,7 @@ import {
   useMantineTheme,
   Button,
   Chip,
+  ScrollArea,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons';
 import { SurveyActions, Background, DownloadChip } from 'components';
@@ -27,8 +28,8 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
   const loading = !Boolean(survey);
 
   return (
-    <Group position="apart" spacing="xs">
-      <Skeleton visible={loading} radius="lg" maw={200}>
+    <Group position="apart" spacing={0}>
+      <Skeleton visible={loading} radius="lg" w="calc(100% - 130px)">
         {loading || !survey ? (
           <Chip>Placeholder Chip</Chip>
         ) : (
@@ -144,27 +145,29 @@ export function ProjectItem({ project }: ProjectItemProps) {
         </Box>
         <Stack spacing={0} mt="auto">
           <Divider
-            mb="md"
             labelPosition="center"
             label={
               <Skeleton visible={loading} w={42}>
                 Surveys
               </Skeleton>
             }
+            mb={6}
           />
-          <Stack px="md" mb="md" spacing="xs">
-            {loading ? (
-              <ProjectItemSurvey />
-            ) : surveys.length > 0 ? (
-              surveys.map((survey) => (
-                <ProjectItemSurvey key={survey.id} survey={survey} />
-              ))
-            ) : (
-              <Text align="center" size="sm" color="dimmed" h={28.2}>
-                No surveys available
-              </Text>
-            )}
-          </Stack>
+          <ScrollArea h={80} type="auto">
+            <Stack px="md" mb="md" spacing="sm">
+              {loading ? (
+                <ProjectItemSurvey />
+              ) : surveys.length > 0 ? (
+                surveys.map((survey) => (
+                  <ProjectItemSurvey key={survey.id} survey={survey} />
+                ))
+              ) : (
+                <Text align="center" size="sm" color="dimmed" h={28.2}>
+                  No surveys available
+                </Text>
+              )}
+            </Stack>
+          </ScrollArea>
         </Stack>
       </Paper>
     </Grid.Col>
