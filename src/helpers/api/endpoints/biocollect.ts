@@ -47,7 +47,7 @@ export default (db: BioCollectDexie) => ({
     search?: string,
     hasDownloadedSurveys = true
   ): Promise<BioCollectProjectSearch> => {
-    if (navigator.onLine) {
+    if (navigator.onLine && !hasDownloadedSurveys) {
       // Define basic query parameters
       const params: { [key: string]: any } = {
         fq: 'isExternal:F',
