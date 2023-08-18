@@ -102,7 +102,12 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         }}
         zIndex={1000}
       >
-        <Frame ref={frameRef} src={src} onLoad={handleLoad} />
+        <Frame
+          ref={frameRef}
+          src={src}
+          onLoad={handleLoad}
+          allow="geolocation 'self'"
+        />
         {callbacks?.confirm && (
           <Group mt="sm" position="center" spacing="xs">
             <Button onClick={callbacks.confirm} loading={!canConfirm}>
