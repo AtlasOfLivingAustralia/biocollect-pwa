@@ -34,7 +34,9 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
   useEffect(() => {
     if (callbacks?.confirm && !isFrame()) {
       // Define a message handler to listen for download events
-      const messageHandler = ({ data }: MessageEvent<FrameEvent>) => {
+      const messageHandler = (message: MessageEvent<FrameEvent>) => {
+        const { data } = message;
+        console.log('[iFrame Message]', message);
         if (data.event === 'download-complete') {
           setCanConfirm(true);
         } else if (data.event === 'download-removed') {
