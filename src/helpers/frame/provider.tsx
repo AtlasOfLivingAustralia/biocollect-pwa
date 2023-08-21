@@ -106,7 +106,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           ref={frameRef}
           src={src}
           onLoad={handleLoad}
-          allow="geolocation 'self'"
+          allow="geolocation;"
         />
         {callbacks?.confirm && (
           <Group mt="sm" position="center" spacing="xs">
