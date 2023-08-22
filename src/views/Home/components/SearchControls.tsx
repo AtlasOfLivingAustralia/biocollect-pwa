@@ -32,9 +32,9 @@ export function SearchControls({
   setParams,
   ...rest
 }: SearchControlsProps) {
-  const paramSearch = getString('search', undefined, params);
-  const paramOffline = getBool('offline', true, params);
   const onLine = useOnLine();
+  const paramSearch = getString('search', undefined, params);
+  const paramOffline = getBool('offline', !onLine, params);
 
   // Styling hooks
   const theme = useMantineTheme();
