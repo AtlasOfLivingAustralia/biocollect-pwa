@@ -29,12 +29,12 @@ import { useOnLine } from 'helpers/funcs';
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
 export function Home() {
+  const onLine = useOnLine();
+
   // URL parameters & state
   const [params, setParams] = useSearchParams();
   const paramMax = getNumber('max', 30, params);
   const paramPage = getNumber('page', 1, params);
-  const paramOffline = getBool('offline', true, params);
-
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight =
@@ -44,7 +44,6 @@ export function Home() {
   const [projectSearch, setProjectSearch] =
     useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);
-  const onLine = useOnLine();
 
   // API Context
   const auth = useAuth();
@@ -62,7 +61,7 @@ export function Home() {
           getString('pSort', 'dateCreatedSort', params),
           getBool('isUserPage', false, params),
           getString('search', undefined, params),
-          paramOffline
+          getBool('offline', !onLine, params)
         );
         setProjectSearch(data);
         setLastTotal(data.total);
