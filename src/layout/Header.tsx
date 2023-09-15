@@ -17,6 +17,7 @@ import {
   IconLogout,
   IconFileUpload,
   IconUser,
+  IconBookDownload,
 } from '@tabler/icons-react';
 
 // BioCollect logos
@@ -100,6 +101,17 @@ export default function Header() {
                   icon={<IconFileUpload />}
                 >
                   Unpublished records
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() =>
+                    frame.open(
+                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/REPLACE-ME`,
+                      'Offline Surveys'
+                    )
+                  }
+                  icon={<IconBookDownload />}
+                >
+                  Offline surveys
                 </Menu.Item>
                 {import.meta.env.DEV && (
                   <>
