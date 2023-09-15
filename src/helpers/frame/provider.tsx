@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useRef,
+  useContext,
 } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
@@ -13,9 +14,10 @@ import { isFrame } from 'helpers/funcs';
 import { Frame } from 'components';
 import FrameContext, { FrameCallbacks } from './context';
 import { useAuth } from 'react-oidc-context';
+import { APIContext } from 'helpers/api';
 
 interface FrameEvent {
-  event: 'download-complete' | 'download-removed';
+  event: 'download-complete' | 'download-removed' | 'surveys-removed';
 }
 
 const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
@@ -29,6 +31,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const api = useContext(APIContext);
   const auth = useAuth();
 
   useEffect(() => {
@@ -41,6 +44,8 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           setCanConfirm(true);
         } else if (data.event === 'download-removed') {
           setCanConfirm(false);
+        } else if (data.event === 'surveys-removed') {
+          api.db.cached.clear();
         }
       };
 
