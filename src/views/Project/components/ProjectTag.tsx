@@ -6,11 +6,11 @@ import {
   IconHammer,
   IconHome,
   IconRobot,
-  TablerIcon,
-} from '@tabler/icons';
+  Icon,
+} from '@tabler/icons-react';
 
 interface ProjectTagItem {
-  icon: TablerIcon;
+  icon: Icon;
   name: string;
 }
 

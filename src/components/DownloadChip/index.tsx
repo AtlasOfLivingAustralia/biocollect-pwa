@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { Chip, Text, Title, useMantineTheme } from '@mantine/core';
-import { IconDownload } from '@tabler/icons';
+import { Chip, Text, useMantineTheme } from '@mantine/core';
+import { IconDownload } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
 import { BioCollectSurvey } from 'types';

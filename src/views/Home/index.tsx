@@ -23,7 +23,7 @@ import { BioCollectProjectSearch } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
 import { SearchControls } from './components/SearchControls';
-import { IconArchive } from '@tabler/icons';
+import { IconArchive } from '@tabler/icons-react';
 import { useOnLine } from 'helpers/funcs';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);

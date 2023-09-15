@@ -17,7 +17,7 @@ import {
   IconLogout,
   IconFileUpload,
   IconUser,
-} from '@tabler/icons';
+} from '@tabler/icons-react';
 
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
@@ -26,6 +26,9 @@ import { themes } from 'theme';
 import { useContext } from 'react';
 import { FrameContext } from 'helpers/frame';
 import { getInitials, useOnLine } from 'helpers/funcs';
+
+// Install button
+import { InstallButton } from './InstallButton';
 
 export default function Header() {
   const frame = useContext(FrameContext);
@@ -62,15 +65,13 @@ export default function Header() {
             />
           </Link>
           <Group spacing="xs">
-            <Badge radius="sm" color="blue">
-              ver 0.0
-            </Badge>
             <Badge radius="sm" color={onLine ? 'green' : 'red'}>
               {onLine ? 'online' : 'offline'}
             </Badge>
           </Group>
         </Group>
         <Group>
+          <InstallButton />
           {auth.isAuthenticated ? (
             <Menu position="bottom-end">
               <Menu.Target>

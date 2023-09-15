@@ -28,7 +28,7 @@ import {
 } from '@mantine/core';
 import { FrameContext } from 'helpers/frame';
 
-import { IconExternalLink, IconFiles } from '@tabler/icons';
+import { IconExternalLink, IconFiles } from '@tabler/icons-react';
 import { APIContext } from 'helpers/api';
 import { ActivityItem } from './components/ActivityItem';
 

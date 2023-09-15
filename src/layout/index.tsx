@@ -1,13 +1,16 @@
 import { useEffect } from 'react';
-import { Box, Center, Loader, ScrollArea } from '@mantine/core';
+import { Box, Center, Loader } from '@mantine/core';
+
 import { Outlet, useNavigation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+
 import {
   NavigationProgress,
   startNavigationProgress,
   completeNavigationProgress,
   resetNavigationProgress,
 } from '@mantine/nprogress';
+
 import Header from './Header';
 
 export default function Layout() {

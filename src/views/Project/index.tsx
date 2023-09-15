@@ -25,7 +25,7 @@ import {
   IconHeartHandshake,
   IconInfoCircle,
   IconPhone,
-} from '@tabler/icons';
+} from '@tabler/icons-react';
 import { ScienceTypes } from './components/ScienceTypes';
 import { Suspense } from 'react';
 

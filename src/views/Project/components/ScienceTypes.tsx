@@ -30,11 +30,11 @@ import {
   IconUsers,
   IconWorld,
   IconZoomCheck,
-  TablerIcon,
-} from '@tabler/icons';
+  Icon,
+} from '@tabler/icons-react';
 import { ProjectLink } from 'types';
 
-const typeToIcon: { [key: string]: TablerIcon } = {
+const typeToIcon: { [key: string]: Icon } = {
   Animals: IconDog,
   'Agricultural & veterinary science': IconPaw,
   Astronomy: IconTelescope,

@@ -6,7 +6,7 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import { IconEye, IconPlus } from '@tabler/icons';
+import { IconEye, IconPlus } from '@tabler/icons-react';
 import { BioCollectSurvey } from 'types';
 
 import { RecordsDrawerContext } from 'helpers/drawer';

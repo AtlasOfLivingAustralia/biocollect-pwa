@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { IconEdit, IconEye, IconUser } from '@tabler/icons';
+import { IconEdit, IconEye, IconUser } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';

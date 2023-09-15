@@ -13,7 +13,7 @@ import {
   Chip,
   ScrollArea,
 } from '@mantine/core';
-import { IconArrowUpRight } from '@tabler/icons';
+import { IconArrowUpRight } from '@tabler/icons-react';
 import { SurveyActions, Background, DownloadChip } from 'components';
 import { Corner } from 'components/Wave';
 import { useState } from 'react';

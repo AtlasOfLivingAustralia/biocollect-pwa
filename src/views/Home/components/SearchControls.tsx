@@ -13,7 +13,7 @@ import {
   Stack,
 } from '@mantine/core';
 import { SetURLSearchParams } from 'react-router-dom';
-import { IconSearch } from '@tabler/icons';
+import { IconSearch } from '@tabler/icons-react';
 
 // Helper functions / components
 import { getBool, getString } from 'helpers/params';

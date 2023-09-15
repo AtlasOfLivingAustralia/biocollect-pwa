@@ -13,11 +13,11 @@ import {
   IconBrandVimeo,
   IconBrandYoutube,
   IconRss,
-  TablerIcon,
-} from '@tabler/icons';
+  Icon,
+} from '@tabler/icons-react';
 import { ProjectLink } from 'types';
 
-const roleToIcon: { [key: string]: TablerIcon } = {
+const roleToIcon: { [key: string]: Icon } = {
   facebook: IconBrandFacebook,
   flickr: IconBrandFlickr,
   googlePlus: IconBrandGoogle,

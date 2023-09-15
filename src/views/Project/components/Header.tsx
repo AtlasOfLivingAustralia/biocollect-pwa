@@ -20,7 +20,7 @@ import {
   Badge,
   Divider,
 } from '@mantine/core';
-import { IconExternalLink } from '@tabler/icons';
+import { IconExternalLink } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import { BioCollectProject } from 'types';
 
@@ -212,8 +212,7 @@ export function Header({ project, mobile }: HeaderProps) {
             </TypographyStylesProvider>
           </ScrollArea.Autosize>
         )}
-        <Divider mt="xl" mb="lg" variant="dashed" />
-        <Group mt="sm" position="apart" align="flex-start">
+        <Group mt="xl" position="apart" align="flex-start">
           <TimeSpan start={project.startDate} end={project.endDate} />
           {project.links.length > 0 && (
             <SocialLinks links={project.links} align="flex-start" />

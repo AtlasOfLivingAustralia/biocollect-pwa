@@ -7,7 +7,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { IconCalendar } from '@tabler/icons';
+import { IconCalendar } from '@tabler/icons-react';
 import { DownloadChip, SurveyActions } from 'components';
 import { BioCollectSurvey } from 'types';
 

@@ -1,5 +1,5 @@
 import { Group, Text, Paper, Stack, Progress, PaperProps } from '@mantine/core';
-import { IconCalendar, IconCalendarDue } from '@tabler/icons';
+import { IconCalendar, IconCalendarDue } from '@tabler/icons-react';
 
 interface TimeSpanProps extends PaperProps {
   start?: string | null;
