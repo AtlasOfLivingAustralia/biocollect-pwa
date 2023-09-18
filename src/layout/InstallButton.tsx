@@ -103,6 +103,7 @@ export function InstallButton() {
               ? browser?.name
               : 'other'
           }
+          mih={300}
         >
           <Tabs.List mb="md">
             <Tabs.Tab value="ios" icon={<IconBrandApple size="0.9rem" />}>
