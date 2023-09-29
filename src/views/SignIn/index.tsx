@@ -42,7 +42,12 @@ export function SignIn() {
             height={64}
             src={theme.colorScheme === 'dark' ? logoLight : logoDark}
           />
-          <Title order={2}>BioCollect</Title>
+          <Stack spacing={0} align="center">
+            <Title order={2}>BioCollect</Title>
+            <Text size="sm" color="dimmed">
+              Citizen Science Projects
+            </Text>
+          </Stack>
           <Divider my="sm" w="100%" opacity={0.6} />
           <Button
             leftIcon={<Image width={16} height={16} src={logoAla} />}
@@ -80,7 +85,7 @@ export function SignIn() {
           <Space h={45} />
           <Button
             leftIcon={<Image width={16} height={16} src={logoAla} />}
-            onClick={() => auth.signinRedirect()}
+            onClick={() => auth.signinRedirect}
             fullWidth
           >
             Sign in with ALA

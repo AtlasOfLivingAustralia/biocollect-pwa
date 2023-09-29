@@ -42,7 +42,7 @@ export default function Routes() {
               if (isInitialRouteProject.current)
                 isInitialRouteProject.current = false;
 
-              // Create an array of requests to fire
+              // Create an array of requests to send
               const requests = [
                 api.biocollect.getProject(params.projectId || ''),
                 api.biocollect.listSurveys(params.projectId || ''),
