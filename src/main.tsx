@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 
 // App-specific imports
@@ -12,7 +13,6 @@ import { FrameProvider } from 'helpers/frame';
 import { useOnLine } from 'helpers/funcs';
 
 import App from './App';
-import { ModalsProvider } from '@mantine/modals';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });

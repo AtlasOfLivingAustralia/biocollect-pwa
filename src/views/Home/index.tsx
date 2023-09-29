@@ -10,6 +10,7 @@ import {
   Pagination,
   useMantineTheme,
 } from '@mantine/core';
+import { IconArchive } from '@tabler/icons-react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
 
@@ -23,8 +24,8 @@ import { BioCollectProjectSearch } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
 import { SearchControls } from './components/SearchControls';
-import { IconArchive } from '@tabler/icons-react';
 import { useOnLine } from 'helpers/funcs';
+import { DownloadInstructions } from './components/DownloadInstructions';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
@@ -122,6 +123,7 @@ export function Home() {
           },
         })}
       >
+        <DownloadInstructions />
         <Grid>
           {(() => {
             if (projectSearch) {

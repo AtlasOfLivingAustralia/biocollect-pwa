@@ -1,24 +1,20 @@
+import { Suspense } from 'react';
 import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
 import {
   Accordion,
   Box,
   Center,
+  Divider,
   Grid,
   Group,
   Loader,
   Paper,
   Stack,
   Text,
+  ThemeIcon,
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { BioCollectProject, BioCollectSurvey } from 'types';
-import { useMediaQuery } from '@mantine/hooks';
-
-// import { Frame } from 'components';
-import { Header } from './components/Header';
-import { Wave } from 'components/Wave';
-import { SurveyCard } from './components/SurveyCard';
 import {
   IconClipboardList,
   IconFlask2,
@@ -26,13 +22,14 @@ import {
   IconInfoCircle,
   IconPhone,
 } from '@tabler/icons-react';
-import { ScienceTypes } from './components/ScienceTypes';
-import { Suspense } from 'react';
+import { DownloadInstructions } from 'components';
+import { BioCollectProject, BioCollectSurvey } from 'types';
+import { useMediaQuery } from '@mantine/hooks';
 
-interface ProjectLoaderData {
-  project: BioCollectProject;
-  surveys: BioCollectSurvey[];
-}
+import { Header } from './components/Header';
+import { Wave } from 'components/Wave';
+import { SurveyCard } from './components/SurveyCard';
+import { ScienceTypes } from './components/ScienceTypes';
 
 type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 
@@ -63,6 +60,10 @@ function ProjectBody() {
   return (
     <>
       <Header project={project} mobile={mobile} />
+      <Box px={36} pb="sm">
+        <Divider mb="xl" opacity={0.45} />
+        <DownloadInstructions />
+      </Box>
       <Wave
         style={{ marginTop: theme.spacing.xl, marginBottom: -30 }}
         preserveAspectRatio="none"
@@ -73,7 +74,9 @@ function ProjectBody() {
       />
       <Box py="xl" px={36} bg={highlight}>
         <Group align="center" mb="lg" mt={-20}>
-          <IconClipboardList />
+          <ThemeIcon variant="light" size={50} radius={25}>
+            <IconClipboardList />
+          </ThemeIcon>
           <Title order={2}>Surveys</Title>
         </Group>
         <Grid gutter="xl">
