@@ -1,4 +1,3 @@
-import { PropsWithChildren } from 'react';
 import {
   Box,
   BoxProps,

@@ -7,6 +7,7 @@ import {
   Button,
   UnstyledButton,
   Badge,
+  Loader,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -73,83 +74,85 @@ export default function Header() {
         </Group>
         <Group>
           <InstallButton />
-          {auth.isAuthenticated ? (
-            <Menu position="bottom-end">
-              <Menu.Target>
-                <Avatar component={UnstyledButton} radius="xl" variant="filled">
-                  {auth.user?.profile.given_name &&
-                  auth.user?.profile.family_name ? (
+          <Menu position="bottom-end" disabled={!auth.isAuthenticated}>
+            <Menu.Target>
+              <Avatar
+                component={UnstyledButton}
+                radius="xl"
+                variant="filled"
+                opacity={auth.isAuthenticated ? 1 : 0.4}
+              >
+                {(() => {
+                  const { user, isAuthenticated } = auth;
+                  const { given_name, family_name } = user?.profile || {};
+
+                  if (!isAuthenticated) return <Loader size="sm" />;
+
+                  // If the user has a first & last name
+                  return given_name && family_name ? (
                     getInitials(
                       `${auth.user?.profile.given_name} ${auth.user?.profile.family_name}`
                     )
                   ) : (
-                    <IconUser size="1rem" />
-                  )}
-                </Avatar>
-              </Menu.Target>
-              <Menu.Dropdown>
-                <Menu.Item component={Link} to="/" icon={<IconSearch />}>
-                  Search projects
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() =>
-                    frame.open(
-                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
-                      'Unpublished Records'
-                    )
-                  }
-                  icon={<IconFileUpload />}
-                >
-                  Unpublished records
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() =>
-                    frame.open(
-                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/REPLACE-ME`,
-                      'Offline Surveys'
-                    )
-                  }
-                  icon={<IconBookDownload />}
-                >
-                  Offline surveys
-                </Menu.Item>
-                {import.meta.env.DEV && (
-                  <>
-                    <Menu.Divider />
-                    <Menu.Label>Development</Menu.Label>
-                    <Menu.Item component={Link} to="/debug" icon={<IconBug />}>
-                      Debug info
-                    </Menu.Item>
-                  </>
-                )}
-                <Menu.Divider />
-                <Menu.Item
-                  component="a"
-                  href="https://support.ala.org.au/support/solutions/6000139493"
-                  target="_blank"
-                  icon={<IconQuestionMark />}
-                >
-                  Help
-                </Menu.Item>
-                <Menu.Item
-                  onClick={signOut}
-                  icon={<IconLogout />}
-                  disabled={auth.isLoading || !onLine}
-                  color="red"
-                >
-                  Sign Out
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          ) : (
-            <Button
-              variant="light"
-              onClick={() => auth.signinRedirect()}
-              loading={auth.isLoading}
-            >
-              Sign In
-            </Button>
-          )}
+                    <IconUser />
+                  );
+                })()}
+              </Avatar>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item component={Link} to="/" icon={<IconSearch />}>
+                Search projects
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  frame.open(
+                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
+                    'Unpublished Records'
+                  )
+                }
+                icon={<IconFileUpload />}
+              >
+                Unpublished records
+              </Menu.Item>
+              <Menu.Item
+                onClick={() =>
+                  frame.open(
+                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/REPLACE-ME`,
+                    'Offline Surveys'
+                  )
+                }
+                icon={<IconBookDownload />}
+              >
+                Offline surveys
+              </Menu.Item>
+              {import.meta.env.DEV && (
+                <>
+                  <Menu.Divider />
+                  <Menu.Label>Development</Menu.Label>
+                  <Menu.Item component={Link} to="/debug" icon={<IconBug />}>
+                    Debug info
+                  </Menu.Item>
+                </>
+              )}
+              <Menu.Divider />
+              <Menu.Item
+                component="a"
+                href="https://support.ala.org.au/support/solutions/6000139493"
+                target="_blank"
+                icon={<IconQuestionMark />}
+              >
+                Help
+              </Menu.Item>
+              <Menu.Item
+                onClick={signOut}
+                icon={<IconLogout />}
+                disabled={auth.isLoading || !onLine}
+                color="red"
+              >
+                Sign Out
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Group>
       </Group>
     </MantineHeader>

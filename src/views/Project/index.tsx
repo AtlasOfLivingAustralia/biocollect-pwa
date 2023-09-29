@@ -22,7 +22,6 @@ import {
   IconInfoCircle,
   IconPhone,
 } from '@tabler/icons-react';
-import { DownloadInstructions } from 'components';
 import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 
@@ -30,6 +29,7 @@ import { Header } from './components/Header';
 import { Wave } from 'components/Wave';
 import { SurveyCard } from './components/SurveyCard';
 import { ScienceTypes } from './components/ScienceTypes';
+import { DownloadInstructions } from './components/DownloadInstructions';
 
 type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 

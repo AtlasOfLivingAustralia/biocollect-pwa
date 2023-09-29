@@ -25,7 +25,6 @@ import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
 import { SearchControls } from './components/SearchControls';
 import { useOnLine } from 'helpers/funcs';
-import { DownloadInstructions } from './components/DownloadInstructions';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
@@ -123,7 +122,6 @@ export function Home() {
           },
         })}
       >
-        <DownloadInstructions />
         <Grid>
           {(() => {
             if (projectSearch) {
