@@ -95,10 +95,8 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
       onClick={handleChipClick}
       {...rest}
     >
-      {!downloaded && onLine ? (
+      {!downloaded && onLine && (
         <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-      ) : (
-        <IconExclamationCircle size="0.8rem" style={{ marginRight: 8 }} />
       )}
       <Text
         ml="xs"
