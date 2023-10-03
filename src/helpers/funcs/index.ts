@@ -1,4 +1,4 @@
 export { isFrame } from './isFrame';
-export { needsRefresh } from './needsRefresh';
-export { useOnLine } from './useOnLine';
+export { needsReauth } from './needsReauth';
+export { useOnLine, isOnline } from './useOnLine';
 export { getInitials } from './getInitials';

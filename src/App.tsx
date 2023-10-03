@@ -5,13 +5,15 @@ import { Center, Loader } from '@mantine/core';
 import Routes from './Routes';
 import { useContext, useEffect } from 'react';
 import { FrameContext } from 'helpers/frame';
+import { needsReauth, useOnLine } from 'helpers/funcs';
 
 function App() {
-  const { isLoading, isAuthenticated } = useAuth();
+  const auth = useAuth();
   const frame = useContext(FrameContext);
+  const onLine = useOnLine();
 
   console.log(
-    `[App] isLoading: ${isLoading} | isAuthenticated: ${isAuthenticated}`
+    `[App] isLoading: ${auth.isLoading} | isAuthenticated: ${auth.isAuthenticated}`
   );
 
   // Check for showUnpublishedRecords flag
@@ -34,7 +36,31 @@ function App() {
     }
   }, []);
 
-  if (isLoading) {
+  // Check to check & refresh the authentication (if needed)
+  useEffect(() => {
+    async function checkAuth() {
+      if (needsReauth() && onLine) {
+        try {
+          await auth.signinSilent();
+        } catch (error) {
+          const params = new URLSearchParams({
+            client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
+            redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+            logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+          });
+
+          await auth.removeUser();
+          window.location.replace(
+            `${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`
+          );
+        }
+      }
+    }
+
+    checkAuth();
+  }, []);
+
+  if (auth.isLoading) {
     return (
       <Center sx={{ width: '100vw', height: '100vh' }}>
         <Loader />

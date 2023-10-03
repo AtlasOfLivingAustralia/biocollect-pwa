@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
 // Helper function to get whether the client is online
-const getStatus = () =>
+export const isOnline = () =>
   typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
     ? navigator.onLine
     : true;
 
 export const useOnLine = () => {
-  const [status, setStatus] = useState(getStatus());
+  const [status, setStatus] = useState(isOnline());
 
   // Helper / callback functions for online status changing
   const handleOnline = () => setStatus(true);

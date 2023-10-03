@@ -1,12 +1,13 @@
 import { useContext } from 'react';
 import { Chip, ChipProps, Text, useMantineTheme } from '@mantine/core';
-import { IconDownload } from '@tabler/icons-react';
+import { IconDownload, IconExclamationCircle } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
 import { BioCollectSurvey } from 'types';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { modals } from '@mantine/modals';
 import { useMediaQuery } from '@mantine/hooks';
+import { useOnLine } from 'helpers/funcs';
 
 interface DownloadChipProps extends Omit<ChipProps, 'children'> {
   survey?: BioCollectSurvey;
@@ -18,6 +19,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   const api = useContext(APIContext);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const onLine = useOnLine();
 
   const downloaded = survey
     ? useLiveQuery(async () => Boolean(await api.db.cached.get(survey.id)))
@@ -80,6 +82,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
 
   return (
     <Chip
+      disabled={!onLine}
       checked={downloaded}
       styles={{
         label: {
@@ -92,7 +95,11 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
       onClick={handleChipClick}
       {...rest}
     >
-      {!downloaded && <IconDownload size="0.8rem" style={{ marginRight: 8 }} />}
+      {!downloaded && onLine ? (
+        <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
+      ) : (
+        <IconExclamationCircle size="0.8rem" style={{ marginRight: 8 }} />
+      )}
       <Text
         ml="xs"
         color="dimmed"

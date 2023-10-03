@@ -17,6 +17,26 @@ import { APIContext } from 'helpers/api';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { generateShades } from 'theme';
 
+const getStoredState = () => {
+  const [storeKey, storeState] = Object.entries(localStorage).find(([key]) =>
+    key.startsWith('oidc.user')
+  ) || [null, null];
+
+  // If a user exists in the store, return the parsed JSON, otherwise return null
+  return [storeKey, JSON.parse(storeState || '{}')];
+};
+
+const expireToken = () => {
+  const [key, state] = getStoredState();
+  localStorage.setItem(
+    key,
+    JSON.stringify({
+      ...state,
+      expires_at: Math.floor(Date.now() / 1000) + 2,
+    })
+  );
+};
+
 export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
@@ -32,6 +52,7 @@ export function Debug() {
     <Box p="xl">
       <Title mb="sm">Authentication</Title>
       <Group mb="sm" spacing="sm">
+        <Button onClick={expireToken}>Expire Tokens</Button>
         <Button onClick={() => clipboard.copy(auth.user?.access_token)}>
           Copy Access Token
         </Button>
@@ -42,13 +63,6 @@ export function Debug() {
         API Configuration
       </Title>
       <Code block>{JSON.stringify(import.meta.env, null, 2)}</Code>
-      {/* <Title mb="sm" mt="xl">
-        Frame Test
-      </Title>
-      <Frame
-        baseUrl="https://biocollect-test.ala.org.au"
-        src="https://biocollect-test.ala.org.au/ala/bioActivity/mobileCreate/52b87cdc-3524-412a-a5a6-3a1438f02bfa"
-      /> */}
       <Title mb="sm" mt="xl">
         IndexedDB
       </Title>

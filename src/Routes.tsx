@@ -15,7 +15,7 @@ import Layout from 'layout';
 const isDev = import.meta.env.DEV;
 
 export default function Routes() {
-  const { isAuthenticated } = useAuth();
+  const auth = useAuth();
   const api = useContext(APIContext);
   const isInitialRouteProject = useRef(
     window.location.pathname.startsWith('/project/')
@@ -27,7 +27,7 @@ export default function Routes() {
         path: '/',
         element: <Layout />,
         errorElement: <Error />,
-        loader: () => (isAuthenticated ? null : redirect('/signin')),
+        loader: () => (auth.isAuthenticated ? null : redirect('/signin')),
         children: [
           {
             path: '',
@@ -72,7 +72,7 @@ export default function Routes() {
       {
         path: '/signin',
         element: <SignIn />,
-        loader: () => (isAuthenticated ? redirect('/') : null),
+        loader: () => (auth.isAuthenticated ? redirect('/') : null),
       },
     ])
   );

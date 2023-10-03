@@ -10,7 +10,6 @@ import { themes } from 'theme';
 import { APIProvider } from 'helpers/api';
 import { RecordsDrawerProvider } from 'helpers/drawer';
 import { FrameProvider } from 'helpers/frame';
-import { useOnLine } from 'helpers/funcs';
 
 import App from './App';
 
@@ -19,7 +18,6 @@ const userStore = new WebStorageStateStore({ store: localStorage });
 
 function Main() {
   const [authRegion] = import.meta.env.VITE_AUTH_USER_POOL.split('_');
-  const onLine = useOnLine();
 
   return (
     <AuthProvider

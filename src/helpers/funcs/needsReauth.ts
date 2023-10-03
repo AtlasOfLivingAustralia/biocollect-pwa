@@ -9,7 +9,7 @@ const getStoredState = () => {
   return [storeKey, JSON.parse(storeState || '{}')];
 };
 
-export const needsRefresh = () => {
+export const needsReauth = () => {
   const [storeKey, storeState] = getStoredState();
 
   if (storeKey) {
