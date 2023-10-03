@@ -85,7 +85,7 @@ export function SignIn() {
           <Space h={45} />
           <Button
             leftIcon={<Image width={16} height={16} src={logoAla} />}
-            onClick={() => auth.signinRedirect}
+            onClick={() => auth.signinRedirect()}
             fullWidth
           >
             Sign in with ALA

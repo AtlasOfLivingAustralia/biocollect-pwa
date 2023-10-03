@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Chip, Text, useMantineTheme } from '@mantine/core';
+import { Chip, ChipProps, Text, useMantineTheme } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
@@ -8,20 +8,20 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { modals } from '@mantine/modals';
 import { useMediaQuery } from '@mantine/hooks';
 
-interface FrameProps {
-  survey: BioCollectSurvey;
+interface DownloadChipProps extends Omit<ChipProps, 'children'> {
+  survey?: BioCollectSurvey;
   label?: string;
 }
 
-export function DownloadChip({ survey, label }: FrameProps) {
+export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
   const api = useContext(APIContext);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
 
-  const downloaded = useLiveQuery(async () =>
-    Boolean(await api.db.cached.get(survey.id))
-  );
+  const downloaded = survey
+    ? useLiveQuery(async () => Boolean(await api.db.cached.get(survey.id)))
+    : false;
 
   // Handler for the download popup
   const handleDownload = () =>
@@ -46,6 +46,7 @@ export function DownloadChip({ survey, label }: FrameProps) {
 
   // Handler for the chip callback
   const handleChipClick = () => {
+    if (!survey) return;
     if (downloaded) {
       modals.openConfirmModal({
         title: (
@@ -89,6 +90,7 @@ export function DownloadChip({ survey, label }: FrameProps) {
         },
       }}
       onClick={handleChipClick}
+      {...rest}
     >
       {!downloaded && <IconDownload size="0.8rem" style={{ marginRight: 8 }} />}
       <Text

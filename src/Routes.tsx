@@ -1,5 +1,4 @@
 import { useContext, useRef } from 'react';
-import { Text } from '@mantine/core';
 import {
   RouterProvider,
   redirect,
@@ -8,7 +7,7 @@ import {
 } from 'react-router-dom';
 
 // App views
-import { Home, Project, SignIn, Error, Debug } from 'views';
+import { Home, Project, SignIn, Error, Debug, Welcome } from 'views';
 import { useAuth } from 'react-oidc-context';
 import { APIContext } from 'helpers/api';
 import Layout from 'layout';
@@ -65,6 +64,10 @@ export default function Routes() {
               ]
             : []),
         ],
+      },
+      {
+        path: '/welcome',
+        element: <Welcome />,
       },
       {
         path: '/signin',

@@ -49,9 +49,6 @@ function Main() {
         }
       }}
       userStore={userStore}
-      // Disable logouts when offline
-      checkSessionIntervalInSeconds={onLine ? undefined : 60 * 60 * 24 * 365}
-      automaticSilentRenew={onLine}
     >
       <APIProvider>
         <MantineProvider

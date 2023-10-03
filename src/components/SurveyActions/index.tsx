@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import {
   ActionIcon,
   Group,
+  GroupProps,
   Skeleton,
   Text,
   useMantineTheme,
@@ -12,18 +13,18 @@ import { BioCollectSurvey } from 'types';
 import { RecordsDrawerContext } from 'helpers/drawer';
 import { FrameContext } from 'helpers/frame';
 
-interface SurveyActionsProps {
+interface SurveyActionsProps extends GroupProps {
   survey?: BioCollectSurvey;
 }
 
-export function SurveyActions({ survey }: SurveyActionsProps) {
+export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
   const theme = useMantineTheme();
   const loading = !survey;
 
   return (
-    <Group spacing={8}>
+    <Group spacing={8} {...rest}>
       <Skeleton visible={loading} w={44} mr={4}>
         <Text size="xs" color="dimmed">
           Records
