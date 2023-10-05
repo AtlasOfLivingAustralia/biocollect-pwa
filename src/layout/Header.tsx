@@ -4,7 +4,6 @@ import {
   Menu,
   Avatar,
   Image,
-  Button,
   UnstyledButton,
   Badge,
   Loader,
@@ -18,7 +17,7 @@ import {
   IconLogout,
   IconFileUpload,
   IconUser,
-  IconBookDownload,
+  IconSettings,
 } from '@tabler/icons-react';
 
 // BioCollect logos
@@ -118,12 +117,12 @@ export default function Header() {
                 onClick={() =>
                   frame.open(
                     `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/REPLACE-ME`,
-                    'Offline Surveys'
+                    'Manage Storage'
                   )
                 }
-                icon={<IconBookDownload />}
+                icon={<IconSettings />}
               >
-                Offline surveys
+                Manage storage
               </Menu.Item>
               {import.meta.env.DEV && (
                 <>
