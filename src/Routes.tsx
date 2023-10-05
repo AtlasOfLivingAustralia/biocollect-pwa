@@ -27,7 +27,18 @@ export default function Routes() {
         path: '/',
         element: <Layout />,
         errorElement: <Error />,
-        loader: () => (auth.isAuthenticated ? null : redirect('/signin')),
+        loader: () => {
+          if (auth.isAuthenticated) {
+            // If we haven't seen the welcome screen yet, show it
+            if (!Boolean(localStorage.getItem('pwa-welcome')))
+              return redirect('/welcome');
+
+            // Otherwise, stay on the home route
+            return null;
+          }
+
+          return redirect('/signin');
+        },
         children: [
           {
             path: '',

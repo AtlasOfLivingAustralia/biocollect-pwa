@@ -24,11 +24,12 @@ import {
   IconPlus,
   IconSearch,
 } from '@tabler/icons-react';
-import { Background, DownloadChip, SurveyActions } from 'components';
-import { Link } from 'react-router-dom';
+import { Background, DownloadChip } from 'components';
+import { Link, useNavigate } from 'react-router-dom';
 
 function WelcomeDetails() {
   const theme = useMantineTheme();
+  const navigate = useNavigate();
 
   return (
     <Stack align="center" miw={275} p="xl" style={{ textAlign: 'center' }}>
@@ -124,7 +125,14 @@ function WelcomeDetails() {
           </List.Item>
         </List>
       </Card>
-      <Button component={Link} to="/" rightIcon={<IconArrowRight />} mt="md">
+      <Button
+        onClick={() => {
+          localStorage.setItem('pwa-welcome', 'true');
+          navigate('/');
+        }}
+        rightIcon={<IconArrowRight />}
+        mt="md"
+      >
         Get started
       </Button>
     </Stack>
