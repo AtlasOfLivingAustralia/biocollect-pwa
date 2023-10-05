@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import {
   TextInput,
-  Box,
   Text,
-  Group,
   Select,
   Checkbox,
   Paper,
@@ -22,16 +20,12 @@ import { getBool, getString } from 'helpers/params';
 import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
 import { useOnLine } from 'helpers/funcs';
 
-interface SearchControlsProps extends BoxProps {
+interface SearchControlsProps {
   params: URLSearchParams;
   setParams: SetURLSearchParams;
 }
 
-export function SearchControls({
-  params,
-  setParams,
-  ...rest
-}: SearchControlsProps) {
+export function SearchControls({ params, setParams }: SearchControlsProps) {
   const onLine = useOnLine();
   const paramSearch = getString('search', undefined, params);
   const paramOffline = getBool('offline', !onLine, params);
@@ -109,12 +103,12 @@ export function SearchControls({
       )}
       <Grid.Col xs={6} sm={onLine ? 4 : 6}>
         <Select
-          value={params.get('max') || '30'}
+          value={params.get('max') || '10'}
           data={['10', '20', '30', '50'].map((max) => ({
             value: max,
             label: `${max} items`,
           }))}
-          onChange={(max) => handleChangeMax(parseInt(max || '20', 10))}
+          onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
             <Text size="xs" weight="bold" color="dimmed">
               Result Count
@@ -170,12 +164,12 @@ export function SearchControls({
       )}
       <Grid.Col span={2}>
         <Select
-          value={params.get('max') || '30'}
+          value={params.get('max') || '10'}
           data={['10', '20', '30', '50'].map((max) => ({
             value: max,
             label: `${max} items`,
           }))}
-          onChange={(max) => handleChangeMax(parseInt(max || '20', 10))}
+          onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
             <Text size="xs" weight="bold" color="dimmed">
               Result Count
