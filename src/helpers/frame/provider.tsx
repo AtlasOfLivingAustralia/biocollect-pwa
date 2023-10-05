@@ -106,12 +106,14 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           blur: 3,
         }}
         zIndex={1000}
+        styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}
       >
         <Frame
           ref={frameRef}
           src={src}
           onLoad={handleLoad}
           allow="geolocation;"
+          height={`calc(100vh - ${mobile ? 125 : 275}px)`}
         />
         {callbacks?.confirm && (
           <Group mt="sm" position="center" spacing="xs">

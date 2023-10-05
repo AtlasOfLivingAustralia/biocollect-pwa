@@ -15,23 +15,22 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(
     const theme = useMantineTheme();
 
     const width = props.width || '100%';
-    const height = props.height || 500;
+    const height = props.height || 'calc(100vh - 275px)';
 
     return (
-      <Skeleton visible={!loaded} width={width} height={height}>
+      <Skeleton visible={!loaded} width={width} height={height} radius={0}>
         <iframe
+          {...props}
           ref={ref}
-          width={width}
-          height={height}
+          width="100%"
+          height="100%"
           style={{
             border: `1px solid ${
               theme.colorScheme === 'dark'
                 ? theme.colors.dark[5]
                 : theme.colors.gray[4]
             }`,
-            borderRadius: theme.radius.md,
           }}
-          {...props}
           onLoad={(event) => {
             setLoaded(true);
             if (onLoad) onLoad(event);
