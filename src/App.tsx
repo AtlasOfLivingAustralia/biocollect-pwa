@@ -45,7 +45,7 @@ function App() {
         } catch (error) {
           // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
           if (
-            !import.meta.env.VITE_AUTH_AUTHORITY.startsWith(
+            import.meta.env.VITE_AUTH_AUTHORITY.startsWith(
               'https://cognito-idp'
             )
           ) {

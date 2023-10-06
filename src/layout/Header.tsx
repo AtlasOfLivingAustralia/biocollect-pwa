@@ -40,9 +40,7 @@ export default function Header() {
 
   const signOut = async () => {
     // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
-    if (
-      !import.meta.env.VITE_AUTH_AUTHORITY.startsWith('https://cognito-idp')
-    ) {
+    if (import.meta.env.VITE_AUTH_AUTHORITY.startsWith('https://cognito-idp')) {
       const params = new URLSearchParams({
         client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
         redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
