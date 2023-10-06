@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import {
   Grid,
   Center,
@@ -11,20 +11,21 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { IconArchive } from '@tabler/icons-react';
+import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
+import jwtDecode from 'jwt-decode';
 
 // Helper functions / components
 import { APIContext } from 'helpers/api';
 import { getBool, getNumber, getString } from 'helpers/params';
+import { useOnLine } from 'helpers/funcs';
 
 // Local components
-import { ProjectItem } from './components/ProjectItem';
 import { BioCollectProjectSearch } from 'types';
-import { useMediaQuery } from '@mantine/hooks';
 import { Wave } from 'components/Wave';
+import { ProjectItem } from './components/ProjectItem';
 import { SearchControls } from './components/SearchControls';
-import { useOnLine } from 'helpers/funcs';
 
 const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
 
@@ -48,6 +49,7 @@ export function Home() {
   // API Context
   const auth = useAuth();
   const api = useContext(APIContext);
+  const decoded = useRef(jwtDecode(auth.user?.access_token || ''));
 
   // Effect hook to fetch project data
   useEffect(() => {
@@ -83,21 +85,29 @@ export function Home() {
   return (
     <>
       {mobile ? (
-        <Stack py="xl" px={mobile ? 22 : 36}>
-          <Group position={mobile ? 'center' : 'apart'}>
-            <Stack spacing={0} align={mobile ? 'center' : 'flex-start'}>
+        <Stack py="xl" px={22}>
+          <Group position="center">
+            <Stack spacing={0} align="center">
               <Text color="dimmed">Welcome back,</Text>
-              <Title m={0}>{auth.user?.profile.given_name}</Title>
+              <Title m={0}>
+                {auth.user?.profile.given_name ||
+                  (decoded.current as any)?.given_name ||
+                  'User'}
+              </Title>
             </Stack>
           </Group>
           <SearchControls params={params} setParams={setParams} />
         </Stack>
       ) : (
-        <Box py="xl" px={mobile ? 22 : 36}>
-          <Group position={mobile ? 'center' : 'apart'}>
-            <Stack spacing={0} align={mobile ? 'center' : 'flex-start'}>
+        <Box py="xl" px={36}>
+          <Group position="apart">
+            <Stack spacing={0} align="flex-start">
               <Text color="dimmed">Welcome back,</Text>
-              <Title m={0}>{auth.user?.profile.given_name}</Title>
+              <Title m={0}>
+                {auth.user?.profile.given_name ||
+                  (decoded.current as any)?.given_name ||
+                  'User'}
+              </Title>
             </Stack>
             <SearchControls params={params} setParams={setParams} />
           </Group>

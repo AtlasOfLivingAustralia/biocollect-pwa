@@ -19,12 +19,13 @@ import {
   IconUser,
   IconSettings,
 } from '@tabler/icons-react';
+import jwtDecode from 'jwt-decode';
 
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
 import { themes } from 'theme';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { FrameContext } from 'helpers/frame';
 import { getInitials, useOnLine } from 'helpers/funcs';
 
@@ -35,18 +36,28 @@ export default function Header() {
   const frame = useContext(FrameContext);
   const auth = useAuth();
   const onLine = useOnLine();
+  const decoded = useRef(jwtDecode(auth.user?.access_token || ''));
 
   const signOut = async () => {
-    const params = new URLSearchParams({
-      client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
-      redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-      logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-    });
+    // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
+    if (
+      !import.meta.env.VITE_AUTH_AUTHORITY.startsWith('https://cognito-idp')
+    ) {
+      const params = new URLSearchParams({
+        client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
+        redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+        logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+      });
 
-    await auth.removeUser();
-    window.location.replace(
-      `${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`
-    );
+      await auth.removeUser();
+      window.location.replace(
+        `${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`
+      );
+    } else {
+      await auth.signoutRedirect({
+        post_logout_redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+      });
+    }
   };
 
   return (
@@ -83,15 +94,22 @@ export default function Header() {
               >
                 {(() => {
                   const { user, isAuthenticated } = auth;
-                  const { given_name, family_name } = user?.profile || {};
 
                   if (!isAuthenticated) return <Loader size="sm" />;
 
+                  // Use the given name from the profile field, otherwise fallback to the JWT
+                  const given_name =
+                    user?.profile.given_name ||
+                    (decoded.current as any)?.given_name;
+
+                  // Use the family name from the profile field, otherwise fallback to the JWT
+                  const family_name =
+                    user?.profile.family_name ||
+                    (decoded.current as any)?.family_name;
+
                   // If the user has a first & last name
                   return given_name && family_name ? (
-                    getInitials(
-                      `${auth.user?.profile.given_name} ${auth.user?.profile.family_name}`
-                    )
+                    getInitials(`${given_name} ${family_name}`)
                   ) : (
                     <IconUser />
                   );

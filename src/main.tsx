@@ -17,15 +17,12 @@ import App from './App';
 const userStore = new WebStorageStateStore({ store: localStorage });
 
 function Main() {
-  const [authRegion] = import.meta.env.VITE_AUTH_USER_POOL.split('_');
-
   return (
     <AuthProvider
       client_id={import.meta.env.VITE_AUTH_CLIENT_ID}
       redirect_uri={import.meta.env.VITE_AUTH_REDIRECT_URI}
-      authority={`https://cognito-idp.${authRegion}.amazonaws.com/${
-        import.meta.env.VITE_AUTH_USER_POOL
-      }`}
+      authority={import.meta.env.VITE_AUTH_AUTHORITY}
+      userStore={userStore}
       onSigninCallback={(user) => {
         const params = new URLSearchParams(window.location.search);
 
@@ -46,7 +43,6 @@ function Main() {
           console.log('[Main] onSigninCallback', 'No auth params in location!');
         }
       }}
-      userStore={userStore}
     >
       <APIProvider>
         <MantineProvider
