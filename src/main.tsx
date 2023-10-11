@@ -22,6 +22,7 @@ function Main() {
       client_id={import.meta.env.VITE_AUTH_CLIENT_ID}
       redirect_uri={import.meta.env.VITE_AUTH_REDIRECT_URI}
       authority={import.meta.env.VITE_AUTH_AUTHORITY}
+      scope={import.meta.env.VITE_AUTH_SCOPE}
       userStore={userStore}
       onSigninCallback={(user) => {
         const params = new URLSearchParams(window.location.search);
