@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { IconEdit, IconEye, IconUser } from '@tabler/icons-react';
+import { IconEye, IconUser } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';
@@ -66,9 +66,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
               (() => {
                 drawer.close();
                 frame.open(
-                  `${import.meta.env.VITE_API_BIOCOLLECT}/bioActivity/index/${
+                  `${
+                    import.meta.env.VITE_API_BIOCOLLECT
+                  }/pwa/bioActivity/index/${
+                    activity.projectActivityId
+                  }?projectId=${activity.projectId}&activityId=${
                     activity.activityId
-                  }?mobile=true`,
+                  }`,
                   `View Record - ${activity.name}`
                 );
               })
