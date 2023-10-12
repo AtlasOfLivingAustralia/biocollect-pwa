@@ -132,7 +132,7 @@ export default function Header() {
               <Menu.Item
                 onClick={() =>
                   frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/REPLACE-ME`,
+                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/settings`,
                     'Manage Storage'
                   )
                 }

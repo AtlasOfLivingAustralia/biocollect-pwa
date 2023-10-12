@@ -57,30 +57,6 @@ export function ActivityItem({ activity }: ActivityItemProps) {
         </Box>
       </Stack>
       <Group spacing="xs">
-        {(loading || activity?.showCrud) && (
-          <Skeleton visible={loading} width={28} miw={28}>
-            <ActionIcon
-              variant="light"
-              color="gray"
-              onClick={
-                activity &&
-                (() => {
-                  drawer.close();
-                  frame.open(
-                    `${
-                      import.meta.env.VITE_API_BIOCOLLECT
-                    }/bioActivity/mobileEdit/${
-                      activity.activityId
-                    }?mobile=true`,
-                    `Edit Record - ${activity.name}`
-                  );
-                })
-              }
-            >
-              <IconEdit size="1rem" />
-            </ActionIcon>
-          </Skeleton>
-        )}
         <Skeleton visible={loading} width={28} miw={28}>
           <ActionIcon
             variant="light"
