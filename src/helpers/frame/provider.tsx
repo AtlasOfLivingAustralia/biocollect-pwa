@@ -7,6 +7,7 @@ import {
   useContext,
 } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import jwtDecode from 'jwt-decode';
 
 // Contexts
 import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
@@ -74,7 +75,9 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         {
           event: 'credentials',
           data: {
-            userId: auth.user?.profile['custom:userid'],
+            userId:
+              auth.user?.profile['custom:userid'] ||
+              (jwtDecode(auth?.user?.access_token || '') as any)?.userid,
             token: auth.user?.access_token,
           },
         },
