@@ -26,8 +26,14 @@ phases:
     commands:
       - echo building...
       - yarn build:$ENVIRONMENT
+  post_build:
+    commands:
+      - echo creating zip of build assets...
+      - zip -r dist.zip dist
+      - mv dist.zip dist
 
 artifacts:
   base-directory: ./dist
   files:
     - '**/*'
+
