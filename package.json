@@ -18,7 +18,7 @@
     "@mantine/hooks": "^6.0.14",
     "@mantine/nprogress": "^6.0.14",
     "@tabler/icons": "^1.119.0",
-    "axios": "^1.4.0",
+    "axios": "^1.6.0",
     "oidc-client-ts": "^2.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
