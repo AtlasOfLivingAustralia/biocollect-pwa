@@ -22,70 +22,75 @@ export default function Routes() {
   );
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
-    createBrowserRouter([
-      {
-        path: '/',
-        element: <Layout />,
-        errorElement: <Error />,
-        loader: () => {
-          if (auth.isAuthenticated) {
-            // If we haven't seen the welcome screen yet, show it
-            if (!Boolean(localStorage.getItem('pwa-welcome')))
-              return redirect('/welcome');
+    createBrowserRouter(
+      [
+        {
+          path: '/',
+          element: <Layout />,
+          errorElement: <Error />,
+          loader: () => {
+            if (auth.isAuthenticated) {
+              // If we haven't seen the welcome screen yet, show it
+              if (!Boolean(localStorage.getItem('pwa-welcome')))
+                return redirect('/welcome');
 
-            // Otherwise, stay on the home route
-            return null;
-          }
+              // Otherwise, stay on the home route
+              return null;
+            }
 
-          return redirect('/signin');
-        },
-        children: [
-          {
-            path: '',
-            element: <Home />,
+            return redirect('/signin');
           },
-          {
-            path: 'project/:projectId',
-            element: <Project />,
-            loader: async ({ params, ...rest }) => {
-              const initialProject = isInitialRouteProject.current;
-              if (isInitialRouteProject.current)
-                isInitialRouteProject.current = false;
-
-              // Create an array of requests to send
-              const requests = [
-                api.biocollect.getProject(params.projectId || ''),
-                api.biocollect.listSurveys(params.projectId || ''),
-              ];
-
-              // Defer based on whether the initial route is the project route
-              return defer({
-                data: initialProject
-                  ? Promise.all(requests)
-                  : await Promise.all(requests),
-              });
+          children: [
+            {
+              path: '',
+              element: <Home />,
             },
-          },
-          ...(isDev
-            ? [
-                {
-                  path: '/debug',
-                  element: <Debug />,
-                },
-              ]
-            : []),
-        ],
-      },
+            {
+              path: 'project/:projectId',
+              element: <Project />,
+              loader: async ({ params, ...rest }) => {
+                const initialProject = isInitialRouteProject.current;
+                if (isInitialRouteProject.current)
+                  isInitialRouteProject.current = false;
+
+                // Create an array of requests to send
+                const requests = [
+                  api.biocollect.getProject(params.projectId || ''),
+                  api.biocollect.listSurveys(params.projectId || ''),
+                ];
+
+                // Defer based on whether the initial route is the project route
+                return defer({
+                  data: initialProject
+                    ? Promise.all(requests)
+                    : await Promise.all(requests),
+                });
+              },
+            },
+            ...(isDev
+              ? [
+                  {
+                    path: '/debug',
+                    element: <Debug />,
+                  },
+                ]
+              : []),
+          ],
+        },
+        {
+          path: '/welcome',
+          element: <Welcome />,
+        },
+        {
+          path: '/signin',
+          element: <SignIn />,
+          loader: () => (auth.isAuthenticated ? redirect('/') : null),
+        },
+      ],
       {
-        path: '/welcome',
-        element: <Welcome />,
-      },
-      {
-        path: '/signin',
-        element: <SignIn />,
-        loader: () => (auth.isAuthenticated ? redirect('/') : null),
-      },
-    ])
+        basename: '/pwa-mobile',
+      }
+    )
   );
 
   return <RouterProvider router={router.current} />;

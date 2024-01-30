@@ -35,7 +35,6 @@ const getCache = ({
 });
 
 const pwaOptions: Partial<VitePWAOptions> = {
-  base: './',
   workbox: {
     runtimeCaching: [
       getCache({
@@ -85,7 +84,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: './',
+  base: '/pwa-mobile',
   plugins: [react(), tsconfigPaths(), visualizer() as any, VitePWA(pwaOptions)],
   envDir: './config',
 });

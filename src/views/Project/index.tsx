@@ -1,8 +1,9 @@
 import { Suspense } from 'react';
-import { Await, useAsyncValue, useLoaderData } from 'react-router-dom';
+import { Await, Link, useAsyncValue, useLoaderData } from 'react-router-dom';
 import {
   Accordion,
   Box,
+  Button,
   Center,
   Divider,
   Grid,
@@ -16,6 +17,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import {
+  IconArrowBack,
   IconClipboardList,
   IconFlask2,
   IconHeartHandshake,
@@ -56,6 +58,20 @@ function ProjectBody() {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
+
+  if (!project) {
+    return (
+      <Center w="100%" h="calc(100vh - 71px)">
+        <Stack align="center">
+          <Title>404</Title>
+          <Text>The requested project could not be found</Text>
+          <Button mt="lg" leftIcon={<IconArrowBack />} component={Link} to="/">
+            Go home
+          </Button>
+        </Stack>
+      </Center>
+    );
+  }
 
   return (
     <>

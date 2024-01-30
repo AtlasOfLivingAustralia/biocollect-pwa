@@ -14,10 +14,15 @@ export const needsReauth = () => {
   const [storeKey, storeState] = getStoredState();
 
   if (storeKey) {
-    if (storeState.expires_at === EXPIRE_TIME) return true;
+    if (storeState.expires_at === EXPIRE_TIME) {
+      console.log('[Reauth] Re-auth already flagged');
+      return true;
+    }
 
     // Overwrite the expires_at property to prevent re-login
     if (Date.now() >= storeState.expires_at * 1000) {
+      console.log('[Reauth] Token expired, re-auth needed');
+
       localStorage.setItem(
         storeKey,
         JSON.stringify({ ...storeState, expires_at: EXPIRE_TIME })
@@ -26,5 +31,6 @@ export const needsReauth = () => {
     }
   }
 
+  console.log('[Reauth] Re-auth not needed');
   return false;
 };

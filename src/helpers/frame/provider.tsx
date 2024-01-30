@@ -70,7 +70,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
 
   // Callback function to pass user credentials when IFrame has loaded
   const handleLoad = () => {
-    if (frameRef?.current?.contentWindow)
+    if (frameRef?.current?.contentWindow) {
       frameRef.current.contentWindow.postMessage(
         {
           event: 'credentials',
@@ -83,7 +83,10 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         },
         import.meta.env.VITE_API_BIOCOLLECT
       );
+    }
   };
+
+  useEffect(handleLoad, [auth.user?.access_token]);
 
   return (
     <FrameContext.Provider value={{ open, close }}>

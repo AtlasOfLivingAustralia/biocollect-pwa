@@ -120,12 +120,7 @@ export default (db: BioCollectDexie) => ({
     } else if (navigator.onLine) {
       // Make the GET request
       const { data } = await axios.get<BioCollectProjectSearch>(
-        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
-        {
-          params: {
-            fq: `projectId:${projectId}`,
-          },
-        }
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`
       );
 
       const [project] = formatProjects(data.projects);
