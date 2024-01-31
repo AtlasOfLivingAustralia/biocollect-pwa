@@ -14,9 +14,31 @@ export interface Facet {
   type: string;
 }
 
+export interface FilterQueries {
+  [filter: string]: string;
+}
+
 /*
 	BioCollect API
 */
+export type ProjectLinkRole =
+  | 'facebook'
+  | 'flickr'
+  | 'googlePlus'
+  | 'instagram'
+  | 'linkedIn'
+  | 'pinterest'
+  | 'rssFeed'
+  | 'tumblr'
+  | 'twitter'
+  | 'vimeo'
+  | 'youtube';
+
+export interface ProjectLink {
+  role: ProjectLinkRole;
+  url: string;
+}
+
 export interface BioCollectProject {
   projectId: string;
   aim: string;
@@ -35,6 +57,7 @@ export interface BioCollectProject {
     elect: string[];
     cmz: string[];
     state: string[];
+    radius: number;
     mvg: string;
     areaKmSq: number;
     nrm: string[];
@@ -53,7 +76,7 @@ export interface BioCollectProject {
   isExternal: false;
   isSciStarter: false;
   keywords: string[] | null;
-  links: string[];
+  links: ProjectLink[];
   name: string;
   organisationId: string;
   organisationName: string;
@@ -68,7 +91,16 @@ export interface BioCollectProject {
   projectType: string;
   isMERIT: boolean;
   tags: string[];
+  projectEquipment?: string;
+  projectHowToParticipate?: string;
+  projectLogoImageCredit?: string;
+  projectLogoImage?: string;
+  contactName?: string;
+  contactDetails?: string;
+  projectTask?: string;
+  containsActivity: boolean;
   noCost: boolean;
+  projectActivities: BioCollectSurvey[];
 }
 
 export interface BioCollectProjectSearch {
@@ -84,8 +116,10 @@ export interface BioCollectSurvey {
   documents: any[];
   publicAccess: boolean;
   restrictRecordToSites: boolean;
+  containsActivity: boolean;
   downloadFormTemplateUrl: string;
   sites: any[];
+  publishProject: string;
   methodDocUrl: string;
   lastUpdated: string;
   spatialAccuracy: string;
@@ -107,6 +141,7 @@ export interface BioCollectSurvey {
   allowAdditionalSurveySites: boolean;
   projectId: string;
   startDate: string;
+  endDate: string;
   canEditAdminSelectedSites: boolean;
   status: string;
   methodUrl: string;
@@ -148,11 +183,32 @@ export interface Stats {
 }
 
 export interface MapLayersConfig {
-  delete: 'me';
+  baseLayers: {
+    displayText: string;
+    code: string;
+    isSelected: boolean;
+  }[];
+  overlays: {
+    showPropertyName: boolean;
+    alaName: string;
+    defaultSelected: boolean;
+    inLayerShapeList: boolean;
+    userAccessRestriction: string;
+    title: string;
+    changeLayerColour: boolean;
+    boundaryColour: string;
+    textColour: string;
+    fillColour: string;
+    alaId: string;
+    layerName: string;
+    opacity: string;
+  }[];
 }
 
 export interface Visibility {
   embargoOption: string;
+  embargoForDays: number;
+  embargoUntil: string;
   alaAdminEnforcedEmbargo: boolean;
 }
 
@@ -179,19 +235,19 @@ export interface SpeciesField {
 }
 
 export interface Config {
-  scientificNameField: string;
-  speciesLists: SpeciesList[];
-  speciesOptions: SpeciesOption[];
-  groupInfoVisible: boolean;
-  commonNameField: string;
-  singleInfoVisible: boolean;
-  allSpeciesInfoVisible: boolean;
-  type: string;
-  speciesDisplayFormat: string;
-  newSpeciesLists: NewSpeciesLists;
-  singleSpecies: SingleSpecies;
-  allSpeciesLists: AllSpeciesLists;
-  commonFields: string[];
+  scientificNameField?: string;
+  speciesLists?: SpeciesList[];
+  speciesOptions?: SpeciesOption[];
+  groupInfoVisible?: boolean;
+  commonNameField?: string;
+  singleInfoVisible?: boolean;
+  allSpeciesInfoVisible?: boolean;
+  type?: string;
+  speciesDisplayFormat?: string;
+  newSpeciesLists?: NewSpeciesLists;
+  singleSpecies?: SingleSpecies;
+  allSpeciesLists?: AllSpeciesLists;
+  commonFields?: string[];
 }
 
 export interface SpeciesList {
@@ -253,4 +309,63 @@ export interface Pagination {
   rppOptions: number[];
   currentPage: string;
   info: string;
+}
+
+export type BioCollectBioActivityView =
+  | 'myrecords'
+  | 'project'
+  | 'projectrecords'
+  | 'myprojectrecords'
+  | 'userprojectactivityrecords'
+  | 'allrecords';
+
+export interface RecordMultimedia {
+  rightsHolder: string;
+  identifier: string;
+  license: string;
+  creator: string;
+  imageId: string;
+  rights: string;
+  format: string;
+  documentId: string;
+  title: string;
+  type: string;
+}
+
+export interface BioCollectRecord {
+  commonName: string;
+  multimedia: RecordMultimedia;
+  individualCount: number;
+  name: string;
+  coordinates: number[];
+  eventTime: string;
+  guid: string;
+  occurrenceID: string;
+  eventDate: string;
+}
+
+export interface BioCollectBioActivity {
+  activityId: string;
+  projectActivityId: string;
+  type: string;
+  status: string;
+  lastUpdated: string;
+  userId: string;
+  siteId: string;
+  name: string;
+  activityOwnerName: string;
+  embargoed: boolean;
+  embargoUntil: string;
+  records: BioCollectRecord[];
+  endDate: string;
+  projectName: string;
+  projectType: string;
+  projectId: string;
+  thumbnailUrl: string;
+  showCrud: boolean;
+  userCanModerate: boolean;
+}
+
+export interface BioCollectBioActivitySearch {
+  activities: BioCollectBioActivity[];
 }

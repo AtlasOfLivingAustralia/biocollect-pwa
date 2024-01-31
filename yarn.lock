@@ -2104,6 +2104,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mantine/modals@npm:^6.0.19":
+  version: 6.0.19
+  resolution: "@mantine/modals@npm:6.0.19"
+  dependencies:
+    "@mantine/utils": 6.0.19
+  peerDependencies:
+    "@mantine/core": 6.0.19
+    "@mantine/hooks": 6.0.19
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 34c85c65ab3a184b20b38bdcede574f0acfd8eacee5dc3a01fc89442e5208b6b760f514272c229fb6b18f5ee58cfa0eacd9d427c884a20110c74005584bdf579
+  languageName: node
+  linkType: hard
+
 "@mantine/nprogress@npm:^6.0.14":
   version: 6.0.14
   resolution: "@mantine/nprogress@npm:6.0.14"
@@ -2138,6 +2152,15 @@ __metadata:
   peerDependencies:
     react: ">=16.8.0"
   checksum: 2e495b80bf39d3e443c17f24cac6c5745a50c13f777383c325dc8a31dd91ddd614f8411a7fdf5268e85a14741dc574c6de15d22e1616ca62e7ebfcccc4eb2e17
+  languageName: node
+  linkType: hard
+
+"@mantine/utils@npm:6.0.19":
+  version: 6.0.19
+  resolution: "@mantine/utils@npm:6.0.19"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: c33e2eba6d78e2b07c222c79a086da9d43a39a1fb8e409b10ab5775f6855325fd30c56b17fd67f9a827497eff2fdc22fff4b9190c2d7069b2c58565d63b3a450
   languageName: node
   linkType: hard
 
@@ -2398,18 +2421,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tabler/icons@npm:^1.119.0":
-  version: 1.119.0
-  resolution: "@tabler/icons@npm:1.119.0"
+"@tabler/icons-react@npm:^2.34.0":
+  version: 2.34.0
+  resolution: "@tabler/icons-react@npm:2.34.0"
+  dependencies:
+    "@tabler/icons": 2.34.0
+    prop-types: ^15.7.2
   peerDependencies:
-    react: ^16.x || 17.x || 18.x
-    react-dom: ^16.x || 17.x || 18.x
-  peerDependenciesMeta:
-    react:
-      optional: true
-    react-dom:
-      optional: true
-  checksum: ef1ac50c1a47b2205cb86ca43c28d69c7b8f547ad9c2c5545190fc4a455e9767f49cb511a6f9e8dc45b046ee7d2dab3d2c87af4fd5bbb1694832a15698158753
+    react: ^16.5.1 || ^17.0.0 || ^18.0.0
+  checksum: b9b9cb0631d2db01f6aec20a4f6d5e025698d3525c6756175efdf2f2398b83a68f0c48d7d6264b3dca31fcaa6008376a7e70f168d1610898b19ae4e951f336b2
+  languageName: node
+  linkType: hard
+
+"@tabler/icons@npm:2.34.0":
+  version: 2.34.0
+  resolution: "@tabler/icons@npm:2.34.0"
+  checksum: 0778e25c8aeb86f5b152cd0bd22ada6e474b51a1a5cdbf98d811397e0f6ba96cbe0bc72a983e159fcc9da6a5472b93738d1c6809ce70eb8e15844edea633e224
   languageName: node
   linkType: hard
 
@@ -2417,6 +2444,31 @@ __metadata:
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
   checksum: ad87447820dd3f24825d2d947ebc03072b20a42bfc96cbafec16bff8bbda6c1a81fcb0be56d5b21968560c5359a0af4038a68ba150c3e1694fe4c109a063bed8
+  languageName: node
+  linkType: hard
+
+"@types/color-convert@npm:*":
+  version: 2.0.0
+  resolution: "@types/color-convert@npm:2.0.0"
+  dependencies:
+    "@types/color-name": "*"
+  checksum: 027b68665dc2278cc2d83e796ada0a05a08aa5a11297e227c48c7f9f6eac518dec98578ab0072bd211963d3e4b431da70b20ea28d6c3136d0badfd3f9913baee
+  languageName: node
+  linkType: hard
+
+"@types/color-name@npm:*":
+  version: 1.1.1
+  resolution: "@types/color-name@npm:1.1.1"
+  checksum: b71fcad728cc68abcba1d405742134410c8f8eb3c2ef18113b047afca158ad23a4f2c229bcf71a38f4a818dead375c45b20db121d0e69259c2d81e97a740daa6
+  languageName: node
+  linkType: hard
+
+"@types/color@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "@types/color@npm:3.0.3"
+  dependencies:
+    "@types/color-convert": "*"
+  checksum: 4a54a6eca687b1f19d393c6c44e292009e913fa2377b5b815d1cd04470131087d7a799718d9e66a970f43e6ba16e7056a5b40b49d2d0d1d0f1530aff23864528
   languageName: node
   linkType: hard
 
@@ -2945,18 +2997,25 @@ __metadata:
     "@emotion/react": ^11.11.1
     "@mantine/core": ^6.0.14
     "@mantine/hooks": ^6.0.14
+    "@mantine/modals": ^6.0.19
     "@mantine/nprogress": ^6.0.14
-    "@tabler/icons": ^1.119.0
+    "@tabler/icons-react": ^2.34.0
+    "@types/color": ^3.0.3
     "@types/react": ^18.2.14
     "@types/react-dom": ^18.2.6
     "@typescript-eslint/eslint-plugin": ^5.60.0
     "@typescript-eslint/parser": ^5.60.0
     "@vitejs/plugin-react": ^4.0.1
     axios: ^1.4.0
+    color: ^4.2.3
+    detect-browser: ^5.3.0
+    dexie: ^3.2.4
+    dexie-react-hooks: ^1.1.6
     eslint: ^8.43.0
     eslint-config-prettier: ^8.8.0
     eslint-plugin-prettier: ^4.2.1
     eslint-plugin-react: ^7.32.2
+    jwt-decode: ^3.1.2
     oidc-client-ts: ^2.2.4
     prettier: ^2.8.8
     react: ^18.2.0
@@ -3155,10 +3214,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"color-name@npm:~1.1.4":
+"color-name@npm:^1.0.0, color-name@npm:~1.1.4":
   version: 1.1.4
   resolution: "color-name@npm:1.1.4"
   checksum: b0445859521eb4021cd0fb0cc1a75cecf67fceecae89b63f62b201cca8d345baf8b952c966862a9d9a2632987d4f6581f0ec8d957dfacece86f0a7919316f610
+  languageName: node
+  linkType: hard
+
+"color-string@npm:^1.9.0":
+  version: 1.9.1
+  resolution: "color-string@npm:1.9.1"
+  dependencies:
+    color-name: ^1.0.0
+    simple-swizzle: ^0.2.2
+  checksum: c13fe7cff7885f603f49105827d621ce87f4571d78ba28ef4a3f1a104304748f620615e6bf065ecd2145d0d9dad83a3553f52bb25ede7239d18e9f81622f1cc5
   languageName: node
   linkType: hard
 
@@ -3168,6 +3237,16 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 9b7356817670b9a13a26ca5af1c21615463b500783b739b7634a0c2047c16cef4b2865d7576875c31c3cddf9dd621fa19285e628f20198b233a5cfdda6d0793b
+  languageName: node
+  linkType: hard
+
+"color@npm:^4.2.3":
+  version: 4.2.3
+  resolution: "color@npm:4.2.3"
+  dependencies:
+    color-convert: ^2.0.1
+    color-string: ^1.9.0
+  checksum: 0579629c02c631b426780038da929cca8e8d80a40158b09811a0112a107c62e10e4aad719843b791b1e658ab4e800558f2e87ca4522c8b32349d497ecb6adeb4
   languageName: node
   linkType: hard
 
@@ -3340,10 +3419,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+"detect-browser@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "detect-browser@npm:5.3.0"
+  checksum: dd6e08d55da1d9e0f22510ac79872078ae03d9dfa13c5e66c96baedc1c86567345a88f96949161f6be8f3e0fafa93bf179bdb1cd311b14f5f163112fcc70ab49
+  languageName: node
+  linkType: hard
+
 "detect-node-es@npm:^1.1.0":
   version: 1.1.0
   resolution: "detect-node-es@npm:1.1.0"
   checksum: e46307d7264644975b71c104b9f028ed1d3d34b83a15b8a22373640ce5ea630e5640b1078b8ea15f202b54641da71e4aa7597093bd4b91f113db520a26a37449
+  languageName: node
+  linkType: hard
+
+"dexie-react-hooks@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "dexie-react-hooks@npm:1.1.6"
+  peerDependencies:
+    "@types/react": ">=16"
+    dexie: ^3.2 || ^4.0.1-alpha
+    react: ">=16"
+  checksum: 64beabf2929327b14963b92002a395237be081dfa2c1cf1d1884d196950fbee00457960ec3ec866de814433a7729000722d1355352810fb9b5f863a04236a8e3
+  languageName: node
+  linkType: hard
+
+"dexie@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "dexie@npm:3.2.4"
+  checksum: 4e5294a954118b6862c864b8c3970904a1733daebcd919488624520696411e2e81ed1bceeac3634c5c15a21e37ce4b8502ed41c4edfbc5ba3f5925c34d56497b
   languageName: node
   linkType: hard
 
@@ -3944,7 +4048,7 @@ __metadata:
 
 "fsevents@patch:fsevents@~2.3.2#~builtin<compat/fsevents>":
   version: 2.3.2
-  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=df0bf1"
+  resolution: "fsevents@patch:fsevents@npm%3A2.3.2#~builtin<compat/fsevents>::version=2.3.2&hash=18f3a7"
   dependencies:
     node-gyp: latest
   conditions: os=darwin
@@ -4355,6 +4459,13 @@ __metadata:
   version: 0.2.1
   resolution: "is-arrayish@npm:0.2.1"
   checksum: eef4417e3c10e60e2c810b6084942b3ead455af16c4509959a27e490e7aee87cfb3f38e01bbde92220b528a0ee1a18d52b787e1458ee86174d8c7f0e58cd488f
+  languageName: node
+  linkType: hard
+
+"is-arrayish@npm:^0.3.1":
+  version: 0.3.2
+  resolution: "is-arrayish@npm:0.3.2"
+  checksum: 977e64f54d91c8f169b59afcd80ff19227e9f5c791fa28fa2e5bce355cbaf6c2c356711b734656e80c9dd4a854dd7efcf7894402f1031dfc5de5d620775b4d5f
   languageName: node
   linkType: hard
 
@@ -5348,7 +5459,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -5658,7 +5769,7 @@ __metadata:
 
 "resolve@patch:resolve@^1.14.2#~builtin<compat/resolve>, resolve@patch:resolve@^1.19.0#~builtin<compat/resolve>":
   version: 1.22.1
-  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A1.22.1#~builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -5671,7 +5782,7 @@ __metadata:
 
 "resolve@patch:resolve@^2.0.0-next.4#~builtin<compat/resolve>":
   version: 2.0.0-next.4
-  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#~builtin<compat/resolve>::version=2.0.0-next.4&hash=c3c19d"
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.4#~builtin<compat/resolve>::version=2.0.0-next.4&hash=07638b"
   dependencies:
     is-core-module: ^2.9.0
     path-parse: ^1.0.7
@@ -5878,6 +5989,15 @@ __metadata:
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
+  languageName: node
+  linkType: hard
+
+"simple-swizzle@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "simple-swizzle@npm:0.2.2"
+  dependencies:
+    is-arrayish: ^0.3.1
+  checksum: a7f3f2ab5c76c4472d5c578df892e857323e452d9f392e1b5cf74b74db66e6294a1e1b8b390b519fa1b96b5b613f2a37db6cffef52c3f1f8f3c5ea64eb2d54c0
   languageName: node
   linkType: hard
 
@@ -6270,7 +6390,7 @@ __metadata:
 
 "typescript@patch:typescript@^5.1.3#~builtin<compat/typescript>":
   version: 5.1.3
-  resolution: "typescript@patch:typescript@npm%3A5.1.3#~builtin<compat/typescript>::version=5.1.3&hash=5da071"
+  resolution: "typescript@patch:typescript@npm%3A5.1.3#~builtin<compat/typescript>::version=5.1.3&hash=7ad353"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

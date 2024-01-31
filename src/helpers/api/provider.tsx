@@ -1,19 +1,16 @@
-import { ReactNode, ReactElement, useEffect } from 'react';
+import { ReactElement, useEffect, PropsWithChildren, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
 import axios from 'axios';
-import Logger from 'helpers/logger';
 
 // Contexts
 import APIContext from './context';
 
 // API endpoints & environment config
 import biocollect from './endpoints/biocollect';
+import { BioCollectDexie } from './dexie';
 
-interface APIProviderProps {
-  children?: ReactNode;
-}
-
-const APIProvider = (props: APIProviderProps): ReactElement => {
+const APIProvider = (props: PropsWithChildren<{}>): ReactElement => {
+  const dexie = useRef<BioCollectDexie>(new BioCollectDexie());
   const auth = useAuth();
 
   // useEffect hook to add / remove access token the axios globals
@@ -23,15 +20,15 @@ const APIProvider = (props: APIProviderProps): ReactElement => {
         'Authorization'
       ] = `Bearer ${auth.user?.access_token}`;
       axios.defaults.timeout = import.meta.env.VITE_API_TIMEOUT;
-      Logger.log('[API : Provider] Updated axios auth header & timeout');
     } else {
       delete axios.defaults.headers['Authorization'];
-      Logger.log('[API : Provider] Removed token from axios auth header');
     }
   }, [auth.isAuthenticated]);
 
   return (
-    <APIContext.Provider value={{ biocollect }}>
+    <APIContext.Provider
+      value={{ db: dexie.current, biocollect: biocollect(dexie.current) }}
+    >
       {props.children}
     </APIContext.Provider>
   );

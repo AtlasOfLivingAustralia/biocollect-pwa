@@ -1,0 +1,39 @@
+version: 0.2
+###
+# This build project builds the BioCollect PWA site files ready for upload to s3
+
+env:
+  shell: bash
+
+phases:
+  install:
+    on-failure: ABORT
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - echo installing yarn...
+      - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - apt-get update && apt-get install -y yarn
+      - yarn --version
+      - echo running yarn...
+      - yarn
+  pre_build:
+    commands:
+      - echo running tests...
+      - yarn test
+  build:
+    commands:
+      - echo building...
+      - yarn build:$ENVIRONMENT
+  post_build:
+    commands:
+      - echo creating zip of build assets...
+      - zip -r dist.zip dist
+      - mv dist.zip dist
+
+artifacts:
+  base-directory: ./dist
+  files:
+    - '**/*'
+

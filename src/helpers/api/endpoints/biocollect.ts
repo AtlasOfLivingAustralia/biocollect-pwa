@@ -1,17 +1,35 @@
 import axios from 'axios';
 import {
+  BioCollectBioActivitySearch,
+  BioCollectBioActivityView,
   BioCollectProject,
   BioCollectProjectSearch,
   BioCollectSurvey,
+  FilterQueries,
 } from 'types';
+import { BioCollectDexie } from '../dexie';
 
-const formatProjects = async (search: BioCollectProjectSearch) => ({
-  ...search,
-  projects: search.projects.map((project) => ({
+const escapeRegExp = (input: string) =>
+  input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
+  surveys?.filter(
+    ({ startDate, endDate }) =>
+      new Date(startDate).getTime() <= Date.now() &&
+      (!endDate || new Date(endDate).getTime() >= Date.now())
+  ) || [];
+
+const formatProjects = (projects: BioCollectProject[]) => {
+  return projects.map((project) => ({
     ...project,
     name: project.name.trim(),
-    description: project.description,
-  })),
+    projectActivities: filterActiveSurveys(project.projectActivities),
+  }));
+};
+
+const formatProjectSearch = (search: BioCollectProjectSearch) => ({
+  ...search,
+  projects: formatProjects(search.projects),
 });
 
 type BioCollectProjectSort =
@@ -20,64 +38,138 @@ type BioCollectProjectSort =
   | '_score'
   | 'organisationSort';
 
-export default {
+export default (db: BioCollectDexie) => ({
   projectSearch: async (
     offset = 0,
     max = 30,
-    sort: string = 'dateCreatedSort',
+    sort: BioCollectProjectSort | string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
-    geoSearchJSON?: object
+    hasDownloadedSurveys = true
   ): Promise<BioCollectProjectSearch> => {
-    // Define basic query parameters
-    const params: { [key: string]: any } = {
-      fq: 'isExternal:F',
-      initiator: 'biocollect',
-      sort,
-      mobile: true,
-      max,
-      offset,
-      isUserPage,
-    };
+    if (navigator.onLine && !hasDownloadedSurveys) {
+      // Define basic query parameters
+      const params: { [key: string]: any } = {
+        fq: 'isExternal:F',
+        initiator: 'biocollect',
+        sort,
+        mobile: true,
+        max,
+        offset,
+        isUserPage,
+      };
 
-    // Append user search
-    if (search && search.length > 0) {
-      params['q'] = search;
-    }
+      // Append user search
+      if (search && search.length > 0) params['q'] = search;
 
-    // Append GeoJSON search
-    if (geoSearchJSON) {
-      params['geoSearchJSON'] = JSON.stringify(geoSearchJSON);
-    }
+      // Make the GET request
+      const { data } = await axios.get<BioCollectProjectSearch>(
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
+        { params }
+      );
+      const formatted = await formatProjectSearch(data);
 
-    // Make the GET request
-    const { data } = await axios.get<BioCollectProjectSearch>(
-      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
-      { params }
-    );
-
-    return await formatProjects(data);
-  },
-  getProject: async (projectId: string): Promise<BioCollectProject> => {
-    // Make the GET request
-    const { data } = await axios.get<BioCollectProjectSearch>(
-      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
-      {
-        params: {
-          fq: `projectId:${projectId}`,
-        },
+      // Store the projects in IDB & return
+      await db.projects.bulkPut(formatted.projects);
+      return formatted;
+    } else {
+      // Fix for WebKit empty DB issue
+      // https://github.com/dexie/Dexie.js/issues/1052
+      if (hasDownloadedSurveys && (await db.cached.count()) === 0) {
+        return {
+          facets: [],
+          total: 0,
+          projects: [],
+        };
       }
-    );
 
-    const [project] = (await formatProjects(data)).projects;
-    return project;
+      // Create the base collection query
+      let query = db.projects.toCollection();
+
+      // Append the search query
+      if (search && search.length > 0)
+        query = query.and(({ name }) =>
+          new RegExp(`.*${escapeRegExp(search)}.*`).test(name)
+        );
+
+      // Get a list of downloaded surveys
+      if (hasDownloadedSurveys) {
+        const projectsWithSurveys = await db.cached
+          .orderBy('projectId')
+          .uniqueKeys();
+
+        query = query.and(({ projectId }) =>
+          projectsWithSurveys.includes(projectId)
+        );
+      }
+
+      // Perform the query
+      const projects = await query.offset(offset).limit(max).toArray();
+
+      return {
+        facets: [],
+        total: await query.count(),
+        projects,
+      };
+    }
   },
+  getProject: async (projectId: string): Promise<BioCollectProject | null> => {
+    const cached = await db.projects.get(projectId);
+    if (cached) {
+      return cached;
+    } else if (navigator.onLine) {
+      // Make the GET request
+      const { data } = await axios.get<BioCollectProjectSearch>(
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`
+      );
+
+      const [project] = formatProjects(data.projects);
+      return project;
+    }
+
+    return null;
+  },
+
   listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
-    // Make the GET request
-    const { data } = await axios.get<BioCollectSurvey[]>(
-      `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
-    );
+    if (navigator.onLine) {
+      // Make the GET request
+      let { data: surveys } = await axios.get<BioCollectSurvey[]>(
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
+      );
 
-    return data;
+      // Filter out non-active surveys (not within date range)
+      surveys = filterActiveSurveys(surveys);
+      await db.surveys.bulkPut(surveys);
+
+      return surveys;
+    } else {
+      return await db.surveys.where('projectId').equals(projectId).toArray();
+    }
   },
-};
+
+  searchActivities: async (
+    view: BioCollectBioActivityView,
+    filters?: FilterQueries
+  ): Promise<BioCollectBioActivitySearch> => {
+    if (navigator.onLine) {
+      // Transform the FilterQueries object
+      const params = new URLSearchParams({
+        view,
+        ...(filters || {}),
+      });
+
+      // Make the GET request
+      const { data } = await axios.get<BioCollectBioActivitySearch>(
+        `${
+          import.meta.env.VITE_API_BIOCOLLECT
+        }/ws/bioactivity/search?${params.toString()}`
+      );
+
+      await db.activities.bulkPut(data.activities);
+
+      return data;
+    } else {
+      return { activities: [] };
+    }
+  },
+});

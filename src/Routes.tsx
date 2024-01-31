@@ -1,66 +1,96 @@
 import { useContext, useRef } from 'react';
-import { Text } from '@mantine/core';
 import {
   RouterProvider,
   redirect,
   createBrowserRouter,
+  defer,
 } from 'react-router-dom';
 
 // App views
-import { Home, Project, SignIn, Debug } from 'views';
-import Logger from 'helpers/logger';
-import Layout from 'layout';
+import { Home, Project, SignIn, Error, Debug, Welcome } from 'views';
+import { useAuth } from 'react-oidc-context';
 import { APIContext } from 'helpers/api';
-
-interface RoutesProps {
-  isAuthenticated: boolean;
-}
+import Layout from 'layout';
 
 const isDev = import.meta.env.DEV;
 
-export default function Routes({ isAuthenticated }: RoutesProps) {
+export default function Routes() {
+  const auth = useAuth();
   const api = useContext(APIContext);
-  Logger.log(`[Routes] isAuthenticated = ${isAuthenticated}`);
+  const isInitialRouteProject = useRef(
+    window.location.pathname.startsWith('/project/')
+  );
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
-    createBrowserRouter([
-      {
-        path: '/',
-        element: <Layout />,
-        errorElement: <Text>404 yall</Text>,
-        loader: () => (isAuthenticated ? null : redirect('/signin')),
-        children: [
-          {
-            path: '',
-            element: <Home />,
+    createBrowserRouter(
+      [
+        {
+          path: '/',
+          element: <Layout />,
+          errorElement: <Error />,
+          loader: () => {
+            if (auth.isAuthenticated) {
+              // If we haven't seen the welcome screen yet, show it
+              if (!Boolean(localStorage.getItem('pwa-welcome')))
+                return redirect('/welcome');
+
+              // Otherwise, stay on the home route
+              return null;
+            }
+
+            return redirect('/signin');
           },
-          {
-            path: 'project/:projectId',
-            element: <Project />,
-            loader: async ({ params, ...rest }) => {
-              const [project, surveys] = await Promise.all([
-                api.biocollect.getProject(params.projectId || ''),
-                api.biocollect.listSurveys(params.projectId || ''),
-              ]);
-              return { project, surveys };
+          children: [
+            {
+              path: '',
+              element: <Home />,
             },
-          },
-          ...(isDev
-            ? [
-                {
-                  path: '/debug',
-                  element: <Debug />,
-                },
-              ]
-            : []),
-        ],
-      },
+            {
+              path: 'project/:projectId',
+              element: <Project />,
+              loader: async ({ params, ...rest }) => {
+                const initialProject = isInitialRouteProject.current;
+                if (isInitialRouteProject.current)
+                  isInitialRouteProject.current = false;
+
+                // Create an array of requests to send
+                const requests = [
+                  api.biocollect.getProject(params.projectId || ''),
+                  api.biocollect.listSurveys(params.projectId || ''),
+                ];
+
+                // Defer based on whether the initial route is the project route
+                return defer({
+                  data: initialProject
+                    ? Promise.all(requests)
+                    : await Promise.all(requests),
+                });
+              },
+            },
+            ...(isDev
+              ? [
+                  {
+                    path: '/debug',
+                    element: <Debug />,
+                  },
+                ]
+              : []),
+          ],
+        },
+        {
+          path: '/welcome',
+          element: <Welcome />,
+        },
+        {
+          path: '/signin',
+          element: <SignIn />,
+          loader: () => (auth.isAuthenticated ? redirect('/') : null),
+        },
+      ],
       {
-        path: '/signin',
-        element: <SignIn />,
-        loader: () => (isAuthenticated ? redirect('/') : null),
-      },
-    ])
+        basename: '/pwa-mobile',
+      }
+    )
   );
 
   return <RouterProvider router={router.current} />;

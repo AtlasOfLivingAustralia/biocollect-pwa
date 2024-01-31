@@ -1,28 +1,36 @@
 import { MantineThemeOverride } from '@mantine/core';
-import palette from './palette';
+import { generateShades } from './shades';
+import * as palette from './palette';
 
-const fontStack = `-apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`;
-const defaults: MantineThemeOverride = {
-  fontFamily: `Roboto, ${fontStack}`,
+const generateTheme = (
+  theme: MantineThemeOverride = {}
+): MantineThemeOverride => ({
+  // Default theme settings
+  defaultRadius: 'md',
+  fontFamily: `Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
   headings: {
-    fontFamily: `Lato, ${fontStack}`,
+    fontFamily: `Lato, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
   },
-  defaultRadius: 'sm',
-  // colors: {
-  //   test: [],
-  // },
-  // primaryColor: 'test',
-};
+  // Additional ALA colours
+  colors: {
+    ...theme.colors,
+    ...palette.primary,
+    ...palette.secondary,
+    ...palette.extended,
+  },
+  ...theme,
+});
 
 const themes: { [key: string]: MantineThemeOverride } = {
-  light: {
-    ...defaults,
-    colorScheme: 'light',
-  },
-  dark: {
-    ...defaults,
+  light: generateTheme({ colorScheme: 'light' }),
+  dark: generateTheme({ colorScheme: 'dark' }),
+  ala: generateTheme({
+    colors: {
+      alablue: generateShades('#009080'),
+    },
+    primaryColor: 'alablue',
     colorScheme: 'dark',
-  },
+  }),
 };
 
-export { palette, themes };
+export { themes, palette, generateShades };

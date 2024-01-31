@@ -12,34 +12,31 @@ import {
   Card,
   Center,
   Spoiler,
-  Badge,
   TypographyStylesProvider,
   ActionIcon,
   Button,
-  BadgeProps,
+  Tooltip,
+  Stack,
+  Badge,
+  Divider,
 } from '@mantine/core';
-import { IconExternalLink } from '@tabler/icons';
+import { IconExternalLink } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-import { Wave, Corner } from 'components/Wave';
 import { BioCollectProject } from 'types';
 
-import logoAla from 'assets/logo-ala.png';
-import { Background } from 'components';
+import { Background, TimeSpan } from 'components';
+import { ALABadge } from 'components/ALABadge';
+import { Wave, Corner } from 'components/Wave';
+
+// Local components
+import { SocialLinks } from './SocialLinks';
+import { ProjectTag } from './ProjectTag';
+import { useOnLine } from 'helpers/funcs';
 
 interface HeaderProps {
   project: BioCollectProject;
   mobile: boolean;
 }
-
-const ALABadge = (props: BadgeProps) => (
-  <Badge
-    {...props}
-    color="orange"
-    leftSection={<Image height={15} width="auto" src={logoAla} />}
-  >
-    Contributing to the ALA
-  </Badge>
-);
 
 interface SpoilerControlProps {
   hide?: boolean;
@@ -51,6 +48,7 @@ const SpoilerControl = ({ hide }: SpoilerControlProps) => (
 
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const onLine = useOnLine();
 
   return mobile ? (
     <Box>
@@ -68,12 +66,11 @@ export function Header({ project, mobile }: HeaderProps) {
         ) : (
           <Background h="23vh" />
         )}
-        <Wave style={{ position: 'absolute', zIndex: 100, bottom: -2 }} />
+        <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Center mt={-60}>
+      <Stack mt={-60} align="center" spacing="xl">
         <Card
           shadow="md"
-          radius="lg"
           style={{
             width: 'calc(75vw)',
             maxWidth: 400,
@@ -88,18 +85,23 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={3} color="dimmed" px="sm">
             {project.organisationName}
           </Title>
-          {!project.isExternal && (
-            <Center mt="md">
-              <ALABadge />
-            </Center>
+          {(!project.isExternal || project.tags.length > 0) && (
+            <Group mt="lg" spacing="xs" position="center">
+              {!project.isExternal && <ALABadge />}
+              {project.difficulty && (
+                <Badge color="blue">{project.difficulty} difficulty</Badge>
+              )}
+              {project.tags.map((tag) => (
+                <ProjectTag key={tag} tag={tag} />
+              ))}
+            </Group>
           )}
-          {project.urlWeb && (
+          {project.urlWeb && onLine && (
             <Button
               component="a"
               href={project.urlWeb}
               target="_blank"
               leftIcon={<IconExternalLink size={18} />}
-              variant="light"
               color="gray"
               size="sm"
               mt="xl"
@@ -107,9 +109,20 @@ export function Header({ project, mobile }: HeaderProps) {
               VIEW WEBSITE
             </Button>
           )}
+          {project.links.length > 0 && (
+            <>
+              <Divider mt="xl" mb="lg" variant="dashed" />
+              <SocialLinks links={project.links} position="center" />
+            </>
+          )}
         </Card>
-      </Center>
-      <Box p={36}>
+        <TimeSpan
+          start={project.startDate}
+          end={project.endDate}
+          style={{ flexGrow: 1 }}
+        />
+      </Stack>
+      <Box px={36} pt="xl" pb="sm">
         <Center>
           <Breadcrumbs mb="md">
             <Anchor component={Link} to=".." size="sm">
@@ -120,24 +133,30 @@ export function Header({ project, mobile }: HeaderProps) {
             </Text>
           </Breadcrumbs>
         </Center>
-        <Spoiler
-          mt="md"
-          maxHeight={200}
-          styles={{ control: { width: '100%' } }}
-          showLabel={<SpoilerControl />}
-          hideLabel={<SpoilerControl hide />}
-        >
-          <TypographyStylesProvider>
-            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
-          </TypographyStylesProvider>
-        </Spoiler>
+        {project.aim && (
+          <Spoiler
+            mt="md"
+            maxHeight={200}
+            styles={{ control: { width: '100%' } }}
+            showLabel={<SpoilerControl />}
+            hideLabel={<SpoilerControl hide />}
+          >
+            <TypographyStylesProvider>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: `<b>Project Aim - </b>${project.aim}`,
+                }}
+              />
+            </TypographyStylesProvider>
+          </Spoiler>
+        )}
       </Box>
     </Box>
   ) : (
-    <Group position="apart" align="start">
+    <Group position="apart" align="start" spacing={0}>
       <Box
-        p={36}
-        pr={0}
+        py={36}
+        pl={36}
         style={{
           overflowWrap: 'break-word',
           width: 'calc(100vw - 530px)',
@@ -157,24 +176,48 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={3} color="dimmed">
             {project.organisationName}
           </Title>
-          {project.urlWeb && (
-            <ActionIcon
-              component="a"
-              href={project.urlWeb}
-              target="_blank"
-              radius="xl"
-              variant="transparent"
-            >
-              <IconExternalLink />
-            </ActionIcon>
+          {project.urlWeb && onLine && (
+            <Tooltip label="Visit Website" position="right">
+              <ActionIcon
+                component="a"
+                href={project.urlWeb}
+                target="_blank"
+                radius="xl"
+                variant="transparent"
+              >
+                <IconExternalLink />
+              </ActionIcon>
+            </Tooltip>
           )}
         </Group>
-        {!project.isExternal && <ALABadge mt="md" />}
-        <ScrollArea.Autosize mt="xs" type="hover" offsetScrollbars mah={125}>
-          <TypographyStylesProvider>
-            <Text dangerouslySetInnerHTML={{ __html: project.description }} />
-          </TypographyStylesProvider>
-        </ScrollArea.Autosize>
+        {(!project.isExternal || project.tags.length > 0) && (
+          <Group mt="md" mb="xl" spacing="xs">
+            {!project.isExternal && <ALABadge />}
+            {project.difficulty && (
+              <Badge color="blue">{project.difficulty} difficulty</Badge>
+            )}
+            {project.tags.map((tag) => (
+              <ProjectTag key={tag} tag={tag} />
+            ))}
+          </Group>
+        )}
+        {project.aim && (
+          <ScrollArea.Autosize type="hover" offsetScrollbars mah={125}>
+            <TypographyStylesProvider>
+              <Text
+                dangerouslySetInnerHTML={{
+                  __html: `<b>Project Aim - </b>${project.aim}`,
+                }}
+              />
+            </TypographyStylesProvider>
+          </ScrollArea.Autosize>
+        )}
+        <Group mt="xl" position="apart" align="flex-start">
+          <TimeSpan start={project.startDate} end={project.endDate} />
+          {project.links.length > 0 && (
+            <SocialLinks links={project.links} align="flex-start" />
+          )}
+        </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
         {project.fullSizeImageUrl ? (
@@ -190,7 +233,7 @@ export function Header({ project, mobile }: HeaderProps) {
         ) : (
           <Background h={320} />
         )}
-        <Corner style={{ position: 'absolute', zIndex: 100, bottom: 0 }} />
+        <Corner style={{ position: 'absolute', bottom: 0 }} />
       </Box>
     </Group>
   );

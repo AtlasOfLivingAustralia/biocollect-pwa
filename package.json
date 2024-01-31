@@ -4,21 +4,28 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build:production": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "build:testing": "tsc && vite build --mode testing",
     "build:development": "tsc && vite build --mode development",
     "lint": "eslint ./src",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Tests here...\""
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@mantine/core": "^6.0.14",
     "@mantine/hooks": "^6.0.14",
+    "@mantine/modals": "^6.0.19",
     "@mantine/nprogress": "^6.0.14",
-    "@tabler/icons": "^1.119.0",
+    "@tabler/icons-react": "^2.34.0",
     "axios": "^1.4.0",
+    "color": "^4.2.3",
+    "detect-browser": "^5.3.0",
+    "dexie": "^3.2.4",
+    "dexie-react-hooks": "^1.1.6",
+    "jwt-decode": "^3.1.2",
     "oidc-client-ts": "^2.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -26,6 +33,7 @@
     "react-router-dom": "^6.14.0"
   },
   "devDependencies": {
+    "@types/color": "^3.0.3",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
