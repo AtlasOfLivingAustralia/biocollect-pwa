@@ -40,7 +40,9 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
       // Define a message handler to listen for download events
       const messageHandler = (message: MessageEvent<FrameEvent>) => {
         const { data } = message;
-        console.log('[iFrame Message]', message);
+        if (message.data?.event)
+          console.log('[iFrame Message]', message.data?.event);
+
         if (data.event === 'download-complete') {
           setCanConfirm(true);
         } else if (data.event === 'download-removed') {
@@ -81,6 +83,12 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
             token: auth.user?.access_token,
           },
         },
+        import.meta.env.VITE_API_BIOCOLLECT
+      );
+
+      console.log(
+        '-- Credentials posted! --',
+        auth.user?.access_token,
         import.meta.env.VITE_API_BIOCOLLECT
       );
     }

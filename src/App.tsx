@@ -16,6 +16,33 @@ function App() {
     `[App] isLoading: ${auth.isLoading} | isAuthenticated: ${auth.isAuthenticated}`
   );
 
+  // Helper function to try and refresh the auth token
+  const tryTokenRefresh = async () => {
+    try {
+      await auth.signinSilent();
+    } catch (error) {
+      // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
+      if (
+        import.meta.env.VITE_AUTH_AUTHORITY.startsWith('https://cognito-idp')
+      ) {
+        const params = new URLSearchParams({
+          client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
+          redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+          logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+        });
+
+        await auth.removeUser();
+        window.location.replace(
+          `${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`
+        );
+      } else {
+        await auth.signoutRedirect({
+          post_logout_redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+        });
+      }
+    }
+  };
+
   // Check for showUnpublishedRecords flag
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -38,39 +65,27 @@ function App() {
 
   // Check to check & refresh the authentication (if needed)
   useEffect(() => {
-    async function checkAuth() {
-      if (needsReauth() && onLine) {
-        try {
-          await auth.signinSilent();
-        } catch (error) {
-          // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
-          if (
-            import.meta.env.VITE_AUTH_AUTHORITY.startsWith(
-              'https://cognito-idp'
-            )
-          ) {
-            const params = new URLSearchParams({
-              client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
-              redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-              logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-            });
+    if (needsReauth() && onLine) tryTokenRefresh();
+  }, [onLine]);
 
-            await auth.removeUser();
-            window.location.replace(
-              `${
-                import.meta.env.VITE_AUTH_END_SESSION_URI
-              }?${params.toString()}`
-            );
-          } else {
-            await auth.signoutRedirect({
-              post_logout_redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-            });
-          }
+  useEffect(() => {
+    // Setup a token refresh interval if a valid interval is configured.
+    const refreshInterval = import.meta.env.VITE_AUTH_TOKEN_REFRESH_INTERVAL;
+    if (!Number.isNaN(refreshInterval)) {
+      console.log('[Auth] Valid token refresh internal found');
+
+      // Setup the refresh interbal
+      setInterval(() => {
+        if (needsReauth() && onLine) {
+          console.log('[Auth] Token needs renewing after refresh interval');
+          tryTokenRefresh();
         }
-      }
+      }, Number.parseInt(refreshInterval, 10));
+    } else {
+      console.warn(
+        `[Auth] Token refresh interval not found, or is invalid (value is ${refreshInterval})`
+      );
     }
-
-    checkAuth();
   }, []);
 
   if (auth.isLoading) {
