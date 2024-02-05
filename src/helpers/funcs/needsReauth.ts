@@ -19,10 +19,19 @@ export const needsReauth = () => {
       return true;
     }
 
-    // Overwrite the expires_at property to prevent re-login
-    if (Date.now() >= storeState.expires_at * 1000) {
+    const refreshInterval = Number.parseInt(
+      import.meta.env.VITE_AUTH_TOKEN_REFRESH_INTERVAL,
+      10
+    );
+
+    if (
+      Date.now() >=
+      storeState.expires_at * 1000 -
+        (Number.isNaN(refreshInterval) ? 0 : refreshInterval)
+    ) {
       console.log('[Reauth] Token expired, re-auth needed');
 
+      // Overwrite the expires_at property to prevent re-login
       localStorage.setItem(
         storeKey,
         JSON.stringify({ ...storeState, expires_at: EXPIRE_TIME })

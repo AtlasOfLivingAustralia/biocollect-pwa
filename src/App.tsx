@@ -70,17 +70,24 @@ function App() {
 
   useEffect(() => {
     // Setup a token refresh interval if a valid interval is configured.
-    const refreshInterval = import.meta.env.VITE_AUTH_TOKEN_REFRESH_INTERVAL;
+    const refreshInterval = Number.parseInt(
+      import.meta.env.VITE_AUTH_TOKEN_REFRESH_INTERVAL,
+      10
+    );
     if (!Number.isNaN(refreshInterval)) {
-      console.log('[Auth] Valid token refresh internal found');
+      console.log('[Auth] Valid token refresh interval found');
 
       // Setup the refresh interbal
       setInterval(() => {
         if (needsReauth() && onLine) {
           console.log('[Auth] Token needs renewing after refresh interval');
           tryTokenRefresh();
+        } else {
+          console.log(
+            '[Auth] Token does not need renewing after refresh interval'
+          );
         }
-      }, Number.parseInt(refreshInterval, 10));
+      }, refreshInterval);
     } else {
       console.warn(
         `[Auth] Token refresh interval not found, or is invalid (value is ${refreshInterval})`
