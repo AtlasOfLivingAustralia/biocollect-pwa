@@ -202,7 +202,12 @@ export function Header({ project, mobile }: HeaderProps) {
           </Group>
         )}
         {project.aim && (
-          <ScrollArea.Autosize type="hover" offsetScrollbars mah={125}>
+          <ScrollArea.Autosize
+            type="hover"
+            placeholder={project.aim}
+            offsetScrollbars
+            mah={125}
+          >
             <TypographyStylesProvider>
               <Text
                 dangerouslySetInnerHTML={{
