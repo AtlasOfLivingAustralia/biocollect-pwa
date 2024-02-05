@@ -26,8 +26,7 @@ export const needsReauth = () => {
 
     if (
       Date.now() >=
-      storeState.expires_at * 1000 -
-        (Number.isNaN(refreshInterval) ? 0 : refreshInterval)
+      storeState.expires_at * 1000 - (refreshInterval || 600000)
     ) {
       console.log('[Reauth] Token expired, re-auth needed');
 
