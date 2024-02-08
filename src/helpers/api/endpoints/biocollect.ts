@@ -59,6 +59,10 @@ export default (db: BioCollectDexie) => ({
         isUserPage,
       };
 
+      // Append configurable hub param
+      const paramHub = import.meta.env.VITE_API_BIOCOLLECT_HUB;
+      if (paramHub) params['hub'] = paramHub;
+
       // Append user search
       if (search && search.length > 0) params['q'] = search;
 
