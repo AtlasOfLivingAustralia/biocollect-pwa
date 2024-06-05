@@ -14,9 +14,10 @@ const escapeRegExp = (input: string) =>
 
 const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
   surveys?.filter(
-    ({ startDate, endDate }) =>
+    ({ startDate, endDate, published }) =>
       new Date(startDate).getTime() <= Date.now() &&
-      (!endDate || new Date(endDate).getTime() >= Date.now())
+      (!endDate || new Date(endDate).getTime() >= Date.now()) &&
+      published
   ) || [];
 
 const formatProjects = (projects: BioCollectProject[]) => {
