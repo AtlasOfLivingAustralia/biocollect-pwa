@@ -18,6 +18,7 @@ import logoDark from '/assets/logo-dark-64x64.png';
 import logoLight from '/assets/logo-light-64x64.png';
 import logoAla from '/assets/logo-ala-white.png';
 import { Wave } from 'components/Wave';
+import { InstallButton } from 'layout/InstallButton';
 
 export function SignIn() {
   const auth = useAuth();
@@ -55,6 +56,7 @@ export function SignIn() {
           >
             Sign in with ALA
           </Button>
+          <InstallButton />
         </Stack>
       </Paper>
     </Background>
@@ -90,6 +92,7 @@ export function SignIn() {
           >
             Sign in with ALA
           </Button>
+          <InstallButton />
         </Stack>
       </Paper>
       <Wave
