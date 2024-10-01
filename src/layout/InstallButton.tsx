@@ -26,7 +26,9 @@ import { useEffect, useState } from 'react';
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
-  const [install, setInstall] = useState<Event | null>(null);
+  const [install, setInstall] = useState<Event | null>(
+    (window as any).beforeInstallPromptEvent || null
+  );
   const [installed, setInstalled] = useLocalStorage<boolean>({
     key: 'pwa-installed',
     defaultValue: false,
@@ -36,10 +38,12 @@ export function InstallButton() {
   const browser = detect();
 
   useEffect(() => {
-    window.addEventListener('beforeinstallprompt', (event) => {
-      event.preventDefault();
-      setInstall(event);
-    });
+    if (!install) {
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        setInstall(event);
+      });
+    }
   }, []);
 
   const onClick = async () => {
