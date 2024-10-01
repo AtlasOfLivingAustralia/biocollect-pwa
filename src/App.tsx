@@ -5,7 +5,7 @@ import { Center, Loader } from '@mantine/core';
 import Routes from './Routes';
 import { useContext, useEffect } from 'react';
 import { FrameContext } from 'helpers/frame';
-import { needsReauth, useOnLine } from 'helpers/funcs';
+import { preventExpire, useOnLine } from 'helpers/funcs';
 
 function App() {
   const auth = useAuth();
@@ -65,7 +65,11 @@ function App() {
 
   // Check to check & refresh the authentication (if needed)
   useEffect(() => {
-    if (needsReauth() && onLine) tryTokenRefresh();
+    if (onLine) {
+      tryTokenRefresh();
+    } else {
+      preventExpire();
+    }
   }, [onLine]);
 
   useEffect(() => {
@@ -78,14 +82,7 @@ function App() {
 
     // Setup the refresh interbal
     setInterval(() => {
-      if (needsReauth() && onLine) {
-        console.log('[Auth] Token needs renewing after refresh interval');
-        tryTokenRefresh();
-      } else {
-        console.log(
-          '[Auth] Token does not need renewing after refresh interval'
-        );
-      }
+      if (onLine) tryTokenRefresh();
     }, refreshInterval || 600000);
   }, []);
 
