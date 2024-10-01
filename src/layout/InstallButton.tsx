@@ -21,6 +21,7 @@ import {
   IconShare2,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
+import { isPWAInstalled } from 'helpers/funcs/isPWAInstalled';
 import { useEffect, useState } from 'react';
 
 export function InstallButton() {
@@ -92,7 +93,7 @@ export function InstallButton() {
   };
 
   // Don't render the install button if the PWA has been installed
-  if (installed) return null;
+  if (installed || isPWAInstalled()) return null;
 
   return (
     <>
