@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "run:functionaltest": "vite --host --mode functionaltest",
     "build:production": "tsc && vite build",
     "build:staging": "tsc && vite build --mode staging",
     "build:testing": "tsc && vite build --mode testing",
     "build:development": "tsc && vite build --mode development",
+    "build:functionaltest": "tsc && vite build --mode functionaltest",
     "lint": "eslint ./src",
     "preview": "vite preview",
     "test": "echo \"Tests here...\""
