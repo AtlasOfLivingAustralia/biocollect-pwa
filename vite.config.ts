@@ -83,8 +83,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
   injectRegister: 'auto',
   devOptions: {
     enabled: true,
-    type: 'module'
-  }
+  },
 };
 
 // https://vitejs.dev/config/
