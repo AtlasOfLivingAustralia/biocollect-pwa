@@ -5,9 +5,6 @@ Parameters:
   pBioCollectPWAWafWebAclArn:
     Type: String
     Description: The WAF Web ACL to attach the CloudFront distribution to
-  pBucketName:
-    Type: String
-    Description: The bucket name for the site
   pBucketPath:
     Type: String
     Description: Optional path that the files are stored under
@@ -21,6 +18,9 @@ Parameters:
   pHostedZone:
     Type: String
     Description: The hosted zone the site are accessed under
+  pSourceBucket:
+    Type: String
+    Description: The bucket name for the site
   pSubDomain:
     Type: String
     Description: The subdomain the site are accessed on
@@ -40,7 +40,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Delete
     Properties:
-      BucketName: !Sub ${pBucketName}
+      BucketName: !Sub ${pSourceBucket}
       PublicAccessBlockConfiguration:
         BlockPublicAcls: TRUE
         BlockPublicPolicy: TRUE
@@ -49,7 +49,7 @@ Resources:
         - Key: component
           Value: website
         - Key: Name
-          Value: !Sub ${pBucketName}
+          Value: !Sub ${pSourceBucket}
 
   BioCollectPWAbBucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -61,8 +61,8 @@ Resources:
           - Action:
               - 's3:GetObject'
             Effect: Allow
-            Resource: !Sub arn:aws:s3:::${BioCollectPWABucket}/*
-            Principal: !Sub arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${BioCollectPWACloudFrontOai}
+            Resource: !Sub 'arn:aws:s3:::${BioCollectPWABucket}/*'
+            Principal: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${BioCollectPWACloudFrontOai}'
 
   BioCollectPWADnsRecord:
     Type: AWS::Route53::RecordSet
