@@ -16,13 +16,18 @@ parser.add_argument("--clean-branch", "-cb", help="The clean branch name, used f
 args = parser.parse_args()
 
 config_defaults = {
+                      'AWS_ACCOUNT_ID' : os.popen('aws sts get-caller-identity --query Account --output text').read().strip()[:6],
                      'CLEAN_BRANCH' : args.clean_branch,
-                     'ENVIRONMENT'  : args.env
+                     'ENVIRONMENT'  : args.env,
+                     'REGION' : os.popen('aws configure get region').read().strip()
                   }
 
 # read the config file
 config = configparser.ConfigParser(defaults=config_defaults, interpolation=configparser.ExtendedInterpolation())
-config.read(args.conf)
+
+# combine the master config with the component specific config
+script_dir = os.path.dirname(os.path.realpath(__file__))
+config.read([f'{script_dir}/../config.ini', args.conf])
 
 # get values for the relevant environment
 env_config = config[args.env]

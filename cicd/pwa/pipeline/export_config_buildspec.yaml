@@ -1,19 +1,29 @@
 version: 0.2
 ###
 # This build project exports any variables needed for later stages and actions
-# and builds the template config used to launch the BioCollect PWA CloudFormation
-# template
+# and builds the template configs used to launch the BioCollect PWA and WAF
+# CloudFormation templates
 
 env:
   shell: bash
   variables:
     DEBIAN_FRONTEND: noninteractive
   exported-variables:
-    - CODEBUILD_BUILD_NUMBER
-    - SOURCE_BUCKET
     - BUCKET_PATH
-    - MAX_AGE
+    - CODEBUILD_BUILD_NUMBER
     - ENVIRONMENT
+    - HOSTED_ZONE
+    - PWA_STACK_FILE_PFIX
+    - PWA_STACK_NAME
+    - MAX_AGE
+    - PRODUCT_COMPONENT
+    - PRODUCT_NAME
+    - SLACK_ALERT_CHANNEL
+    - SLACK_DEPLOY_NOTIFICATION
+    - SOURCE_BUCKET
+    - SUB_DOMAIN
+    - WAF_STACK_FILE_PFIX
+    - WAF_STACK_NAME
 
 phases:
   install:
