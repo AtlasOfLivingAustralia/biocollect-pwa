@@ -6,6 +6,7 @@
 
 import argparse
 import configparser
+import os
 
 parser = argparse.ArgumentParser()
 
@@ -16,7 +17,7 @@ parser.add_argument("--clean-branch", "-cb", help="The clean branch name, used f
 args = parser.parse_args()
 
 config_defaults = {
-                      'AWS_ACCOUNT_ID' : os.popen('aws sts get-caller-identity --query Account --output text').read().strip()[:6],
+                     'AWS_ACCOUNT_ID' : os.popen('aws sts get-caller-identity --query Account --output text').read().strip()[:6],
                      'CLEAN_BRANCH' : args.clean_branch,
                      'ENVIRONMENT'  : args.env,
                      'REGION' : os.popen('aws configure get region').read().strip()
