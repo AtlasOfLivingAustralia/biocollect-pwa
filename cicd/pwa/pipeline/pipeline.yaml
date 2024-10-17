@@ -79,7 +79,7 @@ Resources:
                 Fn::Sub: ${pBucketsStackName}-${AWS::Region}-CodePipelineArtifactBucketName
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/export_config_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/export_config_buildspec.yaml
       TimeoutInMinutes: 5
 
   BuildCode:
@@ -106,7 +106,7 @@ Resources:
 
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/npm_build_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/npm_build_buildspec.yaml
       TimeoutInMinutes: 10
 
   EmptyBucket:
@@ -127,7 +127,7 @@ Resources:
         Image: aws/codebuild/standard:7.0
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/empty_bucket_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/empty_bucket_buildspec.yaml
       TimeoutInMinutes: 5
 
   DeployNotification:
