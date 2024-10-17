@@ -440,7 +440,7 @@ Resources:
                 RoleArn:
                   Fn::ImportValue:
                     Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
-              RunOrder: 5
+              RunOrder: 6
 
   ExportConfigLogGroup:
     Type: AWS::Logs::LogGroup
