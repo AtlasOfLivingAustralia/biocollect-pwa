@@ -44,6 +44,7 @@ Resources:
       PublicAccessBlockConfiguration:
         BlockPublicAcls: TRUE
         BlockPublicPolicy: TRUE
+        IgnorePublicAcls: TRUE
         RestrictPublicBuckets: TRUE
       Tags:
         - Key: component
@@ -59,10 +60,11 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Action:
-              - 's3:GetObject'
+              - s3:GetObject
             Effect: Allow
             Resource: !Sub 'arn:aws:s3:::${BioCollectPWABucket}/*'
-            Principal: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${BioCollectPWACloudFrontOai}'
+            Principal: 
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${BioCollectPWACloudFrontOai}'
 
   BioCollectPWADnsRecord:
     Type: AWS::Route53::RecordSet
