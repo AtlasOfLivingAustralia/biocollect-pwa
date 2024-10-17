@@ -214,7 +214,7 @@ Resources:
                 DetectChanges: !Ref pAutoDeploy
               Namespace: CheckoutSrcNS
               OutputArtifacts:
-                - Name: BioCollectPWASourceArtifact
+                - Name: SourceArtifact
         - Name: Deploy_Infrastructure
           Actions:
             - Name: ExportConfig
@@ -236,7 +236,7 @@ Resources:
                   ]
               Namespace: ExportConfigNS
               InputArtifacts:
-                - Name: BioCollectPWASourceArtifact
+                - Name: SourceArtifact
               OutputArtifacts:
                 - Name: ExportConfigArtifact
               RunOrder: 1
@@ -256,7 +256,7 @@ Resources:
                     Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
                 StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
               InputArtifacts:
-                - Name: 'ExportConfigArtifact'
+                - Name: ExportConfigArtifact
               Namespace: WafCloudFormationOutNS
               OutputArtifacts: []
               Region: us-east-1
@@ -281,7 +281,7 @@ Resources:
                     Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
                 StackName: '#{ExportConfigNS.PWA_STACK_NAME}'
               InputArtifacts:
-                - Name: 'ExportConfigArtifact'
+                - Name: ExportConfigArtifact
               Namespace: AppCloudFormationOutNS
               OutputArtifacts: []
               RunOrder: 3
@@ -303,7 +303,7 @@ Resources:
                   ]
               Namespace: BuildBioCollectPWANS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               OutputArtifacts:
                 - Name: BuildBioCollectPWAArtifact
               RunOrder: 1
@@ -322,7 +322,7 @@ Resources:
                   ]
               Namespace: EmptyBucketPreDeployNS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               RunOrder: 2
             - Name: UploadFilesToS3
               ActionTypeId:
@@ -363,7 +363,7 @@ Resources:
                   ]
               Namespace: DeployNotificationNS
               InputArtifacts:
-                - Name: 'SourceArtifact'
+                - Name: SourceArtifact
               RunOrder: 4
         - Name: Teardown
           Actions:
@@ -390,7 +390,7 @@ Resources:
                   ]'
               Namespace: EmptyBucketPreDeleteNS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               RunOrder: 2
             - Name: TeardownBioCollectPWASite
               ActionTypeId:
