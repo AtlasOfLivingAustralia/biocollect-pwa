@@ -23,6 +23,7 @@ phases:
       -  #echo setting up build environment
       - echo Running on $(lsb_release -d | cut -f2)
       - echo aws-cli version $(aws --version)
+      - pip install jinja2
     finally:
       -  #echo This always runs even if the update or install command fails
       -  #notify Slack on failure
