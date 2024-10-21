@@ -2,7 +2,7 @@
 
 ###
 # convert the current code branch to an environment, used to load the appropriate environment vars
-# Usage: ./branch_2_env.py --branch [code-branch] --env [prod]
+# Usage: ./branch_2_env.py --branch [code-branch] --env [environment]
 
 import argparse
 import re

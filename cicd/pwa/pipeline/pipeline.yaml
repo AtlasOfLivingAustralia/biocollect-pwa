@@ -2,31 +2,19 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Code pipeline for the BioCollect PWA site
 
 Parameters:
-  pAppStackName:
-    Type: String
-    Description: The name of the application stack
-  pApSe2ArtifactsBucket:
-    Type: String
-    Description: Common ap-southeast-2 artifacts bucket used by CodePipeline and CodeBuild
   pAutoDeploy:
     Type: String
     Description: Sets the pipeline to autodeploy on repo changes
+  pBootstrapStackName:
+    Type: String
+    Description: The name of the bootstrap stack
+  pBucketsStackName:
+    Type: String
+    Description: The name of the bucket stack
   pCleanBranch:
     Type: String
     Description: A cleaned version of the code branch name
     Default: development
-  pCloudFormationServiceRole:
-    Type: String
-    Description: Common service role used by Cloudformation
-  pCodeBuildServiceRole:
-    Type: String
-    Description: Common service role used by CodeBuild
-  pCodePipelineServiceRole:
-    Type: String
-    Description: Common service role used by CodePipeline
-  pCodestarConnection:
-    Type: String
-    Description: Codestar connection ARN
   pEnvironment:
     Type: String
     Description: The AWS environment this belongs to
@@ -48,14 +36,24 @@ Parameters:
   pUsE1ArtifactsBucket:
     Type: String
     Description: Common us-east-1 artifacts bucket used by CodePipeline and CodeBuild
-  pWafStackName:
+  pPipelineFingerprint:
     Type: String
-    Description: The name of the product
+    Description: The fingerprint of the pipeline, used to determine if it's been modified
+  pRestartExecutionOnUpdate:
+    Type: String
+    Description: Restart that pipeline if it's been updated
+    AllowedValues:
+         - true 
+         - false
 
 Conditions:
   IsDev: !Equals
     - !Ref pEnvironment
     - development
+  AutoDeploy: !Equals
+    - !Ref pAutoDeploy
+    - true
+
 
 Resources:
   ExportConfig:
@@ -65,7 +63,9 @@ Resources:
         - '${pProductName}-${pProductComponent}-export-config-${ResourceName}'
         - ResourceName: !If [IsDev, !Ref pCleanBranch, !Ref pEnvironment]
       Description: Load the environment and build the CloudFormation template config file
-      ServiceRole: !Ref pCodeBuildServiceRole
+      ServiceRole:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodeBuildServiceRoleArn
       Artifacts:
         Type: CODEPIPELINE
       Environment:
@@ -73,15 +73,13 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:7.0
         EnvironmentVariables:
-          - Name: AWS_ARTIFACTS_BUCKET
-            Value: !Ref pApSe2ArtifactsBucket
-          - Name: CLEAN_BRANCH
-            Value: !Ref pCleanBranch
-          - Name: ENVIRONMENT
-            Value: !Ref pEnvironment
+          - Name: ARTIFACTS_BUCKET
+            Value:
+              Fn::ImportValue:
+                Fn::Sub: ${pBucketsStackName}-${AWS::Region}-CodePipelineArtifactBucketName
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/export_config_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/export_config_buildspec.yaml
       TimeoutInMinutes: 5
 
   BuildCode:
@@ -91,7 +89,9 @@ Resources:
         - '${pProductName}-${pProductComponent}-build-site-${ResourceName}'
         - ResourceName: !If [IsDev, !Ref pCleanBranch, !Ref pEnvironment]
       Description: Build the BioCollect PWA site
-      ServiceRole: !Ref pCodeBuildServiceRole
+      ServiceRole:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodeBuildServiceRoleArn
       Artifacts:
         Type: CODEPIPELINE
       Environment:
@@ -99,11 +99,14 @@ Resources:
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:7.0
         EnvironmentVariables:
-          - Name: 'AWS_ARTIFACTS_BUCKET'
-            Value: !Ref pApSe2ArtifactsBucket
+          - Name: ARTIFACTS_BUCKET
+            Value:
+              Fn::ImportValue:
+                Fn::Sub: ${pBucketsStackName}-${AWS::Region}-CodePipelineArtifactBucketName
+
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/npm_build_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/npm_build_buildspec.yaml
       TimeoutInMinutes: 10
 
   EmptyBucket:
@@ -113,19 +116,39 @@ Resources:
         - '${pProductName}-${pProductComponent}-empty-bucket-${ResourceName}'
         - ResourceName: !If [IsDev, !Ref pCleanBranch, !Ref pEnvironment]
       Description: Empty the source s3 bucket so it can be deleted
-      ServiceRole: !Ref pCodeBuildServiceRole
+      ServiceRole:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodeBuildServiceRoleArn
       Artifacts:
         Type: CODEPIPELINE
       Environment:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/standard:7.0
-        EnvironmentVariables:
-          - Name: 'AWS_ARTIFACTS_BUCKET'
-            Value: !Ref pApSe2ArtifactsBucket
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/pipeline/empty_bucket_buildspec.yaml
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/empty_bucket_buildspec.yaml
+      TimeoutInMinutes: 5
+
+  DeployNotification:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub 
+              - ${pProductName}-deploy-notification-${ResourceName}
+              - ResourceName: !If [ IsDev, !Ref pCleanBranch, !Ref pEnvironment ]
+      Description: Send out the deploy notifications
+      ServiceRole:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodeBuildServiceRoleArn
+      Artifacts:  
+        Type: CODEPIPELINE            
+      Environment:           
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:7.0  
+      Source:            
+        Type: CODEPIPELINE
+        BuildSpec: !Sub cicd/${pProductComponent}/pipeline/deploy_notification_buildspec.yaml
       TimeoutInMinutes: 5
 
   Pipeline:
@@ -134,7 +157,10 @@ Resources:
       Name: !Sub
         - '${pProductName}-${pProductComponent}-${ResourceName}'
         - ResourceName: !If [IsDev, !Ref pCleanBranch, !Ref pEnvironment]
-      RoleArn: !Ref pCodePipelineServiceRole
+      PipelineType: V2
+      RoleArn:
+        Fn::ImportValue:
+          Fn::Sub: ${pBootstrapStackName}-CodePipelineServiceRoleArn
       ArtifactStores:
         - ArtifactStore:
             Type: S3
@@ -142,11 +168,33 @@ Resources:
           Region: us-east-1
         - ArtifactStore:
             Type: S3
-            Location: !Ref pApSe2ArtifactsBucket
+            Location: 
+              Fn::ImportValue:
+                Fn::Sub: ${pBucketsStackName}-${AWS::Region}-CodePipelineArtifactBucketName
           Region: !Ref AWS::Region
       DisableInboundStageTransitions:
         - Reason: To prevent accidental teardown
           StageName: Teardown
+      RestartExecutionOnUpdate: !Ref pRestartExecutionOnUpdate
+      Triggers:
+        - ProviderType: CodeStarSourceConnection
+          GitConfiguration:
+            Push:
+              - Branches:
+                  Includes:
+                    - !If [ AutoDeploy, !Ref pGitHubBranch, bogo-branch ]
+                FilePaths:
+                  Includes:
+                    - !Sub cicd/${pProductComponent}/**
+            SourceActionName: CheckoutSrc
+      Variables:
+        - Name: SRC_BRANCH
+          DefaultValue: !Ref pGitHubBranch
+          Description: The branch this pipeline is deploying from
+        - Name: PIPELINE_FINGERPRINT
+          DefaultValue: !Ref pPipelineFingerprint
+          Description: The fingerprint of the pipeline, used to determine if it's been modified
+
       Stages:
         - Name: Checkout_Source
           Actions:
@@ -157,14 +205,16 @@ Resources:
                 Provider: CodeStarSourceConnection
                 Version: 1
               Configuration:
-                ConnectionArn: !Ref pCodestarConnection
+                ConnectionArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CodestarConnectionArn
                 FullRepositoryId: !Sub ${pGitHubOwner}/${pGitHubRepositoryName}
                 BranchName: !Ref pGitHubBranch
                 OutputArtifactFormat: CODE_ZIP
                 DetectChanges: !Ref pAutoDeploy
               Namespace: CheckoutSrcNS
               OutputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
         - Name: Deploy_Infrastructure
           Actions:
             - Name: ExportConfig
@@ -175,14 +225,18 @@ Resources:
                 Provider: CodeBuild
               Configuration:
                 ProjectName: !Ref ExportConfig
-                EnvironmentVariables: |
+                EnvironmentVariables: !Sub |
                   [
-                    { "name":"SRC_BRANCH", "value":"#{CheckoutSrcNS.BranchName}" },
-                    { "name":"COMMIT_ID", "value":"#{CheckoutSrcNS.CommitId}" }
+                    { "name":"CLEAN_BRANCH", "value":"${pCleanBranch}" },
+                    { "name":"COMMIT_ID", "value":"#{CheckoutSrcNS.CommitId}" },
+                    { "name":"ENVIRONMENT", "value":"${pEnvironment}" },
+                    { "name":"PIPELINE_FINGERPRINT", "value":"#{variables.PIPELINE_FINGERPRINT}" },
+                    { "name":"PRODUCT_COMPONENT", "value":"${pProductComponent}" },
+                    { "name":"SRC_BRANCH", "value":"#{CheckoutSrcNS.BranchName}" }
                   ]
               Namespace: ExportConfigNS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               OutputArtifacts:
                 - Name: ExportConfigArtifact
               RunOrder: 1
@@ -193,14 +247,16 @@ Resources:
                 Version: 1
                 Provider: CloudFormation
               Configuration:
-                TemplatePath: 'ExportConfigArtifact::cicd/app/waf.yaml'
-                TemplateConfiguration: 'ExportConfigArtifact::cicd/pipeline/waf_template_config.json'
-                ActionMode: REPLACE_ON_FAILURE
+                TemplatePath: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}.yaml'
+                TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.WAF_STACK_FILE_PFIX}_template_config.json'
+                ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
-                RoleArn: !Ref pCloudFormationServiceRole
-                StackName: !Ref pWafStackName
+                RoleArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
+                StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
               InputArtifacts:
-                - Name: 'ExportConfigArtifact'
+                - Name: ExportConfigArtifact
               Namespace: WafCloudFormationOutNS
               OutputArtifacts: []
               Region: us-east-1
@@ -212,18 +268,20 @@ Resources:
                 Version: 1
                 Provider: CloudFormation
               Configuration:
-                TemplatePath: 'ExportConfigArtifact::cicd/app/biocollect-pwa.yaml'
-                TemplateConfiguration: 'ExportConfigArtifact::cicd/pipeline/template_config.json'
-                ActionMode: REPLACE_ON_FAILURE
+                TemplatePath: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.PWA_STACK_FILE_PFIX}.yaml'
+                TemplateConfiguration: !Sub 'ExportConfigArtifact::cicd/${pProductComponent}/app/#{ExportConfigNS.PWA_STACK_FILE_PFIX}_template_config.json'
+                ActionMode: !If [ IsDev, REPLACE_ON_FAILURE, CREATE_UPDATE]
                 Capabilities: CAPABILITY_IAM,CAPABILITY_AUTO_EXPAND
                 ParameterOverrides: |
                   { 
                     "pBioCollectPWAWafWebAclArn": "#{WafCloudFormationOutNS.BioCollectPWAWafWebAclArn}"
                   }
-                RoleArn: !Ref pCloudFormationServiceRole
-                StackName: !Ref pAppStackName
+                RoleArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
+                StackName: '#{ExportConfigNS.PWA_STACK_NAME}'
               InputArtifacts:
-                - Name: 'ExportConfigArtifact'
+                - Name: ExportConfigArtifact
               Namespace: AppCloudFormationOutNS
               OutputArtifacts: []
               RunOrder: 3
@@ -245,7 +303,7 @@ Resources:
                   ]
               Namespace: BuildBioCollectPWANS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               OutputArtifacts:
                 - Name: BuildBioCollectPWAArtifact
               RunOrder: 1
@@ -264,7 +322,7 @@ Resources:
                   ]
               Namespace: EmptyBucketPreDeployNS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               RunOrder: 2
             - Name: UploadFilesToS3
               ActionTypeId:
@@ -281,6 +339,32 @@ Resources:
               InputArtifacts:
                 - Name: BuildBioCollectPWAArtifact
               RunOrder: 3
+            - Name: DeployNotification
+              ActionTypeId:
+                Owner: AWS
+                Category: Build
+                Version: 1
+                Provider: CodeBuild
+              Configuration:
+                ProjectName: !Ref DeployNotification
+                EnvironmentVariables: !Sub |
+                  [
+                    { "name":"SRC_BRANCH", "value":"${pGitHubBranch}" },
+                    { "name":"COMMIT_ID", "value":"#{CheckoutSrcNS.CommitId}" },
+                    { "name":"AUTHOR", "value":"#{CheckoutSrcNS.AuthorDisplayName}" },
+                    { "name":"REPO", "value":"#{CheckoutSrcNS.FullRepositoryName}" },
+                    { "name":"PRODUCT_NAME", "value":"${pProductName}" },
+                    { "name":"PRODUCT_COMPONENT", "value":"${pProductComponent}" },
+                    { "name":"SLACK_DEPLOY_NOTIFICATION", "value":"#{ExportConfigNS.SLACK_DEPLOY_NOTIFICATION}" },
+                    { "name":"SLACK_ALERT_CHANNEL", "value":"#{ExportConfigNS.SLACK_ALERT_CHANNEL}" },
+                    { "name":"SUB_DOMAIN", "value":"#{ExportConfigNS.SUB_DOMAIN}" },
+                    { "name":"HOSTED_ZONE", "value":"#{ExportConfigNS.HOSTED_ZONE}" },
+                    { "name":"ENVIRONMENT", "value":"${pEnvironment}" }
+                  ]
+              Namespace: DeployNotificationNS
+              InputArtifacts:
+                - Name: SourceArtifact
+              RunOrder: 4
         - Name: Teardown
           Actions:
             - Name: Approval
@@ -306,7 +390,7 @@ Resources:
                   ]'
               Namespace: EmptyBucketPreDeleteNS
               InputArtifacts:
-                - Name: 'BioCollectPWASourceArtifact'
+                - Name: SourceArtifact
               RunOrder: 2
             - Name: TeardownBioCollectPWASite
               ActionTypeId:
@@ -316,8 +400,10 @@ Resources:
                 Provider: CloudFormation
               Configuration:
                 ActionMode: DELETE_ONLY
-                StackName: !Ref pAppStackName
-                RoleArn: !Ref pCloudFormationServiceRole
+                StackName: '#{ExportConfigNS.PWA_STACK_NAME}'
+                RoleArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
               RunOrder: 3
             - Name: TeardownBioCollectPWAWaf
               ActionTypeId:
@@ -327,8 +413,10 @@ Resources:
                 Provider: CloudFormation
               Configuration:
                 ActionMode: DELETE_ONLY
-                StackName: !Ref pWafStackName
-                RoleArn: !Ref pCloudFormationServiceRole
+                StackName: '#{ExportConfigNS.WAF_STACK_NAME}'
+                RoleArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
               Region: us-east-1
               RunOrder: 4
             - Name: ApprovalForPipelineTeardown
@@ -349,16 +437,16 @@ Resources:
               Configuration:
                 ActionMode: DELETE_ONLY
                 StackName: !Ref AWS::StackName
-                RoleArn: !Ref pCloudFormationServiceRole
-              RunOrder: 5
+                RoleArn:
+                  Fn::ImportValue:
+                    Fn::Sub: ${pBootstrapStackName}-CloudFormationServiceRoleArn
+              RunOrder: 6
 
   ExportConfigLogGroup:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub
-        - /aws/codebuild/${ProjectName}
-        - ProjectName: !Ref ExportConfig
+      LogGroupName: !Sub /aws/codebuild/${ExportConfig}
       RetentionInDays: 30
       Tags:
         - Key: Name
@@ -368,9 +456,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub
-        - /aws/codebuild/${ProjectName}
-        - ProjectName: !Ref BuildCode
+      LogGroupName: !Sub /aws/codebuild/${BuildCode}
       RetentionInDays: 30
       Tags:
         - Key: Name
@@ -380,11 +466,19 @@ Resources:
     Type: AWS::Logs::LogGroup
     DeletionPolicy: Delete
     Properties:
-      LogGroupName: !Sub
-        - /aws/codebuild/${ProjectName}
-        - ProjectName: !Ref EmptyBucket
+      LogGroupName: !Sub /aws/codebuild/${EmptyBucket}
       RetentionInDays: 30
       Tags:
+        - Key: Name
+          Value: !Ref AWS::StackName
+
+  DeployNotificationCodeBuildLogGroup:
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    Properties: 
+      LogGroupName: !Sub /aws/codebuild/${DeployNotification}
+      RetentionInDays: 30
+      Tags:   
         - Key: Name
           Value: !Ref AWS::StackName
 

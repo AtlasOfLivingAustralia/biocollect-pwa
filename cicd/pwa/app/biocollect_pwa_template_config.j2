@@ -1,10 +1,10 @@
 {
   "Parameters" : {
-    "pBucketName"     : "{{ bucket_name }}",
     "pBucketPath"     : "{{ bucket_path }}",
     "pCleanBranch"    : "{{ clean_branch }}",
     "pEnvironment"    : "{{ environment }}",
     "pHostedZone"     : "{{ hosted_zone }}",
+    "pSourceBucket"   : "{{ source_bucket }}",
     "pSslCertificate" : "{{ ssl_certificate }}",
     "pSubDomain"      : "{{ sub_domain }}"
   },
@@ -12,9 +12,9 @@
     "product"     : "{{ product_name }}",
     "component"   : "{{ product_component }}",
     "environment" : "{{ environment }}",
-    "branch"      : "{{ branch }}",
+    "branch"      : "{{ src_branch }}",
     "version"     : "{{ commit_id }}",
-    "build"       : "{{ build }}"
+    "build"       : "{{ codebuild_build_number }}"
   },
   "StackPolicy" : {
     "Statement" : [
