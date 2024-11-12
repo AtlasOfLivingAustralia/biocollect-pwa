@@ -159,6 +159,7 @@ export default function Header() {
                 Help
               </Menu.Item>
               <Menu.Item
+                id='signOut'
                 onClick={signOut}
                 icon={<IconLogout />}
                 disabled={auth.isLoading || !onLine}
