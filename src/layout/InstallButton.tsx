@@ -63,6 +63,7 @@ export function InstallButton() {
     // Redirect to different support URL based on browsers
     switch (browser?.name) {
       case 'chrome':
+      case 'crios':
         if (browser.os === 'Android OS') {
           url =
             'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DAndroid&oco=1';

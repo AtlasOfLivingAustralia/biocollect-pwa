@@ -124,6 +124,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
             </Skeleton>
             <Skeleton mt="sm" visible={loading}>
               <Button
+                id={project?.projectId}
                 component={Link}
                 to={`/project/${project?.projectId}`}
                 rightIcon={<IconArrowUpRight size="0.8rem" />}

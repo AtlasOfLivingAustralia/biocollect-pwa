@@ -125,7 +125,7 @@ function WelcomeDetails() {
           </List.Item>
         </List>
       </Card>
-      <Button
+      <Button id="getStarted"
         onClick={() => {
           localStorage.setItem('pwa-welcome', 'true');
           navigate('/');

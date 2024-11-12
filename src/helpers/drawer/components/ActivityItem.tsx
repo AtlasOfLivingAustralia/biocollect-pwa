@@ -59,6 +59,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
       <Group spacing="xs">
         <Skeleton visible={loading} width={28} miw={28}>
           <ActionIcon
+            data-testid="view-record"
             variant="light"
             color="gray"
             onClick={

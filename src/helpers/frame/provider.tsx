@@ -131,7 +131,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         />
         {callbacks?.confirm && (
           <Group mt="sm" position="center" spacing="xs">
-            <Button onClick={callbacks.confirm} loading={!canConfirm}>
+            <Button id="confirmDownloadModal" onClick={callbacks.confirm} loading={!canConfirm}>
               Confirm Download
             </Button>
             <Button onClick={close} color="gray">

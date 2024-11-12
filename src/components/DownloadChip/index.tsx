@@ -99,6 +99,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
         <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
       )}
       <Text
+        id={survey?.projectActivityId + "Download"}
         ml="xs"
         color="dimmed"
         weight="bold"

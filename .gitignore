@@ -34,3 +34,6 @@ dist-ssr
 # Build analyzer
 stats.html
 dist.zip
+
+# Dev PWA files
+dev-dist

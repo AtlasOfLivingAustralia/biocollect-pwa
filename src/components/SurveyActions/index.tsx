@@ -32,6 +32,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
       </Skeleton>
       <Skeleton visible={loading} w={28}>
         <ActionIcon
+          id={survey && survey.projectActivityId + "ViewRecord"}
           variant="light"
           color={theme.primaryColor}
           onClick={
@@ -53,6 +54,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
       </Skeleton>
       <Skeleton visible={loading} w={28}>
         <ActionIcon
+          id={survey && survey.projectActivityId + "AddRecord"}
           variant="light"
           color={theme.primaryColor}
           onClick={
