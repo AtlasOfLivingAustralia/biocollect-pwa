@@ -1,0 +1,38 @@
+name: Build and Attach Vite/React App
+
+on:
+  release:
+    types: [created]
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app for CICD
+        run: npm run build:cicd
+
+      - name: Upload build assets
+        if: github.event_name == 'release'
+        run: gh release upload "${{ github.event.release.tag_name }}" ./dist/app-production.zip ./dist/app-staging.zip ./dist/app-testing.zip ./dist/app-development.zip --clobber
+
+      - name: Upload build artifacts
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: dist/
