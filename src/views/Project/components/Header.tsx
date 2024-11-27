@@ -207,6 +207,8 @@ export function Header({ project, mobile }: HeaderProps) {
             placeholder={project.aim}
             offsetScrollbars
             mah={125}
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           >
             <TypographyStylesProvider>
               <Text

@@ -1,4 +1,4 @@
 export { isFrame } from './isFrame';
-export { needsReauth } from './needsReauth';
+export { getStoredState, preventExpire } from './getStoredState';
 export { useOnLine, isOnline } from './useOnLine';
 export { getInitials } from './getInitials';

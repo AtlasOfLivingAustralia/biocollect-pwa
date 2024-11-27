@@ -1,0 +1,59 @@
+name: Build BioCollect PWA Artifacts
+
+on:
+  release:
+    types: [created]
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app for CICD
+        run: npm run build:cicd
+
+      - name: Upload build assets
+        if: github.event_name == 'release'
+        run: gh release upload "${{ github.event.release.tag_name }}" ./dist/app-production.zip ./dist/app-staging.zip ./dist/app-testing.zip ./dist/app-development.zip --clobber
+
+      - name: Upload production artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-production
+          path: dist/app-production.zip
+
+      - name: Upload staging artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-staging
+          path: dist/app-staging.zip
+
+      - name: Upload testing artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-testing
+          path: dist/app-testing.zip
+
+      - name: Upload development artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-development
+          path: dist/app-development.zip

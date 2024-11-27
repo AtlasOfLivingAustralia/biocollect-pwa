@@ -94,7 +94,7 @@ export default function Header() {
                   const { user, isAuthenticated } = auth;
 
                   if (!isAuthenticated) return <Loader size="sm" />;
-
+                  
                   // Use the given name from the profile field, otherwise fallback to the JWT
                   const given_name =
                     user?.profile.given_name ||
@@ -159,6 +159,7 @@ export default function Header() {
                 Help
               </Menu.Item>
               <Menu.Item
+                id='signOut'
                 onClick={signOut}
                 icon={<IconLogout />}
                 disabled={auth.isLoading || !onLine}

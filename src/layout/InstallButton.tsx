@@ -9,7 +9,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { useDisclosure, useLocalStorage, useMediaQuery } from '@mantine/hooks';
 import {
   IconBrandApple,
   IconBrandSafari,
@@ -17,17 +17,42 @@ import {
   IconDownload,
   IconHandClick,
   IconNewSection,
+  IconQuestionMark,
   IconShare2,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
+import { isPWAInstalled } from 'helpers/funcs/isPWAInstalled';
+import { useEffect, useState } from 'react';
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
+  const [install, setInstall] = useState<Event | null>(
+    (window as any).beforeInstallPromptEvent || null
+  );
+  const [installed, setInstalled] = useLocalStorage<boolean>({
+    key: 'pwa-installed',
+    defaultValue: false,
+  });
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const browser = detect();
 
-  const onClick = () => {
+  useEffect(() => {
+    if (!install) {
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        setInstall(event);
+      });
+    }
+  }, []);
+
+  const onClick = async () => {
+    if (install) {
+      const { outcome } = await (install as any).prompt();
+      if (outcome === 'accepted') setInstalled(true);
+      return;
+    }
+
     let url;
 
     if (!browser) {
@@ -38,6 +63,7 @@ export function InstallButton() {
     // Redirect to different support URL based on browsers
     switch (browser?.name) {
       case 'chrome':
+      case 'crios':
         if (browser.os === 'Android OS') {
           url =
             'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DAndroid&oco=1';
@@ -71,15 +97,24 @@ export function InstallButton() {
     } else open();
   };
 
+  // Don't render the install button if the PWA has been installed
+  if (installed || isPWAInstalled()) return null;
+
   return (
     <>
       <Button
         onClick={onClick}
         size="xs"
         variant="light"
-        leftIcon={<IconDownload size="1rem" />}
+        leftIcon={
+          install ? (
+            <IconDownload size="1rem" />
+          ) : (
+            <IconQuestionMark size="1rem" />
+          )
+        }
       >
-        Install
+        {install ? 'Install' : 'Installation Instructions'}
       </Button>
       <Modal
         fullScreen={mobile}

@@ -116,6 +116,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                     Unpublished
                   </Text>
                   <Button
+                    id={`${filters.projectActivityId}UnpublishedRecords`}
                     leftIcon={<IconExternalLink size="1rem" />}
                     mb="xs"
                     variant="outline"
