@@ -16,7 +16,8 @@ const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
   surveys?.filter(
     ({ startDate, endDate, published }) =>
       new Date(startDate).getTime() <= Date.now() &&
-      (!endDate || new Date(endDate).getTime() >= Date.now()) && (published !== undefined ? published : true)
+      (!endDate || new Date(endDate).getTime() >= Date.now()) &&
+      (published !== undefined ? published : true)
   ) || [];
 
 const formatProjects = (projects: BioCollectProject[]) => {
