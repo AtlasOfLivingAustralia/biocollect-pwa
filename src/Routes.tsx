@@ -88,7 +88,7 @@ export default function Routes() {
         },
       ],
       {
-        basename: '/pwa-mobile',
+        basename: '/mobile-app',
       }
     )
   );

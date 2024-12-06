@@ -114,7 +114,7 @@ export function InstallButton() {
           )
         }
       >
-        {install ? 'Install' : 'Installation Instructions'}
+        {install ? 'Install' : 'Install Instructions'}
       </Button>
       <Modal
         fullScreen={mobile}

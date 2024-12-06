@@ -16,13 +16,21 @@ import App from './App';
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
 
+const authConfig =  {
+  client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
+  redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
+  authority: import.meta.env.VITE_AUTH_AUTHORITY,
+  scope: import.meta.env.VITE_AUTH_SCOPE,
+}
+
+if (import.meta.env.DEV) {
+  console.log('Auth Config', authConfig);
+}
+
 function Main() {
   return (
     <AuthProvider
-      client_id={import.meta.env.VITE_AUTH_CLIENT_ID}
-      redirect_uri={import.meta.env.VITE_AUTH_REDIRECT_URI}
-      authority={import.meta.env.VITE_AUTH_AUTHORITY}
-      scope={import.meta.env.VITE_AUTH_SCOPE}
+      {...authConfig}
       userStore={userStore}
       onSigninCallback={(user) => {
         const params = new URLSearchParams(window.location.search);

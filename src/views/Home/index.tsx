@@ -61,7 +61,7 @@ export function Home() {
           (getNumber('page', 1, params) - 1) * paramMax,
           paramMax,
           getString('pSort', 'dateCreatedSort', params),
-          getBool('isUserPage', false, params),
+          getBool('isUserPage', true, params),
           getString('search', undefined, params),
           getBool('offline', !onLine, params)
         );
