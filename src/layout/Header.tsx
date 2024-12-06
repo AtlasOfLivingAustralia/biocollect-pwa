@@ -7,6 +7,7 @@ import {
   UnstyledButton,
   Badge,
   Loader,
+  ThemeIcon,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -18,6 +19,8 @@ import {
   IconFileUpload,
   IconUser,
   IconSettings,
+  IconPlugConnected,
+  IconPlugConnectedX,
 } from '@tabler/icons-react';
 import jwtDecode from 'jwt-decode';
 
@@ -74,11 +77,17 @@ export default function Header() {
               }
             />
           </Link>
-          <Group spacing="xs">
-            <Badge radius="sm" color={onLine ? 'green' : 'red'}>
-              {onLine ? 'online' : 'offline'}
-            </Badge>
-          </Group>
+          <ThemeIcon
+            color={onLine ? 'green' : 'red'}
+            radius="lg"
+            variant="light"
+          >
+            {onLine ? (
+              <IconPlugConnected size="1rem" />
+            ) : (
+              <IconPlugConnectedX size="1rem" />
+            )}
+          </ThemeIcon>
         </Group>
         <Group>
           <InstallButton />
@@ -94,7 +103,7 @@ export default function Header() {
                   const { user, isAuthenticated } = auth;
 
                   if (!isAuthenticated) return <Loader size="sm" />;
-                  
+
                   // Use the given name from the profile field, otherwise fallback to the JWT
                   const given_name =
                     user?.profile.given_name ||
@@ -159,7 +168,7 @@ export default function Header() {
                 Help
               </Menu.Item>
               <Menu.Item
-                id='signOut'
+                id="signOut"
                 onClick={signOut}
                 icon={<IconLogout />}
                 disabled={auth.isLoading || !onLine}
