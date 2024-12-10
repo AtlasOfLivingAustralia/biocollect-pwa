@@ -23,7 +23,7 @@ const APIProvider = (props: PropsWithChildren<{}>): ReactElement => {
     } else {
       delete axios.defaults.headers['Authorization'];
     }
-  }, [auth.isAuthenticated]);
+  }, [auth.isAuthenticated, auth.user, auth]);
 
   return (
     <APIContext.Provider
