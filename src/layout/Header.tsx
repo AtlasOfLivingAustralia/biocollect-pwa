@@ -161,7 +161,7 @@ export default function Header() {
               <Menu.Divider />
               <Menu.Item
                 component="a"
-                href="https://support.ala.org.au/support/solutions/6000139493"
+                href="https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/"
                 target="_blank"
                 icon={<IconQuestionMark />}
               >
