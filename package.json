@@ -4,12 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --mode dev",
     "run:functionaltest": "vite --host --mode functionaltest",
-    "build:production": "tsc && vite build",
-    "build:staging": "tsc && vite build --mode staging",
-    "build:testing": "tsc && vite build --mode testing",
-    "build:development": "tsc && vite build --mode development",
     "build:functionaltest": "tsc && vite build --mode functionaltest",
     "build:cicd": "./cicd/build.sh",
     "lint": "eslint ./src",
