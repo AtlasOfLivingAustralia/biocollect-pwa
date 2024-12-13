@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-tsc && for mode in prod staging test dev; do
+tsc && for mode in production staging test dev; do
   outDir="./dist/app-$mode"
 
   # If the mode is production, you may not need to specify the --mode flag

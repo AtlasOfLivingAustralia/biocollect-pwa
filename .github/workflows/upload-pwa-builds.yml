@@ -29,8 +29,8 @@ jobs:
       - name: Upload production artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-prod
-          path: dist/app-prod.zip
+          name: app-production
+          path: dist/app-production.zip
 
       - name: Upload staging artifact
         uses: actions/upload-artifact@v4
