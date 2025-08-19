@@ -1,6 +1,6 @@
 # BioCollect PWA Demo
 
-> A progressive web application version of BioCollect, built with React
+> A progressive web application version of BioCollect, built with React.
 
 - [BioCollect PWA Demo](#biocollect-pwa-demo)
 	- [Dependencies](#dependencies)
