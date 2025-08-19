@@ -50,27 +50,31 @@ export default (db: BioCollectDexie) => ({
   ): Promise<BioCollectProjectSearch> => {
     if (navigator.onLine && !hasDownloadedSurveys) {
       // Define basic query parameters
-      const params: { [key: string]: any } = {
+      const params = new URLSearchParams({
         fq: 'isExternal:F',
         initiator: 'biocollect',
         sort,
-        mobile: true,
-        max,
-        offset,
-        isUserPage,
-      };
+        mobile: 'true',
+        max: max.toString(),
+        offset: offset.toString(),
+        isUserPage: isUserPage.toString(),
+      });
+
+      // Append public projects filter query
+      params.append('fq', 'allParticipants:ALL');
 
       // Append configurable hub param
       const paramHub = import.meta.env.VITE_API_BIOCOLLECT_HUB;
-      if (paramHub) params['hub'] = paramHub;
+      if (paramHub) params.append('hub', paramHub);
 
       // Append user search
-      if (search && search.length > 0) params['q'] = search;
+      if (search && search.length > 0) params.append('q', search);
 
       // Make the GET request
       const { data } = await axios.get<BioCollectProjectSearch>(
-        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search`,
-        { params }
+        `${
+          import.meta.env.VITE_API_BIOCOLLECT
+        }/ws/project/search?${params.toString()}`
       );
       const formatted = await formatProjectSearch(data);
 
