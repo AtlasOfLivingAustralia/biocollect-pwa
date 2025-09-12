@@ -20,12 +20,14 @@ const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
       (published !== undefined ? published : true)
   ) || [];
 
+const formatProject = (project: BioCollectProject) => ({
+  ...project,
+  name: project.name.trim(),
+  projectActivities: filterActiveSurveys(project.projectActivities),
+});
+
 const formatProjects = (projects: BioCollectProject[]) => {
-  return projects.map((project) => ({
-    ...project,
-    name: project.name.trim(),
-    projectActivities: filterActiveSurveys(project.projectActivities),
-  }));
+  return projects.map((project) => formatProject(project));
 };
 
 const formatProjectSearch = (search: BioCollectProjectSearch) => ({
@@ -128,12 +130,11 @@ export default (db: BioCollectDexie) => ({
       return cached;
     } else if (navigator.onLine) {
       // Make the GET request
-      const { data } = await axios.get<BioCollectProjectSearch>(
+      const { data } = await axios.get<BioCollectProject>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`
       );
 
-      const [project] = formatProjects(data.projects);
-      return project;
+      return formatProject(data);
     }
 
     return null;
