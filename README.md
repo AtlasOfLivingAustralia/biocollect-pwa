@@ -35,9 +35,10 @@ Setup VSCode to format on save using [this](https://www.alphr.com/auto-format-vs
 
 ### Application
 
-1. Install Node.js 16
+1. Install Node.js `22.19.0` (or later)
    1. Use [nvm](https://github.com/nvm-sh/nvm) to manage multiple versions of node
 2. Clone the repository
-3. Install dependencies using [Yarn](https://yarnpkg.com/) simply with `yarn`
-   1. Yarn is available through Node.js Corepack, run `corepack enable` to enable Yarn
-4. Start the project with `yarn start`
+3. Install dependencies using [pnpm](https://pnpm.io) simply with `pnpm install`
+   1. Installation instructions available [here](https://pnpm.io/installation)
+4. Allow `esbuild` to run via `pnpm approve-builds`
+5. Start the project with `pnpm dev`
