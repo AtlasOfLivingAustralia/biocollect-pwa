@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import { IconEye, IconUser } from '@tabler/icons-react';
+import { IconEye, IconUser, IconPencil } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';
@@ -80,6 +80,27 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             }
           >
             <IconEye size="1rem" />
+          </ActionIcon>
+        </Skeleton>
+        <Skeleton visible={loading} width={28} miw={28}>
+          <ActionIcon
+            data-testid="edit-record"
+            aria-label="Edit record"
+            variant="light"
+            color="gray"
+            onClick={
+              activity &&
+              (() => {
+                drawer.close();
+                const editUrl =
+                  `${import.meta.env.VITE_API_BIOCOLLECT}` +
+                  `/pwa/bioActivity/edit/${activity.projectActivityId}` +
+                  `?activityId=${activity.activityId}`;
+                frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
+              })
+            }
+          >
+            <IconPencil size="1rem" />
           </ActionIcon>
         </Skeleton>
       </Group>
