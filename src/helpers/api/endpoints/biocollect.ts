@@ -12,18 +12,19 @@ import { BioCollectDexie } from '../dexie';
 const escapeRegExp = (input: string) =>
   input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const filterActiveSurveys = (surveys: BioCollectSurvey[]) =>
+const filterActiveSurveys = (surveys: BioCollectSurvey[], userIsProjectMember = false) =>
   surveys?.filter(
-    ({ startDate, endDate, published }) =>
+    ({ startDate, endDate, published, publicAccess }) =>
       new Date(startDate).getTime() <= Date.now() &&
       (!endDate || new Date(endDate).getTime() >= Date.now()) &&
-      (published !== undefined ? published : true)
+      (published !== undefined ? published : true) &&
+      (userIsProjectMember || publicAccess === true)
   ) || [];
 
 const formatProject = (project: BioCollectProject) => ({
   ...project,
   name: project.name.trim(),
-  projectActivities: filterActiveSurveys(project.projectActivities),
+  projectActivities: filterActiveSurveys(project.projectActivities, project.userIsProjectMember === true),
 });
 
 const formatProjects = (projects: BioCollectProject[]) => {
@@ -140,7 +141,7 @@ export default (db: BioCollectDexie) => ({
     return null;
   },
 
-  listSurveys: async (projectId: string): Promise<BioCollectSurvey[]> => {
+  listSurveys: async (projectId: string, userIsProjectMember = false): Promise<BioCollectSurvey[]> => {
     if (navigator.onLine) {
       // Make the GET request
       let { data: surveys } = await axios.get<BioCollectSurvey[]>(
@@ -148,7 +149,7 @@ export default (db: BioCollectDexie) => ({
       );
 
       // Filter out non-active surveys (not within date range)
-      surveys = filterActiveSurveys(surveys);
+      surveys = filterActiveSurveys(surveys, userIsProjectMember);
       await db.surveys.bulkPut(surveys);
 
       return surveys;

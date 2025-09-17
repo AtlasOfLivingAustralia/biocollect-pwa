@@ -49,21 +49,23 @@ export default function Routes() {
               path: 'project/:projectId',
               element: <Project />,
               loader: async ({ params, ...rest }) => {
+                const pid = params.projectId || '';
                 const initialProject = isInitialRouteProject.current;
                 if (isInitialRouteProject.current)
                   isInitialRouteProject.current = false;
 
-                // Create an array of requests to send
-                const requests = [
-                  api.biocollect.getProject(params.projectId || ''),
-                  api.biocollect.listSurveys(params.projectId || ''),
-                ];
+                // Fetch the project first
+                const project = await api.biocollect.getProject(pid);
+                const userIsProjectMember = project?.userIsProjectMember === true;
+
+                // Then fetch surveys using the member flag
+                const surveys = await api.biocollect.listSurveys(pid, userIsProjectMember);
 
                 // Defer based on whether the initial route is the project route
                 return defer({
                   data: initialProject
-                    ? Promise.all(requests)
-                    : await Promise.all(requests),
+                    ? Promise.all([project, surveys])
+                    : [project, surveys],
                 });
               },
             },
