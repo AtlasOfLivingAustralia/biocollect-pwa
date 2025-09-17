@@ -1,9 +1,15 @@
 import { Button, Center, Code, Stack, Text, Title } from '@mantine/core';
 import { IconArrowBack } from '@tabler/icons-react';
-import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { isRouteErrorResponse, Link, useRouteError } from 'react-router-dom';
 
 export function Error() {
   const error = useRouteError() as Error;
+
+  // Log errors to the console
+  useEffect(() => {
+    if (error) console.error(error);
+  }, [error]);
 
   if (isRouteErrorResponse(error) && (error as any).status === 404) {
     return (
