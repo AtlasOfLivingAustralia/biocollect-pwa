@@ -101,6 +101,7 @@ export interface BioCollectProject {
   containsActivity: boolean;
   noCost: boolean;
   projectActivities: BioCollectSurvey[];
+  userIsProjectMember?: boolean;
 }
 
 export interface BioCollectProjectSearch {

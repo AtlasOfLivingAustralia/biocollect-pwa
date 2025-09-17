@@ -58,7 +58,7 @@ function ProjectBody() {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
-
+    
   if (!project) {
     return (
       <Center w="100%" h="calc(100vh - 71px)">
@@ -96,17 +96,17 @@ function ProjectBody() {
           <Title order={2}>Surveys</Title>
         </Group>
         <Grid gutter="xl">
-          {surveys.length > 0 ? (
-            surveys.map((survey) => (
-              <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
-                <SurveyCard survey={survey} />
-              </Grid.Col>
-            ))
-          ) : (
-            <Grid.Col span={12}>
-              <Text>No surveys</Text>
+        {surveys.length > 0 ? (
+          surveys.map((survey) => (
+            <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
+              <SurveyCard survey={survey} />
             </Grid.Col>
-          )}
+          ))
+        ) : (
+          <Grid.Col span={12}>
+            <Text>No surveys</Text>
+          </Grid.Col>
+        )}
         </Grid>
       </Box>
       <Wave
