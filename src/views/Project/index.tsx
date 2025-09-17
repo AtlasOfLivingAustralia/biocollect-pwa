@@ -59,6 +59,22 @@ function ProjectBody() {
   const highlight =
     theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
 
+  const isMember = project?.userIsProjectMember === true;
+  const visibleSurveys = (surveys ?? []).filter(
+    s => isMember || s?.publicAccess === true
+  );
+
+  console.log("userIsProjectMember:", isMember);
+  console.log("total surveys:", surveys?.length);
+  console.log("visible surveys:", visibleSurveys.length);
+  console.table(
+    (surveys ?? []).map(s => ({
+      id: s.id,
+      name: s.name,
+      publicAccess: s.publicAccess
+    }))
+  );
+
   if (!project) {
     return (
       <Center w="100%" h="calc(100vh - 71px)">
@@ -96,17 +112,17 @@ function ProjectBody() {
           <Title order={2}>Surveys</Title>
         </Group>
         <Grid gutter="xl">
-          {surveys.length > 0 ? (
-            surveys.map((survey) => (
-              <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
-                <SurveyCard survey={survey} />
-              </Grid.Col>
-            ))
-          ) : (
-            <Grid.Col span={12}>
-              <Text>No surveys</Text>
+        {visibleSurveys.length > 0 ? (
+          visibleSurveys.map((survey) => (
+            <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
+              <SurveyCard survey={survey} />
             </Grid.Col>
-          )}
+          ))
+        ) : (
+          <Grid.Col span={12}>
+            <Text>No surveys</Text>
+          </Grid.Col>
+        )}
         </Grid>
       </Box>
       <Wave
