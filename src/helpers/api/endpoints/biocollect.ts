@@ -165,7 +165,7 @@ export default (db: BioCollectDexie) => ({
     if (navigator.onLine) {
       // Transform the FilterQueries object
       const params = new URLSearchParams({
-        view: "projectactivityrecords",
+        view,
         ...(filters || {}),
       });
 
