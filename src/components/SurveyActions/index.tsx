@@ -39,7 +39,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
             survey &&
             (() => {
               drawer.open(
-                'project',
+                "projectactivityrecords",
                 {
                   projectId: survey.projectId,
                   projectActivityId: survey.projectActivityId,

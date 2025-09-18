@@ -318,7 +318,8 @@ export type BioCollectBioActivityView =
   | 'projectrecords'
   | 'myprojectrecords'
   | 'userprojectactivityrecords'
-  | 'allrecords';
+  | 'allrecords'
+  | 'projectactivityrecords';
 
 export interface RecordMultimedia {
   rightsHolder: string;
