@@ -8,7 +8,7 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
+import { IconEye, IconPlus, IconUser, IconListDetails } from '@tabler/icons-react';
 import { BioCollectSurvey } from 'types';
 
 import { RecordsDrawerContext } from 'helpers/drawer';
@@ -26,12 +26,20 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
   const loading = !survey;
 
   return (
-    <Group spacing={8} {...rest}>
-      <Skeleton visible={loading} w={44} mr={4}>
-        <Text size="xs" color="dimmed">
-          Records
-        </Text>
-      </Skeleton>
+    <Group spacing={6} align="center" noWrap {...rest}>
+      <Skeleton visible={loading} w={28} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 28 }}>
+      <Tooltip label="Records" withArrow>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          aria-label="Records"
+          styles={{ root: { cursor: 'default' } }}
+          onClick={(e) => e.preventDefault()}
+          tabIndex={-1}>
+          <IconListDetails size="1rem" />
+        </ActionIcon>
+      </Tooltip>
+    </Skeleton>
       <Skeleton visible={loading} w={28}>
         <Tooltip label="All records" withArrow disabled={loading}>
           <ActionIcon
