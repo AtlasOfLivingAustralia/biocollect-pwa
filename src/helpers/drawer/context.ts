@@ -1,10 +1,10 @@
 import { createContext } from 'react';
-import { BioCollectBioActivityView } from 'types';
+import { BioCollectBioActivityView, FilterQueries } from 'types';
 
 interface RecordsDrawerContext {
   open: (
     view: BioCollectBioActivityView,
-    fq?: { [filter: string]: string },
+    fq?: FilterQueries,
     recordsFor?: string
   ) => void;
   close: () => void;

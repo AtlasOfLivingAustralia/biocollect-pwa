@@ -15,7 +15,7 @@ export interface Facet {
 }
 
 export interface FilterQueries {
-  [filter: string]: string;
+  [filter: string]: string | string[];
 }
 
 /*
