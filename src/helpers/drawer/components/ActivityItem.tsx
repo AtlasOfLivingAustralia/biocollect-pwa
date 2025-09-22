@@ -13,7 +13,7 @@ import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
 import { BioCollectBioActivity } from 'types';
 import { RecordsDrawerContext } from '..';
-import { getInitials } from 'helpers/funcs';
+import { getInitials, useOnLine } from 'helpers/funcs';
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
@@ -23,6 +23,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
   const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
   const loading = !activity;
+  const onLine = useOnLine();
 
   return (
     <Group position="apart">
@@ -83,7 +84,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             <IconEye size="1rem" />
           </ActionIcon>
         </Skeleton>
-          {(activity?.showCrud || activity?.userCanModerate) && (
+          {onLine && (activity?.showCrud || activity?.userCanModerate) && (
             <Skeleton visible={loading} width={28} miw={28}>
               <ActionIcon
                 data-testid="edit-record"
