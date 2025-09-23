@@ -59,56 +59,58 @@ export function ActivityItem({ activity }: ActivityItemProps) {
         </Box>
       </Stack>
       <Group spacing="xs">
-        <Skeleton visible={loading} width={28} miw={28}>
-          <ActionIcon
-            data-testid="view-record"
-            variant="light"
-            color="gray"
-            onClick={
-              activity &&
-              (() => {
-                drawer.close();
-                frame.open(
-                  `${
-                    import.meta.env.VITE_API_BIOCOLLECT
-                  }/pwa/bioActivity/index/${
-                    activity.projectActivityId
-                  }?projectId=${activity.projectId}&activityId=${
-                    activity.activityId
-                  }`,
-                  `View Record - ${activity.name}`
-                );
-              })
-            }
-          >
-            <IconEye size="1rem" />
-          </ActionIcon>
-        </Skeleton>
-          {onLine && (activity?.showCrud || activity?.userCanModerate) && (
-            <Skeleton visible={loading} width={28} miw={28}>
-              <ActionIcon
-                data-testid="edit-record"
-                aria-label="Edit record"
-                variant="light"
-                color="gray"
-                onClick={
-                  () => {
-                    drawer.close();
-                    const editUrl =
-                      `${import.meta.env.VITE_API_BIOCOLLECT}` +
-                      `/pwa/bioActivity/edit/${activity.projectActivityId}` +
-                      `?activityId=${activity.activityId}`;
-                    frame.open(
-                      editUrl,
-                      `Edit Record - ${activity.name ?? activity.activityId}`
-                    );
-                  }
+        {onLine && (
+          <Skeleton visible={loading} width={28} miw={28}>
+            <ActionIcon
+              data-testid="view-record"
+              variant="light"
+              color="gray"
+              onClick={
+                activity &&
+                (() => {
+                  drawer.close();
+                  frame.open(
+                    `${
+                      import.meta.env.VITE_API_BIOCOLLECT
+                    }/pwa/bioActivity/index/${
+                      activity.projectActivityId
+                    }?projectId=${activity.projectId}&activityId=${
+                      activity.activityId
+                    }`,
+                    `View Record - ${activity.name}`
+                  );
+                })
+              }
+            >
+              <IconEye size="1rem" />
+            </ActionIcon>
+          </Skeleton>
+        )}
+        {onLine && (activity?.showCrud || activity?.userCanModerate) && (
+          <Skeleton visible={loading} width={28} miw={28}>
+            <ActionIcon
+              data-testid="edit-record"
+              aria-label="Edit record"
+              variant="light"
+              color="gray"
+              onClick={
+                () => {
+                  drawer.close();
+                  const editUrl =
+                    `${import.meta.env.VITE_API_BIOCOLLECT}` +
+                    `/pwa/bioActivity/edit/${activity.projectActivityId}` +
+                    `?activityId=${activity.activityId}`;
+                  frame.open(
+                    editUrl,
+                    `Edit Record - ${activity.name ?? activity.activityId}`
+                  );
                 }
-              >
-                <IconPencil size="1rem" />
-              </ActionIcon>
-            </Skeleton>
-          )}
+              }
+            >
+              <IconPencil size="1rem" />
+            </ActionIcon>
+          </Skeleton>
+        )}
       </Group>
     </Group>
   );
