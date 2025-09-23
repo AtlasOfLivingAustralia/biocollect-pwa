@@ -1,5 +1,4 @@
 import { useContext } from 'react';
-import jwtDecode from 'jwt-decode';
 import {
   ActionIcon,
   Group,
@@ -9,12 +8,11 @@ import {
   Tooltip,
   useMantineTheme,
 } from '@mantine/core';
-import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
+import { IconEye, IconPlus, IconUser, IconListDetails } from '@tabler/icons-react';
 import { BioCollectSurvey } from 'types';
 
 import { RecordsDrawerContext } from 'helpers/drawer';
 import { FrameContext } from 'helpers/frame';
-import { useAuth } from 'react-oidc-context';
 
 interface SurveyActionsProps extends GroupProps {
   survey?: BioCollectSurvey;
@@ -24,22 +22,24 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
   const theme = useMantineTheme();
-  const auth = useAuth();
 
   const loading = !survey;
-  
-  const userId =
-  auth.user?.profile?.['custom:userid'] ||
-  (jwtDecode(auth.user?.access_token || '') as any)?.userid ||
-  null;
 
   return (
-    <Group spacing={8} {...rest}>
-      <Skeleton visible={loading} w={44} mr={4}>
-        <Text size="xs" color="dimmed">
-          Records
-        </Text>
-      </Skeleton>
+    <Group spacing={6} align="center" noWrap {...rest}>
+      <Skeleton visible={loading} w={28} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 28 }}>
+      <Tooltip label="Records" withArrow>
+        <ActionIcon
+          variant="subtle"
+          color="gray"
+          aria-label="Records"
+          styles={{ root: { cursor: 'default' } }}
+          onClick={(e) => e.preventDefault()}
+          tabIndex={-1}>
+          <IconListDetails size="1rem" />
+        </ActionIcon>
+      </Tooltip>
+    </Skeleton>
       <Skeleton visible={loading} w={28}>
         <Tooltip label="All records" withArrow disabled={loading}>
           <ActionIcon
@@ -65,31 +65,32 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
         </Tooltip>
       </Skeleton>
       <Skeleton visible={loading} w={28}>
-        <Tooltip label="My records" withArrow disabled={loading}>
-          <ActionIcon
-            id={survey && survey.projectActivityId + "MyRecords"}
-            variant="light"
-            color={theme.primaryColor}
-            disabled={!survey}
-            onClick={
-              survey &&
-              (() => {
-                drawer.open(
-                  "userprojectactivityrecords",
-                  {
-                    projectId: survey.projectId,
-                    projectActivityId: survey.projectActivityId,
-                    ...(userId ? { fq: `userId:${userId}` } : {}),
-                  },
-                  `${survey.name} My Records`
-                );
-              })
-            }
-          >
-            <IconUser size="1rem" />
-          </ActionIcon>
-        </Tooltip>
-      </Skeleton>
+      <Tooltip label="My records" withArrow disabled={loading}>
+        <ActionIcon
+          id={survey && survey.projectActivityId + "MyRecords"}
+          variant="light"
+          color={theme.primaryColor}
+          disabled={!survey}
+          onClick={
+            survey &&
+            (() => {
+              drawer.open(
+                "myrecords",
+                {
+                  fq: [
+                    `projectId:${survey.projectId}`,
+                    `projectActivityNameFacet:${survey.name}`,
+                  ],
+                },
+                `${survey.name} My Records`
+              );
+            })
+          }
+        >
+          <IconUser size="1rem" />
+        </ActionIcon>
+      </Tooltip>
+    </Skeleton>
       <Skeleton visible={loading} w={28}>
         <Tooltip label="Add a record" withArrow disabled={loading}>
           <ActionIcon

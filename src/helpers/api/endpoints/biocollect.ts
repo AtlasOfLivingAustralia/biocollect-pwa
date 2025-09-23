@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { toQueryString } from 'helpers/utils/searchParamUtil';
+
 import {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
@@ -159,28 +161,22 @@ export default (db: BioCollectDexie) => ({
   },
 
   searchActivities: async (
-    view: BioCollectBioActivityView,
-    filters?: FilterQueries
-  ): Promise<BioCollectBioActivitySearch> => {
-    if (navigator.onLine) {
-      // Transform the FilterQueries object
-      const params = new URLSearchParams({
-        view,
-        ...(filters || {}),
-      });
-
-      // Make the GET request
-      const { data } = await axios.get<BioCollectBioActivitySearch>(
-        `${
-          import.meta.env.VITE_API_BIOCOLLECT
-        }/ws/bioactivity/search?${params.toString()}`
-      );
-
-      await db.activities.bulkPut(data.activities);
-
-      return data;
-    } else {
-      return { activities: [] };
-    }
-  },
+  view: BioCollectBioActivityView,
+  filters: FilterQueries = {}
+    ): Promise<BioCollectBioActivitySearch> => {
+      if (navigator.onLine) {
+        const base = `${import.meta.env.VITE_API_BIOCOLLECT}/ws/bioactivity/search`;
+        
+        //Transform the FilterQueries object
+        const qs = toQueryString({ view, ...filters });
+        const url = `${base}?${qs}`;
+        
+        // Make the GET request
+        const { data } = await axios.get<BioCollectBioActivitySearch>(url);
+        await db.activities.bulkPut(data.activities);
+        return data;
+      } else {
+        return { activities: [] };
+      }
+    },
 });
