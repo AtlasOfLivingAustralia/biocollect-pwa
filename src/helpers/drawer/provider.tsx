@@ -11,6 +11,7 @@ import {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
   FilterQueries,
+  BioCollectBioActivity
 } from 'types';
 
 // Contexts
@@ -46,6 +47,13 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const api = useContext(APIContext);
   const frame = useContext(FrameContext);
 
+  // paging/loading more hooks
+  const PAGE_SIZE = 20;
+  const [page, setPage] = useState(0);
+  const [items, setItems] = useState<BioCollectBioActivity[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
   // Callback function to open the records drawer
   const open = (
     newView: BioCollectBioActivityView,
@@ -56,6 +64,11 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
     if (newFilters) setFilters(newFilters);
     if (newRecordsFor) setRecordsFor(newRecordsFor);
 
+    // reset paging when the inputs change
+    setPage(0);
+    setItems([]);
+    setHasMore(true);
+
     // Equality check to reset UI state to loading
     if (view !== newView || !shallowEqual(filters, newFilters || {}))
       setSearch(null);
@@ -63,13 +76,39 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
     openDrawer();
   };
 
-  useEffect(() => {
-    async function getActivities() {
-      if (view) setSearch(await api.biocollect.searchActivities(view, filters));
-    }
+  // load next page
+  const loadMore = () => {
+    if (!loadingMore && hasMore) setPage(p => p + 1);
+  };
 
-    getActivities();
-  }, [view, filters]);
+  useEffect(() => {
+  async function getActivities() {
+    if (!view) return;
+
+    setLoadingMore(true);
+
+    const pagedFilters: FilterQueries = {
+      ...(filters || {}),
+      offset: String(page * PAGE_SIZE),
+      max: String(PAGE_SIZE),
+      sort: 'dateCreatedSort',
+    };
+
+    const resp = await api.biocollect.searchActivities(view, pagedFilters);
+
+    setSearch(resp);
+
+    setItems(prev =>
+      page === 0 ? resp.activities : [...prev, ...resp.activities]
+    );
+
+    setHasMore(resp.activities.length === PAGE_SIZE);
+
+    setLoadingMore(false);
+  }
+
+  getActivities();
+}, [view, filters, page]);
 
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
@@ -146,13 +185,27 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               </Text>
               {(() => {
                 if (search) {
-                  return search.activities.length > 0 ? (
-                    search.activities.map((activity, index) => (
-                      <Fragment key={activity.activityId}>
-                        <ActivityItem activity={activity} />
-                        {index + 1 < search.activities.length && <Divider />}
-                      </Fragment>
-                    ))
+                  return items.length > 0 ? (
+                    <>
+                      {items.map((activity, index) => (
+                        <Fragment key={activity.activityId}>
+                          <ActivityItem activity={activity} />
+                          {index + 1 < items.length && <Divider />}
+                        </Fragment>
+                      ))}
+
+                      {hasMore && (
+                        <Button
+                          mt="md"
+                          onClick={loadMore}
+                          fullWidth
+                          loading={loadingMore}
+                          variant="light"
+                        >
+                          Load more
+                        </Button>
+                      )}
+                    </>
                   ) : (
                     <Center h="100%">
                       <Text color="dimmed">No records found</Text>
