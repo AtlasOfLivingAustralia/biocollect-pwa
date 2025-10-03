@@ -6,7 +6,7 @@ import {
   useContext,
   Fragment,
 } from 'react';
-import { shallowEqual, useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { shallowEqual, useDisclosure, useMediaQuery, useDebouncedValue } from '@mantine/hooks';
 import {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
@@ -26,10 +26,12 @@ import {
   Text,
   Title,
   useMantineTheme,
+  TextInput,
+  ActionIcon
 } from '@mantine/core';
 import { FrameContext } from 'helpers/frame';
 
-import { IconExternalLink, IconFiles } from '@tabler/icons-react';
+import { IconExternalLink, IconFiles, IconSearch, IconX } from '@tabler/icons-react';
 import { APIContext } from 'helpers/api';
 import { ActivityItem } from './components/ActivityItem';
 
@@ -46,6 +48,10 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const api = useContext(APIContext);
   const frame = useContext(FrameContext);
+
+  // search state hooks
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearchTerm] = useDebouncedValue(searchInput, 300);
 
   // paging/loading more hooks
   const PAGE_SIZE = 20;
@@ -69,6 +75,9 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
     setItems([]);
     setHasMore(true);
 
+    // reset the search input state
+    setSearchInput('');
+
     // Equality check to reset UI state to loading
     if (view !== newView || !shallowEqual(filters, newFilters || {}))
       setSearch(null);
@@ -82,33 +91,41 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   };
 
   useEffect(() => {
-  async function getActivities() {
-    if (!view) return;
+    async function getActivities() {
+      if (!view) return;
 
-    setLoadingMore(true);
+      setLoadingMore(true);
 
-    const pagedFilters: FilterQueries = {
-      ...(filters || {}),
-      offset: String(page * PAGE_SIZE),
-      max: String(PAGE_SIZE),
-      sort: 'dateCreatedSort',
-    };
+      const pagedFilters: FilterQueries = {
+        ...(filters || {}),
+        ...(debouncedSearchTerm ? { searchTerm: debouncedSearchTerm } : {}),
+        offset: String(page * PAGE_SIZE),
+        max: String(PAGE_SIZE),
+        sort: 'dateCreatedSort',
+      };
 
-    const resp = await api.biocollect.searchActivities(view, pagedFilters);
+      const resp = await api.biocollect.searchActivities(view, pagedFilters);
 
-    setSearch(resp);
+      setSearch(resp);
 
-    setItems(prev =>
-      page === 0 ? resp.activities : [...prev, ...resp.activities]
-    );
+      setItems(prev =>
+        page === 0 ? resp.activities : [...prev, ...resp.activities]
+      );
 
-    setHasMore(resp.activities.length === PAGE_SIZE);
+      setHasMore(resp.activities.length === PAGE_SIZE);
 
-    setLoadingMore(false);
+      setLoadingMore(false);
+    }
+
+    getActivities();
+  }, [view, filters, debouncedSearchTerm, page]);
+
+  function clearSearch() {
+    setSearchInput('');
+    setPage(0);
+    setItems([]);
+    setHasMore(true);
   }
-
-  getActivities();
-}, [view, filters, page]);
 
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
@@ -129,18 +146,18 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         />
         <Drawer.Content>
           <Drawer.Header>
-            <Group spacing="md">
-              <IconFiles />
-              <Stack spacing={0}>
-                <Title order={3}>Records</Title>
-                {recordsFor && (
-                  <Text size="sm" color="dimmed">
-                    For {recordsFor}
-                  </Text>
-                )}
-              </Stack>
-            </Group>
-            <Drawer.CloseButton />
+              <Group spacing="md">
+                <IconFiles />
+                <Stack spacing={0}>
+                  <Title order={3}>Records</Title>
+                  {recordsFor && (
+                    <Text size="sm" color="dimmed">
+                      For {recordsFor}
+                    </Text>
+                  )}
+                </Stack>
+              </Group>
+              <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body>
             <Stack pb="sm">
@@ -183,6 +200,30 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               >
                 Published
               </Text>
+              <TextInput
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.currentTarget.value)}
+                placeholder="Search activities…"
+                icon={<IconSearch size={16} />}
+                rightSection={
+                  searchInput ? (
+                    <ActionIcon
+                      aria-label="Clear search"
+                      onClick={clearSearch}
+                      onMouseDown={(e) => e.preventDefault()}
+                      variant="subtle"
+                    >
+                      <IconX size={16} />
+                    </ActionIcon>
+                  ) : null
+                }
+                rightSectionWidth={36}
+                w="100%"
+                mt="xs"
+                mb="sm"
+                aria-label="Search published activities"
+              />
+
               {(() => {
                 if (search) {
                   return items.length > 0 ? (
