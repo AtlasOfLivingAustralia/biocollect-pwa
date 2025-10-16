@@ -145,7 +145,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               : theme.colors.gray[2]
           }
         />
-        <Drawer.Content pt={71}>
+        <Drawer.Content pt={mobile ? 0 : 71}>
           <Drawer.Header>
               <Group spacing="md">
                 <IconFiles />
