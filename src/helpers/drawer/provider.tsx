@@ -27,7 +27,8 @@ import {
   Title,
   useMantineTheme,
   TextInput,
-  ActionIcon
+  ActionIcon,
+  Loader
 } from '@mantine/core';
 import { FrameContext } from 'helpers/frame';
 
@@ -144,7 +145,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               : theme.colors.gray[2]
           }
         />
-        <Drawer.Content>
+        <Drawer.Content pt={71}>
           <Drawer.Header>
               <Group spacing="md">
                 <IconFiles />
@@ -159,7 +160,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               </Group>
               <Drawer.CloseButton />
           </Drawer.Header>
-          <Drawer.Body>
+          <Drawer.Body mt="lg">
             <Stack pb="sm">
               {filters.projectActivityId && (
                 <>
@@ -205,8 +206,9 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                 onChange={(e) => setSearchInput(e.currentTarget.value)}
                 placeholder="Search activities…"
                 icon={<IconSearch size={16} />}
+                
                 rightSection={
-                  searchInput ? (
+                  loadingMore ? <Loader size='xs' /> : searchInput ? (
                     <ActionIcon
                       aria-label="Clear search"
                       onClick={clearSearch}
@@ -219,7 +221,6 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                 }
                 rightSectionWidth={36}
                 w="100%"
-                mt="xs"
                 mb="sm"
                 aria-label="Search published activities"
               />
