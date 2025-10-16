@@ -29,13 +29,15 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
 
   return (
     <Group position="apart" spacing={0}>
-      <Skeleton visible={loading} radius="lg" w="calc(100% - 130px)">
+      <Box>
+        <Skeleton visible={loading} radius="lg">
         {loading || !survey ? (
           <Chip>Placeholder Chip</Chip>
         ) : (
           <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
         )}
       </Skeleton>
+      </Box>
       <SurveyActions survey={survey} />
     </Group>
   );

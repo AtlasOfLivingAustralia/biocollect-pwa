@@ -27,21 +27,9 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
 
   return (
     <Group spacing={6} align="center" noWrap {...rest}>
-      <Skeleton visible={loading} w={28} style={{ display: 'inline-flex', alignItems: 'center', minHeight: 28 }}>
-      <Tooltip label="Records" withArrow>
-        <ActionIcon
-          variant="subtle"
-          color="gray"
-          aria-label="Records"
-          styles={{ root: { cursor: 'default' } }}
-          onClick={(e) => e.preventDefault()}
-          tabIndex={-1}>
-          <IconListDetails size="1rem" />
-        </ActionIcon>
-      </Tooltip>
-    </Skeleton>
+      <Text size="xs" c="dimmed">Records</Text>
       <Skeleton visible={loading} w={28}>
-        <Tooltip label="All records" withArrow disabled={loading}>
+        <Tooltip label="All records" withArrow disabled={loading} position='left'>
           <ActionIcon
             id={survey && survey.projectActivityId + "ViewRecord"}
             variant="light"
@@ -65,7 +53,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
         </Tooltip>
       </Skeleton>
       <Skeleton visible={loading} w={28}>
-      <Tooltip label="My records" withArrow disabled={loading}>
+      <Tooltip label="My records" withArrow disabled={loading} position='left'>
         <ActionIcon
           id={survey && survey.projectActivityId + "MyRecords"}
           variant="light"
@@ -92,7 +80,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
       </Tooltip>
     </Skeleton>
       <Skeleton visible={loading} w={28}>
-        <Tooltip label="Add a record" withArrow disabled={loading}>
+        <Tooltip label="Add a record" withArrow disabled={loading} position='left'>
           <ActionIcon
             id={survey && survey.projectActivityId + "AddRecord"}
             variant="light"
