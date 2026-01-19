@@ -52,6 +52,7 @@ export function SignIn() {
           </Stack>
           <Divider my="sm" w="100%" opacity={0.6} />
           <Button
+            id="signIn"
             leftSection={<Image width={16} height={16} src={logoAla} />}
             onClick={() => auth.signinRedirect()}
           >
@@ -86,6 +87,7 @@ export function SignIn() {
           </Group>
           <Space h={45} />
           <Button
+            id="signIn"
             leftSection={<Image width={16} height={16} src={logoAla} />}
             onClick={() => auth.signinRedirect()}
             fullWidth
