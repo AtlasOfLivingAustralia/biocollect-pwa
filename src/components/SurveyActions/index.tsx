@@ -3,12 +3,9 @@ import {
   ActionIcon,
   Flex,
   FlexProps,
-  Group,
-  GroupProps,
   Skeleton,
   Text,
   Tooltip,
-  useMantineTheme,
 } from '@mantine/core';
 import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
 import { BioCollectSurvey } from 'types';
@@ -23,7 +20,6 @@ interface SurveyActionsProps extends FlexProps {
 export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
-  const theme = useMantineTheme();
 
   const loading = !survey;
 
@@ -35,7 +31,6 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
           <ActionIcon
             id={survey && survey.projectActivityId + "ViewRecord"}
             variant="light"
-            color={theme.primaryColor}
             onClick={
               survey &&
               (() => {
@@ -59,7 +54,6 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
           <ActionIcon
             id={survey && survey.projectActivityId + "MyRecords"}
             variant="light"
-            color={theme.primaryColor}
             disabled={!survey}
             onClick={
               survey &&
@@ -86,7 +80,6 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
           <ActionIcon
             id={survey && survey.projectActivityId + "AddRecord"}
             variant="light"
-            color={theme.primaryColor}
             onClick={
               survey &&
               (() => {

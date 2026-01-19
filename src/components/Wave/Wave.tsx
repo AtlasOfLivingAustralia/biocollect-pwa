@@ -1,4 +1,4 @@
-import { useComputedColorScheme, useMantineTheme } from '@mantine/core';
+import { useComputedColorScheme } from '@mantine/core';
 
 interface WaveProps extends React.SVGProps<SVGSVGElement> {
   waveType?:

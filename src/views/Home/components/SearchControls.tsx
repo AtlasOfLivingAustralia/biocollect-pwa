@@ -5,7 +5,6 @@ import {
   Select,
   Checkbox,
   Paper,
-  BoxProps,
   useMantineTheme,
   Grid,
   Stack,

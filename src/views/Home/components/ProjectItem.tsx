@@ -8,7 +8,6 @@ import {
   Paper,
   Group,
   Divider,
-  useMantineTheme,
   Button,
   Chip,
   ScrollArea,
@@ -48,7 +47,6 @@ interface ProjectItemProps {
 }
 
 export function ProjectItem({ project }: ProjectItemProps) {
-  const theme = useMantineTheme();
   const loading = !Boolean(project);
   const surveys = project?.projectActivities || [];
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -77,7 +75,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
               maxWidth: 220,
               height: 125,
               overflow: 'clip',
-              borderTopLeftRadius: theme.radius.lg,
+              borderTopLeftRadius: 'var(--mantine-radius-lg)',
             }}
           >
             {project?.urlImage ? (

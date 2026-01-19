@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Chip, ChipProps, Flex, Text, useMantineTheme } from '@mantine/core';
-import { IconDownload, IconExclamationCircle } from '@tabler/icons-react';
+import { IconDownload } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
 import { BioCollectSurvey } from 'types';

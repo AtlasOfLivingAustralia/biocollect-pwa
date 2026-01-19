@@ -5,10 +5,6 @@ import {
   Code,
   Title,
   Button,
-  ColorSwatch,
-  ColorInput,
-  useMantineTheme,
-  Divider,
 } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useAuth } from 'react-oidc-context';
@@ -40,8 +36,6 @@ export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
   const api = useContext(APIContext);
-  const [color, setColor] = useState<string>('#e8590c');
-  const theme = useMantineTheme();
 
   const projects = useLiveQuery(
     async () => await api.db.projects.limit(1).toArray()
@@ -66,16 +60,6 @@ export function Debug() {
         IndexedDB
       </Title>
       <Code block>{JSON.stringify(projects, null, 2)}</Code>
-      <Divider my="xs" />
-      <Group>
-        {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
-          <ColorSwatch
-            key={index}
-            color={theme.colors.orange[index]}
-            size={index === 7 ? 40 : undefined}
-          />
-        ))}
-      </Group>
     </Box>
   );
 }

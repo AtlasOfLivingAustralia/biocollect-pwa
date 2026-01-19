@@ -80,7 +80,7 @@ function ProjectBody() {
         <DownloadInstructions />
       </Box>
       <Wave
-        style={{ marginTop: theme.spacing.xl, marginBottom: -30 }}
+        style={{ marginTop: 'var(--mantine-spacing-xl)', marginBottom: -30 }}
         preserveAspectRatio="none"
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}

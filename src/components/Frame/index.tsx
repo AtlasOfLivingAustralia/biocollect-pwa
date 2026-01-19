@@ -1,5 +1,5 @@
-import { Ref, forwardRef, useState } from 'react';
-import { Skeleton, useMantineTheme } from '@mantine/core';
+import { forwardRef, useState } from 'react';
+import { Skeleton } from '@mantine/core';
 
 type IFrameProps = Omit<
   React.DetailedHTMLProps<
