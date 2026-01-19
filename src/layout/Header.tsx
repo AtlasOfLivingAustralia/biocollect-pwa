@@ -22,7 +22,7 @@ import {
   IconPlugConnected,
   IconPlugConnectedX,
 } from '@tabler/icons-react';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';

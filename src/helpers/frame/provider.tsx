@@ -7,7 +7,7 @@ import {
   useContext,
 } from 'react';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // Contexts
 import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';

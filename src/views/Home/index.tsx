@@ -14,7 +14,7 @@ import { IconArchive } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-import jwtDecode from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 
 // Helper functions / components
 import { APIContext } from 'helpers/api';
