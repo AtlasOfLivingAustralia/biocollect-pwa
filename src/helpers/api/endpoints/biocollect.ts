@@ -1,14 +1,18 @@
 import axios from 'axios';
-import { toQueryString } from 'helpers/utils/searchParamUtil';
 
-import {
+// Helpers
+import { toQueryString } from '#/helpers/utils/searchParamUtil';
+import type {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
   BioCollectProject,
   BioCollectProjectSearch,
   BioCollectSurvey,
   FilterQueries,
-} from 'types';
+} from '#/types';
+
+
+// Local classes
 import { BioCollectDexie } from '../dexie';
 
 const escapeRegExp = (input: string) =>

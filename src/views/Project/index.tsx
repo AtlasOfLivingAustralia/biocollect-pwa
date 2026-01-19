@@ -24,11 +24,13 @@ import {
   IconInfoCircle,
   IconPhone,
 } from '@tabler/icons-react';
-import { BioCollectProject, BioCollectSurvey } from 'types';
 import { useMediaQuery } from '@mantine/hooks';
 
+import { Wave } from '#/components/Wave';
+import type { BioCollectProject, BioCollectSurvey } from '#/types';
+
+// Local components
 import { Header } from './components/Header';
-import { Wave } from 'components/Wave';
 import { SurveyCard } from './components/SurveyCard';
 import { ScienceTypes } from './components/ScienceTypes';
 import { DownloadInstructions } from './components/DownloadInstructions';

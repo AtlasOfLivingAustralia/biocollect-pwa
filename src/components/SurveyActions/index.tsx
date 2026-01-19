@@ -2,16 +2,17 @@ import { useContext } from 'react';
 import {
   ActionIcon,
   Flex,
-  FlexProps,
+  type FlexProps,
   Skeleton,
   Text,
   Tooltip,
 } from '@mantine/core';
 import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
-import { BioCollectSurvey } from 'types';
 
-import { RecordsDrawerContext } from 'helpers/drawer';
-import { FrameContext } from 'helpers/frame';
+// Helpers
+import type { BioCollectSurvey } from '#/types';
+import { RecordsDrawerContext } from '#/helpers/drawer';
+import { FrameContext } from '#/helpers/frame';
 
 interface SurveyActionsProps extends FlexProps {
   survey?: BioCollectSurvey;

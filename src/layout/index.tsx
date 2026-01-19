@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { AppShell, Box, Center, Loader } from '@mantine/core';
+import { AppShell, Center, Loader } from '@mantine/core';
 
 import { Outlet, useNavigation } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';

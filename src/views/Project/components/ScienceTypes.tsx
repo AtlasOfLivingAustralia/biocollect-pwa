@@ -30,9 +30,8 @@ import {
   IconUsers,
   IconWorld,
   IconZoomCheck,
-  Icon,
+  type Icon,
 } from '@tabler/icons-react';
-import { ProjectLink } from 'types';
 
 const typeToIcon: { [key: string]: Icon } = {
   Animals: IconDog,

@@ -4,9 +4,9 @@ import react from "@vitejs/plugin-react";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // PWA Imports
-import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
-import { RouteMatchCallback } from "workbox-core";
-import { RuntimeCaching } from "workbox-build";
+import {/*VitePWA,*/ type VitePWAOptions } from "vite-plugin-pwa";
+import type { RouteMatchCallback } from "workbox-core";
+import type { RuntimeCaching } from "workbox-build";
 
 // Prefer localhost
 import dns from "dns";
@@ -90,7 +90,11 @@ const pwaOptions: Partial<VitePWAOptions> = {
 export default defineConfig({
 	base: "/mobile-app",
 	plugins: [
-		react(),
+		react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
 		tsconfigPaths(),
 		visualizer() as any /*VitePWA(pwaOptions)*/, // TODO: Uncomment
 	],

@@ -1,4 +1,4 @@
-import { Badge, BadgeProps, Image } from '@mantine/core';
+import { Badge, type BadgeProps, Image } from '@mantine/core';
 import logoAla from '/assets/logo-ala.png';
 
 export const ALABadge = (props: BadgeProps) => (

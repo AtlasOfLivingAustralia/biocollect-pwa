@@ -12,12 +12,13 @@ import {
   Chip,
   ScrollArea,
 } from '@mantine/core';
-import { IconArrowUpRight } from '@tabler/icons-react';
-import { SurveyActions, Background, DownloadChip } from 'components';
-import { Corner } from 'components/Wave';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BioCollectProject, BioCollectSurvey } from 'types';
+import { IconArrowUpRight } from '@tabler/icons-react';
+
+import { SurveyActions, Background, DownloadChip } from '#/components';
+import { Corner } from '#/components/Wave';
+import type { BioCollectProject, BioCollectSurvey } from '#/types';
 
 interface ProjectItemSurveyProps {
   survey?: BioCollectSurvey;

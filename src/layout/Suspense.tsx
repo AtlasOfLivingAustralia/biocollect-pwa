@@ -1,4 +1,4 @@
-import { ReactElement, Suspense as ReactSuspense } from 'react';
+import { type ReactElement, Suspense as ReactSuspense } from 'react';
 import { Center, Loader } from '@mantine/core';
 
 interface SuspenseProps {

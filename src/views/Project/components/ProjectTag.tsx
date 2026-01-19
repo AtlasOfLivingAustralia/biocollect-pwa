@@ -6,7 +6,7 @@ import {
   IconHammer,
   IconHome,
   IconRobot,
-  Icon,
+  type Icon,
 } from '@tabler/icons-react';
 
 interface ProjectTagItem {

@@ -8,9 +8,10 @@ import {
 } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useAuth } from 'react-oidc-context';
-import { useContext, useState } from 'react';
-import { APIContext } from 'helpers/api';
+import { useContext } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
+
+import { APIContext } from '#/helpers/api';
 
 const getStoredState = () => {
   const [storeKey, storeState] = Object.entries(localStorage).find(([key]) =>

@@ -6,14 +6,17 @@ import {
   Skeleton,
   Stack,
   Text,
-  Tooltip
 } from '@mantine/core';
 import { IconEye, IconUser, IconPencil } from '@tabler/icons-react';
-import { FrameContext } from 'helpers/frame';
 import { useContext } from 'react';
-import { BioCollectBioActivity } from 'types';
+
+// Helpers
+import type { BioCollectBioActivity } from '#/types';
+import { getInitials, useOnLine } from '#/helpers/funcs';
+import { FrameContext } from '#/helpers/frame';
+
+// Local components
 import { RecordsDrawerContext } from '..';
-import { getInitials, useOnLine } from 'helpers/funcs';
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;

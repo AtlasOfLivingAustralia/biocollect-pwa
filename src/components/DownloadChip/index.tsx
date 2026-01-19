@@ -1,12 +1,14 @@
 import { useContext } from 'react';
-import { Button, ButtonProps, Text } from '@mantine/core';
+import { Button, type ButtonProps, Text } from '@mantine/core';
 import { IconCheck, IconDownload } from '@tabler/icons-react';
-import { FrameContext } from 'helpers/frame';
-import { APIContext } from 'helpers/api';
-import { BioCollectSurvey } from 'types';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { modals } from '@mantine/modals';
-import { useOnLine } from 'helpers/funcs';
+
+// Helpers
+import { useOnLine } from '#/helpers/funcs';
+import { FrameContext } from '#/helpers/frame';
+import { APIContext } from '#/helpers/api';
+import type { BioCollectSurvey } from '#/types';
 
 interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
   survey?: BioCollectSurvey;

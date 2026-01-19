@@ -1,5 +1,3 @@
-import { useComputedColorScheme } from '@mantine/core';
-
 interface WaveProps extends React.SVGProps<SVGSVGElement> {
   waveType?:
   | 'simple'
@@ -32,8 +30,6 @@ const waves = {
 };
 
 export function Wave({ waveType, waveColour, vertical, ...rest }: WaveProps) {
-  const isDark = useComputedColorScheme();
-
   return (
     <svg
       {...rest}

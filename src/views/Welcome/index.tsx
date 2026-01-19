@@ -13,10 +13,6 @@ import {
   useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-
-import logoDark from '/assets/logo-dark-64x64.png';
-import logoLight from '/assets/logo-light-64x64.png';
 import {
   IconArrowRight,
   IconEye,
@@ -24,8 +20,13 @@ import {
   IconPlus,
   IconSearch,
 } from '@tabler/icons-react';
-import { Background, DownloadChip } from 'components';
+import { useMediaQuery } from '@mantine/hooks';
 import { useNavigate } from 'react-router-dom';
+
+import { Background, DownloadChip } from '#/components';
+
+import logoDark from '/assets/logo-dark-64x64.png';
+import logoLight from '/assets/logo-light-64x64.png';
 
 function WelcomeDetails() {
   const navigate = useNavigate();

@@ -1,9 +1,7 @@
 import {
   Box,
-  BoxProps,
+  type BoxProps,
   Button,
-  Chip,
-  Flex,
   Group,
   Stack,
   Text,

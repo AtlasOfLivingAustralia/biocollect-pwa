@@ -6,15 +6,15 @@ import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 
 // Helpers
-import { APIProvider } from 'helpers/api';
-import { RecordsDrawerProvider } from 'helpers/drawer';
-import { FrameProvider } from 'helpers/frame';
+import { APIProvider } from '#/helpers/api';
+import { RecordsDrawerProvider } from '#/helpers/drawer';
+import { FrameProvider } from '#/helpers/frame';
 
 import App from './App';
 
 // Mantine styles
 import '@mantine/core/styles.css';
-import { theme } from 'theme';
+import { theme } from '#/theme';
 
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });

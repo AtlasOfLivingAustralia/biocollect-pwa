@@ -1,3 +1,4 @@
+import { useContext, useRef } from 'react';
 import {
   Group,
   Menu,
@@ -24,12 +25,12 @@ import {
 } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
 
+import { FrameContext } from '#/helpers/frame';
+import { getInitials, useOnLine } from '#/helpers/funcs';
+
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
-import { useContext, useRef } from 'react';
-import { FrameContext } from 'helpers/frame';
-import { getInitials, useOnLine } from 'helpers/funcs';
 
 // Install button
 import { InstallButton } from './InstallButton';

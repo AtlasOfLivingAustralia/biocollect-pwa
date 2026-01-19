@@ -1,4 +1,4 @@
-import { Group, Text, Paper, Stack, Progress, PaperProps } from '@mantine/core';
+import { Group, Text, Paper, Stack, Progress, type PaperProps, Box } from '@mantine/core';
 import { IconCalendar, IconCalendarDue } from '@tabler/icons-react';
 
 interface TimeSpanProps extends PaperProps {
@@ -13,7 +13,7 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
   if (!startDate && !endDate) return null;
 
   return (
-    <Paper radius="md" withBorder {...rest}>
+    <Paper withBorder {...rest}>
       <Group py={8} px="xs" justify='center'>
         {startDate && (
           <>
@@ -56,12 +56,11 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
           );
 
           return (
-            <Progress
-              styles={{
-                root: { borderTopLeftRadius: 0, borderTopRightRadius: 0 }
-              }}
-              value={value}
-            />
+            <Box px='sm' pb='sm'>
+              <Progress
+                value={value}
+              />
+            </Box>
           );
         })()}
     </Paper>

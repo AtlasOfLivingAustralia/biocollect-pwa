@@ -3,14 +3,13 @@ import {
   RouterProvider,
   redirect,
   createBrowserRouter,
-  defer,
 } from 'react-router-dom';
+import { useAuth } from 'react-oidc-context';
 
 // App views
-import { Home, Project, SignIn, Error, Debug, Welcome } from 'views';
-import { useAuth } from 'react-oidc-context';
-import { APIContext } from 'helpers/api';
-import Layout from 'layout';
+import { Home, Project, SignIn, Error, Debug, Welcome } from '#/views';
+import { APIContext } from '#/helpers/api';
+import Layout from '#/layout';
 
 const isDev = import.meta.env.DEV;
 
@@ -48,7 +47,7 @@ export default function Routes() {
             {
               path: 'project/:projectId',
               element: <Project />,
-              loader: async ({ params, ...rest }) => {
+              loader: async ({ params }) => {
                 const pid = params.projectId || '';
                 const initialProject = isInitialRouteProject.current;
                 if (isInitialRouteProject.current)
@@ -61,21 +60,20 @@ export default function Routes() {
                 // Then fetch surveys using the member flag
                 const surveys = await api.biocollect.listSurveys(pid, userIsProjectMember);
 
-                // Defer based on whether the initial route is the project route
-                return defer({
+                return {
                   data: initialProject
                     ? Promise.all([project, surveys])
                     : [project, surveys],
-                });
+                };
               },
             },
             ...(isDev
               ? [
-                  {
-                    path: '/debug',
-                    element: <Debug />,
-                  },
-                ]
+                {
+                  path: '/debug',
+                  element: <Debug />,
+                },
+              ]
               : []),
           ],
         },

@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, PropsWithChildren, useRef } from 'react';
+import { type ReactElement, type PropsWithChildren, useEffect, useRef } from 'react';
 import { useAuth } from 'react-oidc-context';
 import axios from 'axios';
 

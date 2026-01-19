@@ -17,13 +17,13 @@ import { useAuth } from 'react-oidc-context';
 import { jwtDecode } from 'jwt-decode';
 
 // Helper functions / components
-import { APIContext } from 'helpers/api';
-import { getBool, getNumber, getString } from 'helpers/params';
-import { useOnLine } from 'helpers/funcs';
+import { APIContext } from '#/helpers/api';
+import { getBool, getNumber, getString } from '#/helpers/params';
+import { useOnLine } from '#/helpers/funcs';
+import type { BioCollectProjectSearch } from '#/types';
+import { Wave } from '#/components/Wave';
 
 // Local components
-import { BioCollectProjectSearch } from 'types';
-import { Wave } from 'components/Wave';
 import { ProjectItem } from './components/ProjectItem';
 import { SearchControls } from './components/SearchControls';
 

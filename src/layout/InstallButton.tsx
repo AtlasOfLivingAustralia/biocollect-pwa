@@ -21,8 +21,9 @@ import {
   IconShare2,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
-import { isPWAInstalled } from 'helpers/funcs/isPWAInstalled';
 import { useEffect, useState } from 'react';
+
+import { isPWAInstalled } from '#/helpers/funcs/isPWAInstalled';
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);

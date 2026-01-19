@@ -12,13 +12,13 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { Background } from 'components';
+import { Background } from '#/components';
+import { Wave } from '#/components/Wave';
 import { useAuth } from 'react-oidc-context';
 
 import logoDark from '/assets/logo-dark-64x64.png';
 import logoLight from '/assets/logo-light-64x64.png';
 import logoAla from '/assets/logo-ala-white.png';
-import { Wave } from 'components/Wave';
 
 export function SignIn() {
   const auth = useAuth();

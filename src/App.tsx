@@ -4,8 +4,8 @@ import { Center, Loader } from '@mantine/core';
 // App-specific imports
 import Routes from './Routes';
 import { useContext, useEffect } from 'react';
-import { FrameContext } from 'helpers/frame';
-import { preventExpire, useOnLine } from 'helpers/funcs';
+import { FrameContext } from '#/helpers/frame';
+import { preventExpire, useOnLine } from '#/helpers/funcs';
 
 function App() {
   const auth = useAuth();

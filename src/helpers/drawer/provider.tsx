@@ -1,21 +1,11 @@
 import {
-  ReactElement,
-  PropsWithChildren,
+  type ReactElement,
+  type PropsWithChildren,
   useEffect,
   useState,
   useContext,
   Fragment,
 } from 'react';
-import { shallowEqual, useDisclosure, useMediaQuery, useDebouncedValue } from '@mantine/hooks';
-import {
-  BioCollectBioActivitySearch,
-  BioCollectBioActivityView,
-  FilterQueries,
-  BioCollectBioActivity
-} from 'types';
-
-// Contexts
-import RecordsDrawerContext from './context';
 import {
   Button,
   Center,
@@ -30,10 +20,21 @@ import {
   ActionIcon,
   Loader
 } from '@mantine/core';
-import { FrameContext } from 'helpers/frame';
-
+import { shallowEqual, useDisclosure, useMediaQuery, useDebouncedValue } from '@mantine/hooks';
 import { IconExternalLink, IconFiles, IconSearch, IconX } from '@tabler/icons-react';
-import { APIContext } from 'helpers/api';
+
+// Helpers
+import { FrameContext } from '#/helpers/frame';
+import { APIContext } from '#/helpers/api';
+import type {
+  BioCollectBioActivitySearch,
+  BioCollectBioActivityView,
+  FilterQueries,
+  BioCollectBioActivity
+} from '#/types';
+
+// Local components
+import RecordsDrawerContext from './context';
 import { ActivityItem } from './components/ActivityItem';
 
 const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {

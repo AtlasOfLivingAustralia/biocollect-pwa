@@ -23,16 +23,17 @@ import {
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
-import { BioCollectProject } from 'types';
 
-import { Background, TimeSpan } from 'components';
-import { ALABadge } from 'components/ALABadge';
-import { Wave, Corner } from 'components/Wave';
+import { useOnLine } from '#/helpers/funcs';
+import type { BioCollectProject } from '#/types';
+
+import { Background, TimeSpan } from '#/components';
+import { ALABadge } from '#/components/ALABadge';
+import { Wave, Corner } from '#/components/Wave';
 
 // Local components
 import { SocialLinks } from './SocialLinks';
 import { ProjectTag } from './ProjectTag';
-import { useOnLine } from 'helpers/funcs';
 
 interface HeaderProps {
   project: BioCollectProject;

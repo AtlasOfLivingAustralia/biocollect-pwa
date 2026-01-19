@@ -9,15 +9,13 @@ import {
   Grid,
   Stack,
 } from '@mantine/core';
-import { SetURLSearchParams } from 'react-router-dom';
+import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
+import type { SetURLSearchParams } from 'react-router-dom';
 import { IconSearch } from '@tabler/icons-react';
 
 // Helper functions / components
-import { getBool, getString } from 'helpers/params';
-
-// Local components
-import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
-import { useOnLine } from 'helpers/funcs';
+import { getBool, getString } from '#/helpers/params';
+import { useOnLine } from '#/helpers/funcs';
 
 interface SearchControlsProps {
   params: URLSearchParams;
@@ -121,7 +119,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
             <Checkbox
               label="Offline Surveys"
               checked={paramOffline}
-              onChange={(e) => handleChangeOffline(!paramOffline)}
+              onChange={() => handleChangeOffline(!paramOffline)}
             />
           </Paper>
         </Stack>
@@ -182,7 +180,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
             <Checkbox
               label="Offline Surveys"
               checked={paramOffline}
-              onChange={(e) => handleChangeOffline(!paramOffline)}
+              onChange={() => handleChangeOffline(!paramOffline)}
             />
           </Paper>
         </Stack>

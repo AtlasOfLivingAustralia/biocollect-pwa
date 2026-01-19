@@ -7,8 +7,9 @@ import {
   Title,
 } from '@mantine/core';
 import { IconCalendar } from '@tabler/icons-react';
-import { DownloadChip, SurveyActions } from 'components';
-import { BioCollectSurvey } from 'types';
+
+import { DownloadChip, SurveyActions } from '#/components';
+import type { BioCollectSurvey } from '#/types';
 
 interface SurveyCardProps {
   survey: BioCollectSurvey;

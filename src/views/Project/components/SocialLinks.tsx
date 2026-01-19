@@ -1,4 +1,4 @@
-import { ActionIcon, Group, GroupProps, Paper, Tooltip } from '@mantine/core';
+import { ActionIcon, Group, type GroupProps, Tooltip } from '@mantine/core';
 import {
   IconBrandAndroid,
   IconBrandApple,
@@ -13,9 +13,9 @@ import {
   IconBrandVimeo,
   IconBrandYoutube,
   IconRss,
-  Icon,
+  type Icon,
 } from '@tabler/icons-react';
-import { ProjectLink } from 'types';
+import type { ProjectLink } from '#/types';
 
 const roleToIcon: { [key: string]: Icon } = {
   facebook: IconBrandFacebook,

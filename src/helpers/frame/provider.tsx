@@ -1,21 +1,22 @@
 import {
-  ReactElement,
-  PropsWithChildren,
+  type ReactElement,
+  type PropsWithChildren,
   useState,
   useEffect,
   useRef,
   useContext,
 } from 'react';
+import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { jwtDecode } from 'jwt-decode';
+import { useAuth } from 'react-oidc-context';
+
+import { isFrame } from '#/helpers/funcs';
+import { Frame } from '#/components';
+import { APIContext } from '#/helpers/api';
 
 // Contexts
-import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
-import { isFrame } from 'helpers/funcs';
-import { Frame } from 'components';
-import FrameContext, { FrameCallbacks } from './context';
-import { useAuth } from 'react-oidc-context';
-import { APIContext } from 'helpers/api';
+import FrameContext, { type FrameCallbacks } from './context';
 
 interface FrameEvent {
   event: 'download-complete' | 'download-removed' | 'surveys-removed';
