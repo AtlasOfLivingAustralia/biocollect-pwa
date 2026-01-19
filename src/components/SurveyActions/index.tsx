@@ -24,7 +24,7 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
   const loading = !survey;
 
   return (
-    <Flex gap={6} justify="center" {...rest}>
+    <Flex gap={6} align="center" {...rest}>
       <Text size="xs" c="dimmed">Records</Text>
       <Skeleton visible={loading} w={28}>
         <Tooltip label="All records" withArrow disabled={loading} position='left'>

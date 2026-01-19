@@ -54,7 +54,7 @@ export function ProjectTag({ tag }: ProjectTagProps) {
   return (
     <Badge
       color="gray"
-      leftSection={<Icon style={{ marginTop: 4 }} size="0.8rem" />}
+      leftSection={<Icon size="0.8rem" />}
     >
       {name}
     </Badge>

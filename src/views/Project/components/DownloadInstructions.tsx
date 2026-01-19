@@ -1,7 +1,9 @@
 import {
   Box,
   BoxProps,
+  Button,
   Chip,
+  Flex,
   Group,
   Stack,
   Text,
@@ -25,23 +27,9 @@ export function DownloadInstructions({ ...props }: DownloadInstructionsProps) {
         </Group>
         <Group gap={8}>
           <Text size="sm">To save surveys, press the</Text>
-          <Chip
-            size="xs"
-            checked={false}
-            styles={{
-              label: {
-                padding: '0.8rem',
-                '& .mantine-Text-root': {
-                  marginLeft: 2,
-                },
-              },
-            }}
-          >
-            <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-            <Text ml="xs" c="dimmed" fw="bold" size="xs">
-              Download
-            </Text>
-          </Chip>
+          <Button size='xs' variant='light' leftSection={<IconDownload size="1rem" />}>
+            Download
+          </Button>
           <Text size="sm">
             button. Once the survey has finished downloading, press{' '}
             <b>Confirm Download</b>.

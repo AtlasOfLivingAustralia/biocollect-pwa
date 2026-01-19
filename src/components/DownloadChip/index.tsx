@@ -1,15 +1,14 @@
 import { useContext } from 'react';
-import { Chip, ChipProps, Flex, Text, useMantineTheme } from '@mantine/core';
-import { IconDownload } from '@tabler/icons-react';
+import { Button, ButtonProps, Text } from '@mantine/core';
+import { IconCheck, IconDownload } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
 import { BioCollectSurvey } from 'types';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { modals } from '@mantine/modals';
-import { useMediaQuery } from '@mantine/hooks';
 import { useOnLine } from 'helpers/funcs';
 
-interface DownloadChipProps extends Omit<ChipProps, 'children'> {
+interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
   survey?: BioCollectSurvey;
   label?: string;
 }
@@ -17,8 +16,6 @@ interface DownloadChipProps extends Omit<ChipProps, 'children'> {
 export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
   const api = useContext(APIContext);
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
   const onLine = useOnLine();
 
   const downloaded = survey
@@ -80,36 +77,19 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   };
 
   return (
-    <Chip
+    <Button
+      id={survey?.projectActivityId + "Download"}
+      size='xs'
+      variant='light'
       disabled={!onLine}
-      checked={downloaded}
-      styles={{
-        label: {
-          padding: '0.8rem',
-          '& .mantine-Text-root': {
-            marginLeft: 2,
-          },
-        },
-      }}
       onClick={handleChipClick}
+      leftSection={downloaded ? <IconCheck size="1rem" /> :
+        <IconDownload size="1rem" />
+      }
+      maw={250}
       {...rest}
     >
-      <Flex align='center'>
-        {!downloaded && onLine && (
-          <IconDownload size="0.8rem" />
-        )}
-        <Text
-          id={survey?.projectActivityId + "Download"}
-          ml="xs"
-          c="dimmed"
-          fw="bold"
-          size="xs"
-          maw={mobile ? 115 : 200}
-          truncate
-        >
-          {label || (downloaded ? 'Downloaded' : 'Download')}
-        </Text>
-      </Flex>
-    </Chip>
+      {label || (downloaded ? 'Downloaded' : 'Download')}
+    </Button>
   );
 }

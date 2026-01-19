@@ -1,5 +1,5 @@
-import { Text, Group, Chip, ActionIcon, Transition } from '@mantine/core';
-import { useDisclosure, useSessionStorage } from '@mantine/hooks';
+import { Text, Group, ActionIcon, Transition, Button } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 import { IconDownload, IconX } from '@tabler/icons-react';
 
@@ -25,23 +25,9 @@ export function DownloadInstructions() {
           <Text size="sm" c="dimmed">
             To save surveys, click the
           </Text>
-          <Chip
-            size="xs"
-            checked={false}
-            styles={{
-              label: {
-                padding: '0.8rem',
-                '& .mantine-Text-root': {
-                  marginLeft: 2,
-                },
-              },
-            }}
-          >
-            <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-            <Text ml="xs" c="dimmed" fw="bold" size="xs">
-              Download
-            </Text>
-          </Chip>
+          <Button size='xs' variant='light' leftSection={<IconDownload size="1rem" />}>
+            Download
+          </Button>
           <Text size="sm" c="dimmed">
             button, then click <b>Confirm Download</b>
           </Text>
