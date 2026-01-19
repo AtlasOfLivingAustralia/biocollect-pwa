@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { Chip, ChipProps, Text, useMantineTheme } from '@mantine/core';
+import { Chip, ChipProps, Flex, Text, useMantineTheme } from '@mantine/core';
 import { IconDownload, IconExclamationCircle } from '@tabler/icons-react';
 import { FrameContext } from 'helpers/frame';
 import { APIContext } from 'helpers/api';
@@ -28,8 +28,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   // Handler for the download popup
   const handleDownload = () =>
     frame.open(
-      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${
-        survey?.projectActivityId
+      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${survey?.projectActivityId
       }`,
       `Downloading - ${survey?.name}`,
       {
@@ -54,7 +53,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
         title: (
           <Text
             size="lg"
-            sx={(theme) => ({ fontFamily: theme.headings.fontFamily })}
+            ff="heading"
           >
             Confirm Re-Download
           </Text>
@@ -95,20 +94,22 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
       onClick={handleChipClick}
       {...rest}
     >
-      {!downloaded && onLine && (
-        <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-      )}
-      <Text
-        id={survey?.projectActivityId + "Download"}
-        ml="xs"
-        color="dimmed"
-        weight="bold"
-        size="xs"
-        maw={mobile ? 115 : 200}
-        truncate
-      >
-        {label || (downloaded ? 'Downloaded' : 'Download')}
-      </Text>
+      <Flex align='center'>
+        {!downloaded && onLine && (
+          <IconDownload size="0.8rem" />
+        )}
+        <Text
+          id={survey?.projectActivityId + "Download"}
+          ml="xs"
+          c="dimmed"
+          fw="bold"
+          size="xs"
+          maw={mobile ? 115 : 200}
+          truncate
+        >
+          {label || (downloaded ? 'Downloaded' : 'Download')}
+        </Text>
+      </Flex>
     </Chip>
   );
 }

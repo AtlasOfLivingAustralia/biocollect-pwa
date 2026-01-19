@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Box,
   Button,
   Card,
   Group,
@@ -11,6 +10,7 @@ import {
   Text,
   ThemeIcon,
   Title,
+  useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
@@ -25,22 +25,22 @@ import {
   IconSearch,
 } from '@tabler/icons-react';
 import { Background, DownloadChip } from 'components';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function WelcomeDetails() {
-  const theme = useMantineTheme();
   const navigate = useNavigate();
+  const isDark = useComputedColorScheme();
 
   return (
     <Stack align="center" miw={275} p="xl" style={{ textAlign: 'center' }}>
       <Image
-        width={64}
-        height={64}
-        src={theme.colorScheme === 'dark' ? logoLight : logoDark}
+        w={64}
+        h={64}
+        src={isDark ? logoLight : logoDark}
       />
       <Title order={2}>Welcome to BioCollect</Title>
       <Stack align="center">
-        <Text size="sm" color="dimmed">
+        <Text size="sm" c="dimmed">
           This is an early beta version of the new web-based BioCollect mobile
           app.
         </Text>
@@ -55,9 +55,9 @@ function WelcomeDetails() {
       >
         <Text
           size="xs"
-          weight="bold"
-          color="dimmed"
-          transform="uppercase"
+          fw="bold"
+          c="dimmed"
+          tt="uppercase"
           mb="sm"
           style={{ textAlign: 'center' }}
         >
@@ -92,18 +92,16 @@ function WelcomeDetails() {
             }
           >
             The
-            <Group mx={6} spacing={6} display="inline-flex">
+            <Group mx={6} gap={6} display="inline-flex">
               <ActionIcon
                 display="inline-flex"
                 variant="light"
-                color={theme.primaryColor}
               >
                 <IconEye size="1rem" />
               </ActionIcon>
               <ActionIcon
                 display="inline-flex"
                 variant="light"
-                color={theme.primaryColor}
               >
                 <IconPlus size="1rem" />
               </ActionIcon>
@@ -117,7 +115,7 @@ function WelcomeDetails() {
               </ThemeIcon>
             }
           >
-            <Group spacing={6}>
+            <Group gap={6}>
               Press
               <b>View Project</b>
               to see more detailed project information
@@ -130,7 +128,7 @@ function WelcomeDetails() {
           localStorage.setItem('pwa-welcome', 'true');
           navigate('/');
         }}
-        rightIcon={<IconArrowRight />}
+        rightSection={<IconArrowRight />}
         mt="md"
       >
         Get started

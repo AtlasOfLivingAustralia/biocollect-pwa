@@ -105,17 +105,14 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         title={
           <Text
             size="lg"
-            sx={(theme) => ({ fontFamily: theme.headings.fontFamily })}
+            ff='heading'
           >
             {title || 'BioCollect'}
           </Text>
         }
         size={1100}
         overlayProps={{
-          color:
-            theme.colorScheme === 'dark'
-              ? theme.colors.dark[6]
-              : theme.colors.gray[2],
+          color: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))',
           opacity: 0.55,
           blur: 3,
         }}
@@ -130,7 +127,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           height={`calc(100vh - ${mobile ? 125 : 275}px)`}
         />
         {callbacks?.confirm && (
-          <Group mt="sm" position="center" spacing="xs">
+          <Group mt="sm" justify="center" gap="xs">
             <Button id="confirmDownloadModal" onClick={callbacks.confirm} loading={!canConfirm}>
               Confirm Download
             </Button>

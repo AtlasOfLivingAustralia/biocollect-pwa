@@ -1,8 +1,8 @@
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import {
   Box,
-  BoxProps,
-  MantineNumberSize,
+  type BoxProps,
+  useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
 
@@ -16,41 +16,37 @@ import { useMediaQuery } from '@mantine/hooks';
 interface BackgroundProps extends PropsWithChildren<BoxProps> {
   parallax?: boolean;
   semiTransparent?: boolean;
-  radius?: MantineNumberSize;
 }
 
 export function Background({
+  style,
   children,
   parallax = true,
   semiTransparent = false,
-  radius = 0,
   ...rest
 }: BackgroundProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const isDark = useComputedColorScheme() === 'dark';
 
   // Determine which background image variant to use
-  let logoAlaBg;
-  if (theme.colorScheme === 'light') {
+  let logoAlaBg: string;
+  if (!isDark) {
     logoAlaBg = semiTransparent ? logoLightTrans : logoLight;
-  } else if (theme.colorScheme === 'dark') {
+  } else {
     logoAlaBg = semiTransparent ? logoDarkTrans : logoDark;
   }
 
   return (
     <Box
-      sx={{
-        backgroundColor:
-          theme.colorScheme === 'dark'
-            ? theme.colors.dark[6]
-            : theme.colors.gray[2],
+      style={{
+        ...style,
+        backgroundColor: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
         backgroundImage: `url(${logoAlaBg})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 65,
         backgroundPosition: '-30px -30px',
         backgroundAttachment: !mobile && parallax ? 'fixed' : 'scroll',
-        borderRadius:
-          typeof radius === 'string' ? theme.radius[radius] : radius,
       }}
       {...rest}
     >

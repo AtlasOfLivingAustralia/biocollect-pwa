@@ -4,7 +4,6 @@ import { AuthProvider, hasAuthParams } from 'react-oidc-context';
 
 // App-specific imports
 import { WebStorageStateStore } from 'oidc-client-ts';
-import { themes } from 'theme';
 
 // Helpers
 import { APIProvider } from 'helpers/api';
@@ -13,10 +12,14 @@ import { FrameProvider } from 'helpers/frame';
 
 import App from './App';
 
+// Mantine styles
+import '@mantine/core/styles.css';
+import { theme } from 'theme';
+
 // Use localStorage for user persistence
 const userStore = new WebStorageStateStore({ store: localStorage });
 
-const authConfig =  {
+const authConfig = {
   client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
   redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
   authority: import.meta.env.VITE_AUTH_AUTHORITY,
@@ -45,8 +48,8 @@ function Main() {
             null,
             '',
             window.location.origin +
-              window.location.pathname +
-              params.toString()
+            window.location.pathname +
+            params.toString()
           );
         } else {
           console.log('[Main] onSigninCallback', 'No auth params in location!');
@@ -54,11 +57,7 @@ function Main() {
       }}
     >
       <APIProvider>
-        <MantineProvider
-          theme={themes[import.meta.env.VITE_BIOCOLLECT_HUB || 'dark']}
-          withGlobalStyles
-          withNormalizeCSS
-        >
+        <MantineProvider theme={theme} defaultColorScheme='dark'>
           <ModalsProvider>
             <FrameProvider>
               <RecordsDrawerProvider>

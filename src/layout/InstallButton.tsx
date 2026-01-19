@@ -106,7 +106,7 @@ export function InstallButton() {
         onClick={onClick}
         size="xs"
         variant="light"
-        leftIcon={
+        leftSection={
           install ? (
             <IconDownload size="1rem" />
           ) : (
@@ -122,10 +122,7 @@ export function InstallButton() {
         onClose={close}
         title={<Title order={2}>Install BioCollect</Title>}
         overlayProps={{
-          color:
-            theme.colorScheme === 'dark'
-              ? theme.colors.dark[6]
-              : theme.colors.gray[2],
+          color: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
           opacity: 0.55,
           blur: 3,
         }}
@@ -141,13 +138,13 @@ export function InstallButton() {
           mih={300}
         >
           <Tabs.List mb="md">
-            <Tabs.Tab value="ios" icon={<IconBrandApple size="0.9rem" />}>
+            <Tabs.Tab value="ios" leftSection={<IconBrandApple size="0.9rem" />}>
               iOS
             </Tabs.Tab>
-            <Tabs.Tab value="safari" icon={<IconBrandSafari size="0.9rem" />}>
+            <Tabs.Tab value="safari" leftSection={<IconBrandSafari size="0.9rem" />}>
               Safari Desktop
             </Tabs.Tab>
-            <Tabs.Tab value="other" icon={<IconBrowser size="0.9rem" />}>
+            <Tabs.Tab value="other" leftSection={<IconBrowser size="0.9rem" />}>
               Other
             </Tabs.Tab>
           </Tabs.List>

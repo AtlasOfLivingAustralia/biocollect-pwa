@@ -11,7 +11,7 @@ export function DownloadInstructions() {
   return (
     <Transition mounted={opened} transition="scale-y">
       {(styles) => (
-        <Group style={styles} position="center" spacing={8} mb={36}>
+        <Group style={styles} justify="center" gap={8} mb={36}>
           <ActionIcon
             variant="default"
             mr="md"
@@ -22,7 +22,7 @@ export function DownloadInstructions() {
           >
             <IconX size="1rem" />
           </ActionIcon>
-          <Text size="sm" color="dimmed">
+          <Text size="sm" c="dimmed">
             To save surveys, click the
           </Text>
           <Chip
@@ -38,11 +38,11 @@ export function DownloadInstructions() {
             }}
           >
             <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-            <Text ml="xs" color="dimmed" weight="bold" size="xs">
+            <Text ml="xs" c="dimmed" fw="bold" size="xs">
               Download
             </Text>
           </Chip>
-          <Text size="sm" color="dimmed">
+          <Text size="sm" c="dimmed">
             button, then click <b>Confirm Download</b>
           </Text>
         </Group>

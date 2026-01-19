@@ -1,13 +1,13 @@
 import {
-  Header as MantineHeader,
   Group,
   Menu,
   Avatar,
   Image,
   UnstyledButton,
-  Badge,
   Loader,
   ThemeIcon,
+  useComputedColorScheme,
+  AppShell,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -27,7 +27,6 @@ import jwtDecode from 'jwt-decode';
 // BioCollect logos
 import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
-import { themes } from 'theme';
 import { useContext, useRef } from 'react';
 import { FrameContext } from 'helpers/frame';
 import { getInitials, useOnLine } from 'helpers/funcs';
@@ -40,6 +39,7 @@ export default function Header() {
   const auth = useAuth();
   const onLine = useOnLine();
   const decoded = useRef(jwtDecode(auth.user?.access_token || ''));
+  const isDark = useComputedColorScheme();
 
   const signOut = async () => {
     // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
@@ -62,19 +62,14 @@ export default function Header() {
   };
 
   return (
-    <MantineHeader height={71} p="md" pos="fixed" zIndex={200}>
-      <Group position="apart" px="sm">
+    <AppShell.Header p="md">
+      <Group justify='space-between' px="sm">
         <Group>
           <Link to="/">
             <Image
               width="auto"
               height={32}
-              src={
-                themes[import.meta.env.BIOCOLLECT_HUB || 'dark'].colorScheme ===
-                'dark'
-                  ? logoLight
-                  : logoDark
-              }
+              src={isDark ? logoLight : logoDark}
             />
           </Link>
           <ThemeIcon
@@ -124,7 +119,7 @@ export default function Header() {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item component={Link} to="/" icon={<IconSearch />}>
+              <Menu.Item component={Link} to="/" leftSection={<IconSearch />}>
                 Search projects
               </Menu.Item>
               <Menu.Item
@@ -134,7 +129,7 @@ export default function Header() {
                     'Unpublished Records'
                   )
                 }
-                icon={<IconFileUpload />}
+                leftSection={<IconFileUpload />}
               >
                 Unpublished records
               </Menu.Item>
@@ -145,7 +140,7 @@ export default function Header() {
                     'Manage Storage'
                   )
                 }
-                icon={<IconSettings />}
+                leftSection={<IconSettings />}
               >
                 Manage storage
               </Menu.Item>
@@ -153,7 +148,7 @@ export default function Header() {
                 <>
                   <Menu.Divider />
                   <Menu.Label>Development</Menu.Label>
-                  <Menu.Item component={Link} to="/debug" icon={<IconBug />}>
+                  <Menu.Item component={Link} to="/debug" leftSection={<IconBug />}>
                     Debug info
                   </Menu.Item>
                 </>
@@ -163,14 +158,14 @@ export default function Header() {
                 component="a"
                 href="https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/"
                 target="_blank"
-                icon={<IconQuestionMark />}
+                leftSection={<IconQuestionMark />}
               >
                 Help
               </Menu.Item>
               <Menu.Item
                 id="signOut"
                 onClick={signOut}
-                icon={<IconLogout />}
+                leftSection={<IconLogout />}
                 disabled={auth.isLoading || !onLine}
                 color="red"
               >
@@ -180,6 +175,6 @@ export default function Header() {
           </Menu>
         </Group>
       </Group>
-    </MantineHeader>
+    </AppShell.Header>
   );
 }

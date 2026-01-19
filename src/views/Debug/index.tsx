@@ -15,7 +15,6 @@ import { useAuth } from 'react-oidc-context';
 import { useContext, useState } from 'react';
 import { APIContext } from 'helpers/api';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { generateShades } from 'theme';
 
 const getStoredState = () => {
   const [storeKey, storeState] = Object.entries(localStorage).find(([key]) =>
@@ -51,7 +50,7 @@ export function Debug() {
   return (
     <Box p="xl">
       <Title mb="sm">Authentication</Title>
-      <Group mb="sm" spacing="sm">
+      <Group mb="sm" gap="sm">
         <Button onClick={expireToken}>Expire Tokens</Button>
         <Button onClick={() => clipboard.copy(auth.user?.access_token)}>
           Copy Access Token
@@ -67,17 +66,6 @@ export function Debug() {
         IndexedDB
       </Title>
       <Code block>{JSON.stringify(projects, null, 2)}</Code>
-      <Title>Colour</Title>
-      <ColorInput value={color} onChange={setColor} />
-      <Group>
-        {generateShades(color).map((shadeColour, index) => (
-          <ColorSwatch
-            key={shadeColour}
-            color={shadeColour}
-            size={index === 7 ? 40 : undefined}
-          />
-        ))}
-      </Group>
       <Divider my="xs" />
       <Group>
         {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (

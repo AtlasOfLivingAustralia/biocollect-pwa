@@ -39,7 +39,7 @@ interface SocialLinksProps extends GroupProps {
 
 export function SocialLinks({ links, ...rest }: SocialLinksProps) {
   return (
-    <Group spacing="xs" {...rest}>
+    <Group gap="xs" {...rest}>
       {links.map((link) => {
         const Icon = roleToIcon[link.role];
         if (!Icon) return null;

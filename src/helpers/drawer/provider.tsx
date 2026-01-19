@@ -139,26 +139,23 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         <Drawer.Overlay
           blur={3}
           opacity={0.55}
-          color={
-            theme.colorScheme === 'dark'
-              ? theme.colors.dark[6]
-              : theme.colors.gray[2]
-          }
+          color='light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))'
+
         />
         <Drawer.Content pt={mobile ? 0 : 71}>
           <Drawer.Header>
-              <Group spacing="md">
-                <IconFiles />
-                <Stack spacing={0}>
-                  <Title order={3}>Records</Title>
-                  {recordsFor && (
-                    <Text size="sm" color="dimmed">
-                      For {recordsFor}
-                    </Text>
-                  )}
-                </Stack>
-              </Group>
-              <Drawer.CloseButton />
+            <Group gap="md">
+              <IconFiles />
+              <Stack gap={0}>
+                <Title order={3}>Records</Title>
+                {recordsFor && (
+                  <Text size="sm" c="dimmed">
+                    For {recordsFor}
+                  </Text>
+                )}
+              </Stack>
+            </Group>
+            <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body mt="lg">
             <Stack pb="sm">
@@ -166,24 +163,22 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                 <>
                   <Text
                     size="sm"
-                    transform="uppercase"
-                    color="dimmed"
-                    weight="bold"
+                    tt="uppercase"
+                    c="dimmed"
+                    fw="bold"
                   >
                     Unpublished
                   </Text>
                   <Button
                     id={`${filters.projectActivityId}UnpublishedRecords`}
-                    leftIcon={<IconExternalLink size="1rem" />}
+                    leftSection={<IconExternalLink size="1rem" />}
                     mb="xs"
                     variant="outline"
                     onClick={() => {
                       close();
                       frame.open(
-                        `${
-                          import.meta.env.VITE_API_BIOCOLLECT
-                        }/pwa/offlineList?projectActivityId=${
-                          filters.projectActivityId
+                        `${import.meta.env.VITE_API_BIOCOLLECT
+                        }/pwa/offlineList?projectActivityId=${filters.projectActivityId
                         }`,
                         'Unpublished Records'
                       );
@@ -195,9 +190,9 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
               )}
               <Text
                 size="sm"
-                transform="uppercase"
-                color="dimmed"
-                weight="bold"
+                tt="uppercase"
+                c="dimmed"
+                fw="bold"
               >
                 Published
               </Text>
@@ -205,8 +200,8 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.currentTarget.value)}
                 placeholder="Search activities…"
-                icon={<IconSearch size={16} />}
-                
+                leftSection={<IconSearch size={16} />}
+
                 rightSection={
                   loadingMore ? <Loader size='xs' /> : searchInput ? (
                     <ActionIcon
@@ -250,7 +245,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
                     </>
                   ) : (
                     <Center h="100%">
-                      <Text color="dimmed">No records found</Text>
+                      <Text c="dimmed">No records found</Text>
                     </Center>
                   );
                 }

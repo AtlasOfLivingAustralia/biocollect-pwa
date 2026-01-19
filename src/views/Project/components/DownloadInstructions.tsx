@@ -11,7 +11,7 @@ import {
 
 import { IconDownload } from '@tabler/icons-react';
 
-interface DownloadInstructionsProps extends BoxProps {}
+interface DownloadInstructionsProps extends BoxProps { }
 
 export function DownloadInstructions({ ...props }: DownloadInstructionsProps) {
   return (
@@ -23,7 +23,7 @@ export function DownloadInstructions({ ...props }: DownloadInstructionsProps) {
           </ThemeIcon>
           <Title order={4}>How to download</Title>
         </Group>
-        <Group spacing={8}>
+        <Group gap={8}>
           <Text size="sm">To save surveys, press the</Text>
           <Chip
             size="xs"
@@ -38,7 +38,7 @@ export function DownloadInstructions({ ...props }: DownloadInstructionsProps) {
             }}
           >
             <IconDownload size="0.8rem" style={{ marginRight: 8 }} />
-            <Text ml="xs" color="dimmed" weight="bold" size="xs">
+            <Text ml="xs" c="dimmed" fw="bold" size="xs">
               Download
             </Text>
           </Chip>

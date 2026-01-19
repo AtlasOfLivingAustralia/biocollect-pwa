@@ -14,12 +14,12 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
 
   return (
     <Paper radius="md" withBorder {...rest}>
-      <Group py={8} px="xs" position="center">
+      <Group py={8} px="xs" justify='center'>
         {startDate && (
           <>
             <IconCalendar />
-            <Stack spacing={0}>
-              <Text size="xs" color="dimmed" weight="bold">
+            <Stack gap={0}>
+              <Text size="xs" c="dimmed" fw="bold">
                 Start Date
               </Text>
               <Text size="sm">
@@ -33,8 +33,8 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
         {endDate && (
           <>
             <IconCalendarDue />
-            <Stack spacing={0}>
-              <Text size="xs" color="dimmed" weight="bold">
+            <Stack gap={0}>
+              <Text size="xs" c="dimmed" fw="bold">
                 End Date
               </Text>
               <Text size="sm">
@@ -51,23 +51,14 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
           const value = Math.min(
             ((endDate.getTime() - Date.now()) /
               (endDate.getTime() - startDate.getTime())) *
-              100,
+            100,
             100
           );
 
           return (
             <Progress
               styles={{
-                root: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
-                bar: {
-                  borderTopLeftRadius: `0!important`,
-                  borderTopRightRadius: `${
-                    value < 100 ? '0.25rem' : 0
-                  }!important`,
-                  borderBottomRightRadius: `${
-                    value < 100 ? '0.25rem' : 0
-                  }!important`,
-                },
+                root: { borderTopLeftRadius: 0, borderTopRightRadius: 0 }
               }}
               value={value}
             />

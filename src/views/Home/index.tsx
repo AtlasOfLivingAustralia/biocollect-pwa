@@ -38,8 +38,7 @@ export function Home() {
   const paramPage = getNumber('page', 1, params);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const highlight =
-    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
+  const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))';
 
   // API data state
   const [projectSearch, setProjectSearch] =
@@ -86,9 +85,9 @@ export function Home() {
     <>
       {mobile ? (
         <Stack py="xl" px={22}>
-          <Group position="center">
-            <Stack spacing={0} align="center">
-              <Text color="dimmed">Welcome back,</Text>
+          <Group justify="center">
+            <Stack gap={0} align="center">
+              <Text c="dimmed">Welcome back,</Text>
               <Title m={0}>
                 {auth.user?.profile.given_name ||
                   (decoded.current as any)?.given_name ||
@@ -100,9 +99,9 @@ export function Home() {
         </Stack>
       ) : (
         <Box py="xl" px={36}>
-          <Group position="apart">
-            <Stack spacing={0} align="flex-start">
-              <Text color="dimmed">Welcome back,</Text>
+          <Group justify="space-between">
+            <Stack gap={0} align="flex-start">
+              <Text c="dimmed">Welcome back,</Text>
               <Title m={0}>
                 {auth.user?.profile.given_name ||
                   (decoded.current as any)?.given_name ||
@@ -121,16 +120,11 @@ export function Home() {
         width="100%"
       />
       <Box
-        sx={(theme) => ({
+        style={{
           background: highlight,
           marginTop: -8,
-          padding: 32,
-          paddingTop: 0,
-          [theme.fn.smallerThan('md')]: {
-            padding: 22,
-            paddingTop: 0,
-          },
-        })}
+          padding: mobile ? 22 : 32,
+        }}
       >
         <Grid>
           {(() => {
@@ -141,18 +135,16 @@ export function Home() {
                 ))
               ) : (
                 <Grid.Col span={12}>
-                  <Stack align="center" spacing={8}>
+                  <Stack align="center" gap={8}>
                     <IconArchive size="4rem" />
                     <Text
                       mt="md"
-                      sx={(theme) => ({
-                        fontFamily: theme.headings.fontFamily,
-                      })}
+                      ff='heading'
                       size="xl"
                     >
                       No projects found
                     </Text>
-                    <Text color="dimmed">
+                    <Text c="dimmed">
                       Try refining your search criteria
                     </Text>
                   </Stack>

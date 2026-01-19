@@ -71,23 +71,23 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
     <Grid>
       <Grid.Col span={12}>
         <TextInput
-          icon={<IconSearch />}
+          leftSection={<IconSearch />}
           placeholder="Project Name"
           defaultValue={paramSearch}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
           label={
-            <Text size="xs" weight="bold" color="dimmed">
+            <Text size="xs" fw="bold" c="dimmed">
               Project Search
             </Text>
           }
         />
       </Grid.Col>
       {onLine && (
-        <Grid.Col xs={6} sm={4}>
+        <Grid.Col span={{ xs: 6, sm: 4 }}>
           <Select
             value={params.get('pSort') || 'dateCreatedSort'}
             label={
-              <Text size="xs" weight="bold" color="dimmed">
+              <Text size="xs" fw="bold" c="dimmed">
                 Sort By
               </Text>
             }
@@ -101,7 +101,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           />
         </Grid.Col>
       )}
-      <Grid.Col xs={6} sm={onLine ? 4 : 6}>
+      <Grid.Col span={{ xs: 6, sm: onLine ? 4 : 6 }}>
         <Select
           value={params.get('max') || '10'}
           data={['10', '20', '30', '50'].map((max) => ({
@@ -110,13 +110,13 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           }))}
           onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
-            <Text size="xs" weight="bold" color="dimmed">
+            <Text size="xs" fw="bold" c="dimmed">
               Result Count
             </Text>
           }
         />
       </Grid.Col>
-      <Grid.Col xs={onLine ? 12 : 6} sm={onLine ? 4 : 6}>
+      <Grid.Col span={{ xs: onLine ? 12 : 6, sm: onLine ? 4 : 6 }}>
         <Stack justify="flex-end" h="100%">
           <Paper py={7} px="xs" withBorder>
             <Checkbox
@@ -132,12 +132,12 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
     <Grid>
       <Grid.Col span={5}>
         <TextInput
-          icon={<IconSearch />}
+          leftSection={<IconSearch />}
           placeholder="Project Name"
           defaultValue={paramSearch}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
           label={
-            <Text size="xs" weight="bold" color="dimmed">
+            <Text size="xs" fw="bold" c="dimmed">
               Project Search
             </Text>
           }
@@ -148,7 +148,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           <Select
             value={params.get('pSort') || 'dateCreatedSort'}
             label={
-              <Text size="xs" weight="bold" color="dimmed">
+              <Text size="xs" fw="bold" c="dimmed">
                 Sort By
               </Text>
             }
@@ -171,7 +171,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           }))}
           onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
-            <Text size="xs" weight="bold" color="dimmed">
+            <Text size="xs" fw="bold" c="dimmed">
               Result Count
             </Text>
           }

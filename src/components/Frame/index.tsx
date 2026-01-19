@@ -12,7 +12,6 @@ type IFrameProps = Omit<
 export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(
   ({ onLoad, ...props }, ref) => {
     const [loaded, setLoaded] = useState<boolean>(false);
-    const theme = useMantineTheme();
 
     const width = props.width || '100%';
     const height = props.height || 'calc(100vh - 275px)';
@@ -25,11 +24,7 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(
           width="100%"
           height="100%"
           style={{
-            border: `1px solid ${
-              theme.colorScheme === 'dark'
-                ? theme.colors.dark[5]
-                : theme.colors.gray[4]
-            }`,
+            border: `1px solid light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-4))`,
           }}
           onLoad={(event) => {
             setLoaded(true);

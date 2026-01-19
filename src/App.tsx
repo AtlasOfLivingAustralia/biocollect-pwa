@@ -88,7 +88,7 @@ function App() {
 
   if (auth.isLoading) {
     return (
-      <Center sx={{ width: '100vw', height: '100vh' }}>
+      <Center style={{ width: '100vw', height: '100vh' }}>
         <Loader />
       </Center>
     );

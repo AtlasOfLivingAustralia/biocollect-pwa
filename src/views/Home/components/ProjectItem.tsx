@@ -28,15 +28,15 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
   const loading = !Boolean(survey);
 
   return (
-    <Group position="apart" spacing={0}>
+    <Group justify="space-between" gap={0}>
       <Box>
         <Skeleton visible={loading} radius="lg">
-        {loading || !survey ? (
-          <Chip>Placeholder Chip</Chip>
-        ) : (
-          <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
-        )}
-      </Skeleton>
+          {loading || !survey ? (
+            <Chip>Placeholder Chip</Chip>
+          ) : (
+            <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
+          )}
+        </Skeleton>
       </Box>
       <SurveyActions survey={survey} />
     </Group>
@@ -54,7 +54,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   return (
-    <Grid.Col xl={4} lg={6} md={6} sm={12} xs={12}>
+    <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
       <Paper
         style={{ display: 'flex', flexDirection: 'column' }}
         shadow="lg"
@@ -85,7 +85,6 @@ export function ProjectItem({ project }: ProjectItemProps) {
                 <Image
                   src={project?.urlImage}
                   height={125}
-                  withPlaceholder
                   onLoad={() => setImageLoaded(true)}
                   onError={() => setImageLoaded(true)}
                 />
@@ -108,16 +107,14 @@ export function ProjectItem({ project }: ProjectItemProps) {
           <Stack
             pr="xl"
             pt="sm"
-            spacing={0}
+            gap={0}
             align="flex-end"
             style={{ textAlign: 'right' }}
           >
             <Skeleton visible={loading}>
               <Text
-                sx={{
-                  fontFamily: theme.headings.fontFamily,
-                  fontWeight: 700,
-                }}
+                fw={700}
+                ff='heading'
                 size="xl"
                 lineClamp={2}
               >
@@ -129,7 +126,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
                 id={project?.projectId}
                 component={Link}
                 to={`/project/${project?.projectId}`}
-                rightIcon={<IconArrowUpRight size="0.8rem" />}
+                rightSection={<IconArrowUpRight size="0.8rem" />}
                 size="xs"
                 variant="outline"
               >
@@ -146,7 +143,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
             </Text>
           </Skeleton>
         </Box>
-        <Stack spacing={0} mt="auto">
+        <Stack gap={0} mt="auto">
           <Divider
             labelPosition="center"
             label={
@@ -157,7 +154,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
             mb={6}
           />
           <ScrollArea h={80} type="auto">
-            <Stack px="md" mb="md" spacing="sm">
+            <Stack px="md" mb="md" gap="sm">
               {loading ? (
                 <ProjectItemSurvey />
               ) : surveys.length > 0 ? (
@@ -165,7 +162,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
                   <ProjectItemSurvey key={survey.id} survey={survey} />
                 ))
               ) : (
-                <Text align="center" size="sm" color="dimmed" h={28.2}>
+                <Text ta="center" size="sm" c="dimmed" h={28.2}>
                   No surveys available
                 </Text>
               )}

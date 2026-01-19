@@ -1,15 +1,15 @@
-import { useMantineTheme } from '@mantine/core';
+import { useComputedColorScheme, useMantineTheme } from '@mantine/core';
 
 interface WaveProps extends React.SVGProps<SVGSVGElement> {
   waveType?:
-    | 'simple'
-    | 'lessSimple'
-    | 'new'
-    | 'body'
-    | 'bodyFull'
-    | 'bodyBottom'
-    | 'bodyBottomFull'
-    | 'side';
+  | 'simple'
+  | 'lessSimple'
+  | 'new'
+  | 'body'
+  | 'bodyFull'
+  | 'bodyBottom'
+  | 'bodyBottomFull'
+  | 'side';
   waveColour?: string;
   vertical?: boolean;
 }
@@ -32,7 +32,8 @@ const waves = {
 };
 
 export function Wave({ waveType, waveColour, vertical, ...rest }: WaveProps) {
-  const theme = useMantineTheme();
+  const isDark = useComputedColorScheme();
+
   return (
     <svg
       {...rest}
@@ -42,8 +43,7 @@ export function Wave({ waveType, waveColour, vertical, ...rest }: WaveProps) {
       <g transform={vertical ? 'matrix(0 1 -1 0 320 -0)' : undefined}>
         <path
           fill={
-            waveColour ||
-            (theme.colorScheme === 'dark' ? theme.colors.dark[7] : '#ffffff')
+            waveColour || 'light-dark(white, var(--mantine-color-dark-7))'
           }
           fillOpacity="1"
           d={waves[waveType || 'new']}

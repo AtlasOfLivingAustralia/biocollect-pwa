@@ -17,7 +17,7 @@ export function Error() {
         <Stack align="center">
           <Title>404</Title>
           <Text>The requested page could not be found</Text>
-          <Button mt="lg" leftIcon={<IconArrowBack />} component={Link} to="/">
+          <Button mt="lg" leftSection={<IconArrowBack />} component={Link} to="/">
             Go home
           </Button>
         </Stack>

@@ -26,13 +26,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
   const onLine = useOnLine();
 
   return (
-    <Group position="apart">
-      <Stack spacing={4}>
+    <Group justify="space-between">
+      <Stack gap={4}>
         <Skeleton visible={loading}>
           <Text>{activity?.name || 'Long Activity Name Here'}</Text>
         </Skeleton>
         <Box
-          sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+          style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}
         >
           <Skeleton
             circle
@@ -52,13 +52,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             </Avatar>
           </Skeleton>
           <Skeleton visible={loading} style={{ flexGrow: 1 }}>
-            <Text size="sm" color="dimmed">
+            <Text size="sm" c="dimmed">
               {activity?.activityOwnerName || 'Owner Name'}
             </Text>
           </Skeleton>
         </Box>
       </Stack>
-      <Group spacing="xs">
+      <Group gap="xs">
         {onLine && (
           <Skeleton visible={loading} width={28} miw={28}>
             <ActionIcon
@@ -70,12 +70,9 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                 (() => {
                   drawer.close();
                   frame.open(
-                    `${
-                      import.meta.env.VITE_API_BIOCOLLECT
-                    }/pwa/bioActivity/index/${
-                      activity.projectActivityId
-                    }?projectId=${activity.projectId}&activityId=${
-                      activity.activityId
+                    `${import.meta.env.VITE_API_BIOCOLLECT
+                    }/pwa/bioActivity/index/${activity.projectActivityId
+                    }?projectId=${activity.projectId}&activityId=${activity.activityId
                     }`,
                     `View Record - ${activity.name}`
                   );

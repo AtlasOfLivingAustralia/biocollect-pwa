@@ -5,7 +5,7 @@ interface SuspenseProps {
   children?: ReactElement;
 }
 const Fallback = () => (
-  <Center sx={{ display: 'flex', flexGrow: 1 }}>
+  <Center style={{ display: 'flex', flexGrow: 1 }}>
     <Loader />
   </Center>
 );

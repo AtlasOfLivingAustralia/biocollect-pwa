@@ -12,13 +12,14 @@ import {
   Card,
   Center,
   Spoiler,
-  TypographyStylesProvider,
   ActionIcon,
   Button,
   Tooltip,
   Stack,
   Badge,
   Divider,
+  Typography,
+  Flex,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
@@ -58,7 +59,6 @@ export function Header({ project, mobile }: HeaderProps) {
             <Image
               src={project.fullSizeImageUrl}
               height="23vh"
-              withPlaceholder
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
             />
@@ -68,7 +68,7 @@ export function Header({ project, mobile }: HeaderProps) {
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Stack mt={-60} align="center" spacing="xl">
+      <Stack mt={-60} align="center" gap="xl">
         <Card
           shadow="md"
           style={{
@@ -82,11 +82,11 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={2} lineClamp={3}>
             {project.name || 'The title / name of the project'}
           </Title>
-          <Title order={3} color="dimmed" px="sm">
+          <Title order={3} c="dimmed" px="sm">
             {project.organisationName}
           </Title>
           {(!project.isExternal || project.tags.length > 0) && (
-            <Group mt="lg" spacing="xs" position="center">
+            <Group mt="lg" gap="xs" justify='center'>
               {!project.isExternal && <ALABadge />}
               {project.difficulty && (
                 <Badge color="blue">{project.difficulty} difficulty</Badge>
@@ -101,7 +101,7 @@ export function Header({ project, mobile }: HeaderProps) {
               component="a"
               href={project.urlWeb}
               target="_blank"
-              leftIcon={<IconExternalLink size={18} />}
+              leftSection={<IconExternalLink size={18} />}
               color="gray"
               size="sm"
               mt="xl"
@@ -112,7 +112,7 @@ export function Header({ project, mobile }: HeaderProps) {
           {project.links.length > 0 && (
             <>
               <Divider mt="xl" mb="lg" variant="dashed" />
-              <SocialLinks links={project.links} position="center" />
+              <SocialLinks links={project.links} justify="center" />
             </>
           )}
         </Card>
@@ -128,7 +128,7 @@ export function Header({ project, mobile }: HeaderProps) {
             <Anchor component={Link} to=".." size="sm">
               Search
             </Anchor>
-            <Text color="dimmed" size="sm">
+            <Text c="dimmed" size="sm">
               {project.name.substring(0, 38)}
             </Text>
           </Breadcrumbs>
@@ -141,19 +141,19 @@ export function Header({ project, mobile }: HeaderProps) {
             showLabel={<SpoilerControl />}
             hideLabel={<SpoilerControl hide />}
           >
-            <TypographyStylesProvider>
+            <Typography>
               <Text
                 dangerouslySetInnerHTML={{
                   __html: `<b>Project Aim - </b>${project.aim}`,
                 }}
               />
-            </TypographyStylesProvider>
+            </Typography>
           </Spoiler>
         )}
       </Box>
     </Box>
   ) : (
-    <Group position="apart" align="start" spacing={0}>
+    <Group justify='space-between' align="start" gap={0}>
       <Box
         py={36}
         pl={36}
@@ -167,13 +167,13 @@ export function Header({ project, mobile }: HeaderProps) {
           <Anchor component={Link} to=".." size="sm">
             Search
           </Anchor>
-          <Text color="dimmed" size="sm">
+          <Text c="dimmed" size="sm">
             {project.name}
           </Text>
         </Breadcrumbs>
         <Title>{project.name}</Title>
-        <Group align="start" spacing="sm" mt="xs" noWrap>
-          <Title order={3} color="dimmed">
+        <Flex align="flex-start" gap="sm" mt="xs">
+          <Title order={3} c="dimmed">
             {project.organisationName}
           </Title>
           {project.urlWeb && onLine && (
@@ -189,9 +189,9 @@ export function Header({ project, mobile }: HeaderProps) {
               </ActionIcon>
             </Tooltip>
           )}
-        </Group>
+        </Flex>
         {(!project.isExternal || project.tags.length > 0) && (
-          <Group mt="md" mb="xl" spacing="xs">
+          <Group mt="md" mb="xl" gap="xs">
             {!project.isExternal && <ALABadge />}
             {project.difficulty && (
               <Badge color="blue">{project.difficulty} difficulty</Badge>
@@ -204,22 +204,19 @@ export function Header({ project, mobile }: HeaderProps) {
         {project.aim && (
           <ScrollArea.Autosize
             type="hover"
-            placeholder={project.aim}
             offsetScrollbars
             mah={125}
-            onPointerEnterCapture={() => {}}
-            onPointerLeaveCapture={() => {}}
           >
-            <TypographyStylesProvider>
+            <Typography>
               <Text
                 dangerouslySetInnerHTML={{
                   __html: `<b>Project Aim - </b>${project.aim}`,
                 }}
               />
-            </TypographyStylesProvider>
+            </Typography>
           </ScrollArea.Autosize>
         )}
-        <Group mt="xl" position="apart" align="flex-start">
+        <Group mt="xl" justify="space-between" align="flex-start">
           <TimeSpan start={project.startDate} end={project.endDate} />
           {project.links.length > 0 && (
             <SocialLinks links={project.links} align="flex-start" />
@@ -232,7 +229,6 @@ export function Header({ project, mobile }: HeaderProps) {
             <Image
               src={project.fullSizeImageUrl}
               height={320}
-              withPlaceholder
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
             />

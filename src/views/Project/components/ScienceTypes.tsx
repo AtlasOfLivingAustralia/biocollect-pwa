@@ -73,16 +73,16 @@ interface ScienceTypesProps {
 
 export function ScienceTypes({ types }: ScienceTypesProps) {
   return (
-    <Group spacing="sm">
+    <Group gap="sm">
       {types.map((type) => {
         const Icon = typeToIcon[type];
         return (
           <Paper withBorder key={type} p={6}>
-            <Group spacing="xs">
+            <Group gap="xs">
               <ThemeIcon variant="light" size="md" radius="lg">
                 <Icon size="1rem" />
               </ThemeIcon>
-              <Text size="sm" color="dimmed">
+              <Text size="sm" c="dimmed">
                 {type}
               </Text>
             </Group>

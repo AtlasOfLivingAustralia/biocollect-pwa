@@ -5,7 +5,6 @@ import {
   Group,
   Text,
   Title,
-  useMantineTheme,
 } from '@mantine/core';
 import { IconCalendar } from '@tabler/icons-react';
 import { DownloadChip, SurveyActions } from 'components';
@@ -16,17 +15,15 @@ interface SurveyCardProps {
 }
 
 export function SurveyCard({ survey }: SurveyCardProps) {
-  const theme = useMantineTheme();
-
   return (
     <Card
       radius="lg"
       shadow="md"
       withBorder
-      bg={theme.colorScheme === 'dark' ? theme.colors.dark[5] : 'white'}
+      bg='light-dark(white, var(--mantine-color-dark-5)'
     >
       <Box
-        sx={{
+        style={{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -39,13 +36,13 @@ export function SurveyCard({ survey }: SurveyCardProps) {
           {survey.status}
         </Badge>
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+      <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <IconCalendar size="1rem" />
-        <Text size="sm" ml="xs" color="dimmed">
+        <Text size="sm" ml="xs" c="dimmed">
           Started {new Date(survey.startDate).toLocaleDateString()}
         </Text>
       </Box>
-      <Group mt="md" position="apart">
+      <Group mt="md" justify="space-between">
         <DownloadChip survey={survey} />
         <SurveyActions survey={survey} />
       </Group>
