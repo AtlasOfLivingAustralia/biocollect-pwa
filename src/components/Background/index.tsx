@@ -1,17 +1,10 @@
+import { Box, type BoxProps, useComputedColorScheme, useMantineTheme } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import type { PropsWithChildren } from 'react';
-import {
-  Box,
-  type BoxProps,
-  useComputedColorScheme,
-  useMantineTheme,
-} from '@mantine/core';
-
-import logoLight from '/assets/logo-ala-background-light.png';
-import logoLightTrans from '/assets/logo-ala-background-light-trans.png';
 import logoDark from '/assets/logo-ala-background-dark.png';
 import logoDarkTrans from '/assets/logo-ala-background-dark-trans.png';
-
-import { useMediaQuery } from '@mantine/hooks';
+import logoLight from '/assets/logo-ala-background-light.png';
+import logoLightTrans from '/assets/logo-ala-background-light-trans.png';
 
 interface BackgroundProps extends PropsWithChildren<BoxProps> {
   parallax?: boolean;

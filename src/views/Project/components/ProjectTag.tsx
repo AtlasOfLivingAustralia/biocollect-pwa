@@ -1,12 +1,12 @@
 import { Badge } from '@mantine/core';
 import {
+  type Icon,
   IconBabyCarriage,
   IconBooks,
   IconCurrencyDollarOff,
   IconHammer,
   IconHome,
   IconRobot,
-  type Icon,
 } from '@tabler/icons-react';
 
 interface ProjectTagItem {
@@ -52,10 +52,7 @@ export function ProjectTag({ tag }: ProjectTagProps) {
   const { icon: Icon, name } = data;
 
   return (
-    <Badge
-      color="gray"
-      leftSection={<Icon size="0.8rem" />}
-    >
+    <Badge color='gray' leftSection={<Icon size='0.8rem' />}>
       {name}
     </Badge>
   );

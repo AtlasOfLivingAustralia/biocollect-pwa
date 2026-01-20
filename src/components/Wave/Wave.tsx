@@ -1,13 +1,13 @@
 interface WaveProps extends React.SVGProps<SVGSVGElement> {
   waveType?:
-  | 'simple'
-  | 'lessSimple'
-  | 'new'
-  | 'body'
-  | 'bodyFull'
-  | 'bodyBottom'
-  | 'bodyBottomFull'
-  | 'side';
+    | 'simple'
+    | 'lessSimple'
+    | 'new'
+    | 'body'
+    | 'bodyFull'
+    | 'bodyBottom'
+    | 'bodyBottomFull'
+    | 'side';
   waveColour?: string;
   vertical?: boolean;
 }
@@ -33,15 +33,13 @@ export function Wave({ waveType, waveColour, vertical, ...rest }: WaveProps) {
   return (
     <svg
       {...rest}
-      xmlns="http://www.w3.org/2000/svg"
+      xmlns='http://www.w3.org/2000/svg'
       viewBox={vertical ? '0 0 320 1440' : '0 0 1440 320'}
     >
       <g transform={vertical ? 'matrix(0 1 -1 0 320 -0)' : undefined}>
         <path
-          fill={
-            waveColour || 'light-dark(white, var(--mantine-color-dark-7))'
-          }
-          fillOpacity="1"
+          fill={waveColour || 'light-dark(white, var(--mantine-color-dark-7))'}
+          fillOpacity='1'
           d={waves[waveType || 'new']}
         ></path>
       </g>

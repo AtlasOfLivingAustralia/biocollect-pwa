@@ -24,7 +24,7 @@ const authConfig = {
   redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
   authority: import.meta.env.VITE_AUTH_AUTHORITY,
   scope: import.meta.env.VITE_AUTH_SCOPE,
-}
+};
 
 if (import.meta.env.DEV) {
   console.log('Auth Config', authConfig);
@@ -47,9 +47,7 @@ function Main() {
           window.history.replaceState(
             null,
             '',
-            window.location.origin +
-            window.location.pathname +
-            params.toString()
+            window.location.origin + window.location.pathname + params.toString(),
           );
         } else {
           console.log('[Main] onSigninCallback', 'No auth params in location!');

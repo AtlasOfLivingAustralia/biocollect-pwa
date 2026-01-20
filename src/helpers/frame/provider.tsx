@@ -1,19 +1,18 @@
-import {
-  type ReactElement,
-  type PropsWithChildren,
-  useState,
-  useEffect,
-  useRef,
-  useContext,
-} from 'react';
 import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { jwtDecode } from 'jwt-decode';
+import {
+  type PropsWithChildren,
+  type ReactElement,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { useAuth } from 'react-oidc-context';
-
-import { isFrame } from '#/helpers/funcs';
 import { Frame } from '#/components';
 import { APIContext } from '#/helpers/api';
+import { isFrame } from '#/helpers/funcs';
 
 // Contexts
 import FrameContext, { type FrameCallbacks } from './context';
@@ -22,7 +21,7 @@ interface FrameEvent {
   event: 'download-complete' | 'download-removed' | 'surveys-removed';
 }
 
-const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
+const FrameProvider = (props: PropsWithChildren): ReactElement => {
   const [title, setTitle] = useState<string | undefined>();
   const [src, setSrc] = useState<string>('');
   const [canConfirm, setCanConfirm] = useState<boolean>(false);
@@ -41,8 +40,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
       // Define a message handler to listen for download events
       const messageHandler = (message: MessageEvent<FrameEvent>) => {
         const { data } = message;
-        if (message.data?.event)
-          console.log('[iFrame Message]', message.data?.event);
+        if (message.data?.event) console.log('[iFrame Message]', message.data?.event);
 
         if (data.event === 'download-complete') {
           setCanConfirm(true);
@@ -80,17 +78,17 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           data: {
             userId:
               auth.user?.profile['custom:userid'] ||
-              (jwtDecode(auth?.user?.access_token || '') as any)?.userid,
+              (jwtDecode(auth?.user?.access_token || '') as { userid: number })?.userid,
             token: auth.user?.access_token,
           },
         },
-        import.meta.env.VITE_API_BIOCOLLECT
+        import.meta.env.VITE_API_BIOCOLLECT,
       );
 
       console.log(
         '-- Credentials posted! --',
         auth.user?.access_token,
-        import.meta.env.VITE_API_BIOCOLLECT
+        import.meta.env.VITE_API_BIOCOLLECT,
       );
     }
   };
@@ -104,10 +102,7 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
         opened={opened}
         onClose={close}
         title={
-          <Text
-            size="lg"
-            ff='heading'
-          >
+          <Text size='lg' ff='heading'>
             {title || 'BioCollect'}
           </Text>
         }
@@ -124,15 +119,15 @@ const FrameProvider = (props: PropsWithChildren<{}>): ReactElement => {
           ref={frameRef}
           src={src}
           onLoad={handleLoad}
-          allow="geolocation;"
+          allow='geolocation;'
           height={`calc(100vh - ${mobile ? 125 : 275}px)`}
         />
         {callbacks?.confirm && (
-          <Group mt="sm" justify="center" gap="xs">
-            <Button id="confirmDownloadModal" onClick={callbacks.confirm} loading={!canConfirm}>
+          <Group mt='sm' justify='center' gap='xs'>
+            <Button id='confirmDownloadModal' onClick={callbacks.confirm} loading={!canConfirm}>
               Confirm Download
             </Button>
-            <Button onClick={close} color="gray">
+            <Button onClick={close} color='gray'>
               Cancel
             </Button>
           </Group>

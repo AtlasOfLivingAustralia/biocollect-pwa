@@ -1,9 +1,5 @@
 import Dexie, { type Table } from 'dexie';
-import type {
-  BioCollectBioActivity,
-  BioCollectProject,
-  BioCollectSurvey,
-} from '#/types';
+import type { BioCollectBioActivity, BioCollectProject, BioCollectSurvey } from '#/types';
 
 interface Cached {
   surveyId: string;

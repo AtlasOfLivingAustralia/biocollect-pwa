@@ -1,4 +1,4 @@
-import { Group, Text, Paper, Stack, Progress, type PaperProps, Box } from '@mantine/core';
+import { Box, Group, Paper, type PaperProps, Progress, Stack, Text } from '@mantine/core';
 import { IconCalendar, IconCalendarDue } from '@tabler/icons-react';
 
 interface TimeSpanProps extends PaperProps {
@@ -14,17 +14,16 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
 
   return (
     <Paper withBorder {...rest}>
-      <Group py={8} px="xs" justify='center'>
+      <Group py={8} px='xs' justify='center'>
         {startDate && (
           <>
             <IconCalendar />
             <Stack gap={0}>
-              <Text size="xs" c="dimmed" fw="bold">
+              <Text size='xs' c='dimmed' fw='bold'>
                 Start Date
               </Text>
-              <Text size="sm">
-                {startDate.getDay()}/{startDate.getMonth() + 1}/
-                {startDate.getFullYear()}
+              <Text size='sm'>
+                {startDate.getDay()}/{startDate.getMonth() + 1}/{startDate.getFullYear()}
               </Text>
             </Stack>
           </>
@@ -34,12 +33,11 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
           <>
             <IconCalendarDue />
             <Stack gap={0}>
-              <Text size="xs" c="dimmed" fw="bold">
+              <Text size='xs' c='dimmed' fw='bold'>
                 End Date
               </Text>
-              <Text size="sm">
-                {endDate.getDay()}/{endDate.getMonth() + 1}/
-                {endDate.getFullYear()}
+              <Text size='sm'>
+                {endDate.getDay()}/{endDate.getMonth() + 1}/{endDate.getFullYear()}
               </Text>
             </Stack>
           </>
@@ -49,17 +47,13 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
         endDate &&
         (() => {
           const value = Math.min(
-            ((endDate.getTime() - Date.now()) /
-              (endDate.getTime() - startDate.getTime())) *
+            ((endDate.getTime() - Date.now()) / (endDate.getTime() - startDate.getTime())) * 100,
             100,
-            100
           );
 
           return (
             <Box px='sm' pb='sm'>
-              <Progress
-                value={value}
-              />
+              <Progress value={value} />
             </Box>
           );
         })()}

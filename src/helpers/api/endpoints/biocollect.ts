@@ -11,12 +11,10 @@ import type {
   FilterQueries,
 } from '#/types';
 
-
 // Local classes
 import { BioCollectDexie } from '../dexie';
 
-const escapeRegExp = (input: string) =>
-  input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegExp = (input: string) => input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const filterActiveSurveys = (surveys: BioCollectSurvey[], userIsProjectMember = false) =>
   surveys?.filter(
@@ -24,13 +22,16 @@ const filterActiveSurveys = (surveys: BioCollectSurvey[], userIsProjectMember = 
       new Date(startDate).getTime() <= Date.now() &&
       (!endDate || new Date(endDate).getTime() >= Date.now()) &&
       (published !== undefined ? published : true) &&
-      (userIsProjectMember || publicAccess === true)
+      (userIsProjectMember || publicAccess === true),
   ) || [];
 
 const formatProject = (project: BioCollectProject) => ({
   ...project,
   name: project.name.trim(),
-  projectActivities: filterActiveSurveys(project.projectActivities, project.userIsProjectMember === true),
+  projectActivities: filterActiveSurveys(
+    project.projectActivities,
+    project.userIsProjectMember === true,
+  ),
 });
 
 const formatProjects = (projects: BioCollectProject[]) => {
@@ -42,11 +43,7 @@ const formatProjectSearch = (search: BioCollectProjectSearch) => ({
   projects: formatProjects(search.projects),
 });
 
-type BioCollectProjectSort =
-  | 'dateCreatedSort'
-  | 'nameSort'
-  | '_score'
-  | 'organisationSort';
+type BioCollectProjectSort = 'dateCreatedSort' | 'nameSort' | '_score' | 'organisationSort';
 
 export default (db: BioCollectDexie) => ({
   projectSearch: async (
@@ -55,7 +52,7 @@ export default (db: BioCollectDexie) => ({
     sort: BioCollectProjectSort | string = 'dateCreatedSort',
     isUserPage = false,
     search?: string,
-    hasDownloadedSurveys = true
+    hasDownloadedSurveys = true,
   ): Promise<BioCollectProjectSearch> => {
     if (navigator.onLine && !hasDownloadedSurveys) {
       // Define basic query parameters
@@ -81,9 +78,7 @@ export default (db: BioCollectDexie) => ({
 
       // Make the GET request
       const { data } = await axios.get<BioCollectProjectSearch>(
-        `${
-          import.meta.env.VITE_API_BIOCOLLECT
-        }/ws/project/search?${params.toString()}`
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search?${params.toString()}`,
       );
       const formatted = await formatProjectSearch(data);
 
@@ -106,19 +101,13 @@ export default (db: BioCollectDexie) => ({
 
       // Append the search query
       if (search && search.length > 0)
-        query = query.and(({ name }) =>
-          new RegExp(`.*${escapeRegExp(search)}.*`).test(name)
-        );
+        query = query.and(({ name }) => new RegExp(`.*${escapeRegExp(search)}.*`).test(name));
 
       // Get a list of downloaded surveys
       if (hasDownloadedSurveys) {
-        const projectsWithSurveys = await db.cached
-          .orderBy('projectId')
-          .uniqueKeys();
+        const projectsWithSurveys = await db.cached.orderBy('projectId').uniqueKeys();
 
-        query = query.and(({ projectId }) =>
-          projectsWithSurveys.includes(projectId)
-        );
+        query = query.and(({ projectId }) => projectsWithSurveys.includes(projectId));
       }
 
       // Perform the query
@@ -138,7 +127,7 @@ export default (db: BioCollectDexie) => ({
     } else if (navigator.onLine) {
       // Make the GET request
       const { data } = await axios.get<BioCollectProject>(
-        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`,
       );
 
       return formatProject(data);
@@ -147,11 +136,14 @@ export default (db: BioCollectDexie) => ({
     return null;
   },
 
-  listSurveys: async (projectId: string, userIsProjectMember = false): Promise<BioCollectSurvey[]> => {
+  listSurveys: async (
+    projectId: string,
+    userIsProjectMember = false,
+  ): Promise<BioCollectSurvey[]> => {
     if (navigator.onLine) {
       // Make the GET request
       let { data: surveys } = await axios.get<BioCollectSurvey[]>(
-        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/survey/list/${projectId}`,
       );
 
       // Filter out non-active surveys (not within date range)
@@ -165,22 +157,22 @@ export default (db: BioCollectDexie) => ({
   },
 
   searchActivities: async (
-  view: BioCollectBioActivityView,
-  filters: FilterQueries = {}
-    ): Promise<BioCollectBioActivitySearch> => {
-      if (navigator.onLine) {
-        const base = `${import.meta.env.VITE_API_BIOCOLLECT}/ws/bioactivity/search`;
-        
-        //Transform the FilterQueries object
-        const qs = toQueryString({ view, ...filters });
-        const url = `${base}?${qs}`;
-        
-        // Make the GET request
-        const { data } = await axios.get<BioCollectBioActivitySearch>(url);
-        await db.activities.bulkPut(data.activities);
-        return data;
-      } else {
-        return { activities: [] };
-      }
-    },
+    view: BioCollectBioActivityView,
+    filters: FilterQueries = {},
+  ): Promise<BioCollectBioActivitySearch> => {
+    if (navigator.onLine) {
+      const base = `${import.meta.env.VITE_API_BIOCOLLECT}/ws/bioactivity/search`;
+
+      //Transform the FilterQueries object
+      const qs = toQueryString({ view, ...filters });
+      const url = `${base}?${qs}`;
+
+      // Make the GET request
+      const { data } = await axios.get<BioCollectBioActivitySearch>(url);
+      await db.activities.bulkPut(data.activities);
+      return data;
+    } else {
+      return { activities: [] };
+    }
+  },
 });

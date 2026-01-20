@@ -1,33 +1,32 @@
-import { useContext, useState, useEffect, useRef } from 'react';
 import {
-  Grid,
-  Center,
   Box,
+  Center,
+  Grid,
+  Group,
+  Pagination,
+  Stack,
   Text,
   Title,
-  Group,
-  Stack,
-  Pagination,
   useMantineTheme,
 } from '@mantine/core';
-import { IconArchive } from '@tabler/icons-react';
 import { useMediaQuery } from '@mantine/hooks';
-import { useSearchParams } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
+import { IconArchive } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
-
+import { useContext, useEffect, useRef, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
+import { useSearchParams } from 'react-router-dom';
+import { Wave } from '#/components/Wave';
 // Helper functions / components
 import { APIContext } from '#/helpers/api';
-import { getBool, getNumber, getString } from '#/helpers/params';
 import { useOnLine } from '#/helpers/funcs';
+import { getBool, getNumber, getString } from '#/helpers/params';
 import type { BioCollectProjectSearch } from '#/types';
-import { Wave } from '#/components/Wave';
 
 // Local components
 import { ProjectItem } from './components/ProjectItem';
 import { SearchControls } from './components/SearchControls';
 
-const range = (max: number) => (max > 0 ? [...Array(max).keys()] : []);
+const range = (max: number) => (max > 0 ? [...new Array(max).keys()] : []);
 
 export function Home() {
   const onLine = useOnLine();
@@ -41,8 +40,7 @@ export function Home() {
   const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))';
 
   // API data state
-  const [projectSearch, setProjectSearch] =
-    useState<BioCollectProjectSearch | null>(null);
+  const [projectSearch, setProjectSearch] = useState<BioCollectProjectSearch | null>(null);
   const [lastTotal, setLastTotal] = useState<number>(30);
 
   // API Context
@@ -62,7 +60,7 @@ export function Home() {
           getString('pSort', 'dateCreatedSort', params),
           getBool('isUserPage', true, params),
           getString('search', undefined, params),
-          getBool('offline', !onLine, params)
+          getBool('offline', !onLine, params),
         );
         setProjectSearch(data);
         setLastTotal(data.total);
@@ -84,28 +82,24 @@ export function Home() {
   return (
     <>
       {mobile ? (
-        <Stack py="xl" px={22}>
-          <Group justify="center">
-            <Stack gap={0} align="center">
-              <Text c="dimmed">Welcome back,</Text>
+        <Stack py='xl' px={22}>
+          <Group justify='center'>
+            <Stack gap={0} align='center'>
+              <Text c='dimmed'>Welcome back,</Text>
               <Title m={0}>
-                {auth.user?.profile.given_name ||
-                  (decoded.current as any)?.given_name ||
-                  'User'}
+                {auth.user?.profile.given_name || (decoded.current as { given_name: string })?.given_name || 'User'}
               </Title>
             </Stack>
           </Group>
           <SearchControls params={params} setParams={setParams} />
         </Stack>
       ) : (
-        <Box py="xl" px={36}>
-          <Group justify="space-between">
-            <Stack gap={0} align="flex-start">
-              <Text c="dimmed">Welcome back,</Text>
+        <Box py='xl' px={36}>
+          <Group justify='space-between'>
+            <Stack gap={0} align='flex-start'>
+              <Text c='dimmed'>Welcome back,</Text>
               <Title m={0}>
-                {auth.user?.profile.given_name ||
-                  (decoded.current as any)?.given_name ||
-                  'User'}
+                {auth.user?.profile.given_name || (decoded.current as { given_name: string })?.given_name || 'User'}
               </Title>
             </Stack>
             <SearchControls params={params} setParams={setParams} />
@@ -113,11 +107,11 @@ export function Home() {
         </Box>
       )}
       <Wave
-        preserveAspectRatio="none"
+        preserveAspectRatio='none'
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
         height={75}
-        width="100%"
+        width='100%'
       />
       <Box
         style={{
@@ -135,40 +129,32 @@ export function Home() {
                 ))
               ) : (
                 <Grid.Col span={12}>
-                  <Stack align="center" gap={8}>
-                    <IconArchive size="4rem" />
-                    <Text
-                      mt="md"
-                      ff='heading'
-                      size="xl"
-                    >
+                  <Stack align='center' gap={8}>
+                    <IconArchive size='4rem' />
+                    <Text mt='md' ff='heading' size='xl'>
                       No projects found
                     </Text>
-                    <Text c="dimmed">
-                      Try refining your search criteria
-                    </Text>
+                    <Text c='dimmed'>Try refining your search criteria</Text>
                   </Stack>
                 </Grid.Col>
               );
             }
 
-            return range(paramMax).map((id) => (
-              <ProjectItem key={id} project={null} />
-            ));
+            return range(paramMax).map((id) => <ProjectItem key={id} project={null} />);
           })()}
         </Grid>
       </Box>
       <Wave
-        preserveAspectRatio="none"
+        preserveAspectRatio='none'
         waveColour={highlight}
         waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
         height={75}
-        width="100%"
+        width='100%'
       />
       {lastTotal !== null && (
-        <Center pb="xl">
+        <Center pb='xl'>
           <Pagination
-            mb="md"
+            mb='md'
             value={paramPage}
             total={Math.floor(lastTotal / paramMax)}
             onChange={handleChangePage}

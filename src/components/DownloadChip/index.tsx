@@ -1,13 +1,12 @@
-import { useContext } from 'react';
 import { Button, type ButtonProps, Text } from '@mantine/core';
+import { modals } from '@mantine/modals';
 import { IconCheck, IconDownload } from '@tabler/icons-react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { modals } from '@mantine/modals';
-
+import { useContext } from 'react';
+import { APIContext } from '#/helpers/api';
+import { FrameContext } from '#/helpers/frame';
 // Helpers
 import { useOnLine } from '#/helpers/funcs';
-import { FrameContext } from '#/helpers/frame';
-import { APIContext } from '#/helpers/api';
 import type { BioCollectSurvey } from '#/types';
 
 interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
@@ -20,15 +19,12 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   const api = useContext(APIContext);
   const onLine = useOnLine();
 
-  const downloaded = survey
-    ? useLiveQuery(async () => Boolean(await api.db.cached.get(survey.id)))
-    : false;
+  const downloaded = useLiveQuery(async () => Boolean(await api.db.cached.get(survey?.id)))
 
   // Handler for the download popup
   const handleDownload = () =>
     frame.open(
-      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${survey?.projectActivityId
-      }`,
+      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa?projectActivityId=${survey?.projectActivityId}`,
       `Downloading - ${survey?.name}`,
       {
         confirm: async () => {
@@ -41,7 +37,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
 
           frame.close();
         },
-      }
+      },
     );
 
   // Handler for the chip callback
@@ -50,18 +46,14 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
     if (downloaded) {
       modals.openConfirmModal({
         title: (
-          <Text
-            size="lg"
-            ff="heading"
-          >
+          <Text size='lg' ff='heading'>
             Confirm Re-Download
           </Text>
         ),
         centered: true,
         children: (
           <Text>
-            You have already downloaded <b>{survey.name}</b>. Click{' '}
-            <b>Confirm</b> to redownload.
+            You have already downloaded <b>{survey.name}</b>. Click <b>Confirm</b> to redownload.
           </Text>
         ),
         labels: {
@@ -80,14 +72,12 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
 
   return (
     <Button
-      id={survey?.projectActivityId + "Download"}
+      id={`${survey?.projectActivityId}Download`}
       size='xs'
       variant='light'
       disabled={!onLine}
       onClick={handleChipClick}
-      leftSection={downloaded ? <IconCheck size="1rem" /> :
-        <IconDownload size="1rem" />
-      }
+      leftSection={downloaded ? <IconCheck size='1rem' /> : <IconDownload size='1rem' />}
       maw={250}
       {...rest}
     >

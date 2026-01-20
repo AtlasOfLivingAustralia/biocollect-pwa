@@ -11,10 +11,10 @@ const corner =
 export function Corner(props: React.SVGProps<SVGSVGElement>) {
   const isDark = useComputedColorScheme();
   return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 514 320">
+    <svg {...props} xmlns='http://www.w3.org/2000/svg' viewBox='0 0 514 320'>
       <path
         fill={isDark ? 'var(--mantine-color-dark-7)' : '#ffffff'}
-        fillOpacity="1"
+        fillOpacity='1'
         d={corner}
       ></path>
     </svg>

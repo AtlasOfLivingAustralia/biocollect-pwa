@@ -1,24 +1,17 @@
 import { useContext, useRef } from 'react';
-import {
-  RouterProvider,
-  redirect,
-  createBrowserRouter,
-} from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
-
-// App views
-import { Home, Project, SignIn, Error, Debug, Welcome } from '#/views';
+import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom';
 import { APIContext } from '#/helpers/api';
 import Layout from '#/layout';
+// App views
+import { Debug, ErrorView, Home, Project, SignIn, Welcome } from '#/views';
 
 const isDev = import.meta.env.DEV;
 
 export default function Routes() {
   const auth = useAuth();
   const api = useContext(APIContext);
-  const isInitialRouteProject = useRef(
-    window.location.pathname.startsWith('/project/')
-  );
+  const isInitialRouteProject = useRef(window.location.pathname.startsWith('/project/'));
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
     createBrowserRouter(
@@ -26,12 +19,11 @@ export default function Routes() {
         {
           path: '/',
           element: <Layout />,
-          errorElement: <Error />,
+          errorElement: <ErrorView />,
           loader: () => {
             if (auth.isAuthenticated) {
               // If we haven't seen the welcome screen yet, show it
-              if (!Boolean(localStorage.getItem('pwa-welcome')))
-                return redirect('/welcome');
+              if (!localStorage.getItem('pwa-welcome')) return redirect('/welcome');
 
               // Otherwise, stay on the home route
               return null;
@@ -50,8 +42,7 @@ export default function Routes() {
               loader: async ({ params }) => {
                 const pid = params.projectId || '';
                 const initialProject = isInitialRouteProject.current;
-                if (isInitialRouteProject.current)
-                  isInitialRouteProject.current = false;
+                if (isInitialRouteProject.current) isInitialRouteProject.current = false;
 
                 // Fetch the project first
                 const project = await api.biocollect.getProject(pid);
@@ -61,9 +52,7 @@ export default function Routes() {
                 const surveys = await api.biocollect.listSurveys(pid, userIsProjectMember);
 
                 return {
-                  data: initialProject
-                    ? Promise.all([project, surveys])
-                    : [project, surveys],
+                  data: initialProject ? Promise.all([project, surveys]) : [project, surveys],
                 };
               },
             },
@@ -89,8 +78,8 @@ export default function Routes() {
       ],
       {
         basename: '/mobile-app',
-      }
-    )
+      },
+    ),
   );
 
   return <RouterProvider router={router.current} />;

@@ -7,7 +7,9 @@ export function toQueryString(params: Record<string, string | string[] | undefin
   for (const [key, value] of Object.entries(params)) {
     if (value == null) continue;
     if (Array.isArray(value)) {
-      value.forEach(v => usp.append(key, v));
+      value.forEach((v) => {
+        usp.append(key, v);
+      });
     } else {
       usp.set(key, value);
     }

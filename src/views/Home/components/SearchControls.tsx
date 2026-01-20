@@ -1,21 +1,20 @@
-import { useEffect } from 'react';
 import {
-  TextInput,
-  Text,
-  Select,
   Checkbox,
-  Paper,
-  useMantineTheme,
   Grid,
+  Paper,
+  Select,
   Stack,
+  Text,
+  TextInput,
+  useMantineTheme,
 } from '@mantine/core';
 import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
-import type { SetURLSearchParams } from 'react-router-dom';
 import { IconSearch } from '@tabler/icons-react';
-
+import { useEffect } from 'react';
+import type { SetURLSearchParams } from 'react-router-dom';
+import { useOnLine } from '#/helpers/funcs';
 // Helper functions / components
 import { getBool, getString } from '#/helpers/params';
-import { useOnLine } from '#/helpers/funcs';
 
 interface SearchControlsProps {
   params: URLSearchParams;
@@ -69,11 +68,11 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
       <Grid.Col span={12}>
         <TextInput
           leftSection={<IconSearch />}
-          placeholder="Project Name"
+          placeholder='Project Name'
           defaultValue={paramSearch}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
           label={
-            <Text size="xs" fw="bold" c="dimmed">
+            <Text size='xs' fw='bold' c='dimmed'>
               Project Search
             </Text>
           }
@@ -84,7 +83,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           <Select
             value={params.get('pSort') || 'dateCreatedSort'}
             label={
-              <Text size="xs" fw="bold" c="dimmed">
+              <Text size='xs' fw='bold' c='dimmed'>
                 Sort By
               </Text>
             }
@@ -107,17 +106,17 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           }))}
           onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
-            <Text size="xs" fw="bold" c="dimmed">
+            <Text size='xs' fw='bold' c='dimmed'>
               Result Count
             </Text>
           }
         />
       </Grid.Col>
       <Grid.Col span={{ xs: onLine ? 12 : 6, sm: onLine ? 4 : 6 }}>
-        <Stack justify="flex-end" h="100%">
-          <Paper py={7} px="xs" withBorder>
+        <Stack justify='flex-end' h='100%'>
+          <Paper py={7} px='xs' withBorder>
             <Checkbox
-              label="Offline Surveys"
+              label='Offline Surveys'
               checked={paramOffline}
               onChange={() => handleChangeOffline(!paramOffline)}
             />
@@ -130,11 +129,11 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
       <Grid.Col span={5}>
         <TextInput
           leftSection={<IconSearch />}
-          placeholder="Project Name"
+          placeholder='Project Name'
           defaultValue={paramSearch}
           onChange={(e) => setSearchQuery(e.currentTarget.value)}
           label={
-            <Text size="xs" fw="bold" c="dimmed">
+            <Text size='xs' fw='bold' c='dimmed'>
               Project Search
             </Text>
           }
@@ -145,7 +144,7 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           <Select
             value={params.get('pSort') || 'dateCreatedSort'}
             label={
-              <Text size="xs" fw="bold" c="dimmed">
+              <Text size='xs' fw='bold' c='dimmed'>
                 Sort By
               </Text>
             }
@@ -168,17 +167,17 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           }))}
           onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
           label={
-            <Text size="xs" fw="bold" c="dimmed">
+            <Text size='xs' fw='bold' c='dimmed'>
               Result Count
             </Text>
           }
         />
       </Grid.Col>
       <Grid.Col span={3}>
-        <Stack justify="flex-end" h="100%">
-          <Paper py={7} px="xs" withBorder>
+        <Stack justify='flex-end' h='100%'>
+          <Paper py={7} px='xs' withBorder>
             <Checkbox
-              label="Offline Surveys"
+              label='Offline Surveys'
               checked={paramOffline}
               onChange={() => handleChangeOffline(!paramOffline)}
             />

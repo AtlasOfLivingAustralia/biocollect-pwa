@@ -114,12 +114,12 @@ export interface BioCollectSurvey {
   surveySiteOption: string;
   previewUrl: string;
   selectFromSitesOnly: boolean;
-  documents: any[];
+  // documents: any[];
   publicAccess: boolean;
   restrictRecordToSites: boolean;
   containsActivity: boolean;
   downloadFormTemplateUrl: string;
-  sites: any[];
+  // sites: any[];
   publishProject: string;
   methodDocUrl: string;
   lastUpdated: string;
@@ -133,8 +133,8 @@ export interface BioCollectSurvey {
   dataSharingLicense: string;
   dataManagementPolicyDescription: string;
   published: boolean;
-  submissionRecords: any[];
-  dataAccessMethods: any[];
+  // submissionRecords: any[];
+  // dataAccessMethods: any[];
   version: number;
   projectActivityId: string;
   name: string;
@@ -163,7 +163,7 @@ export interface BioCollectSurvey {
   legalCustodianOrganisation: string;
   methodName: string;
   excludeProjectSite: string;
-  relatedDatasets: any[];
+  // relatedDatasets: any[];
   addCreatedSiteToListOfSelectedSites: boolean;
   allowPolygons: boolean;
   allowLine: boolean;
@@ -172,7 +172,7 @@ export interface BioCollectSurvey {
   dataManagementPolicyURL: string;
   pActivityFormName: string;
   temporalAccuracy: string;
-  displaySelectedLicence: any[];
+  // displaySelectedLicence: any[];
   speciesIdentification: string;
 }
 
@@ -267,7 +267,7 @@ export interface SpeciesOption {
 export interface NewSpeciesLists {
   inputSpeciesViewModel: InputSpeciesViewModel;
   dataResourceUid: string;
-  allSpecies: any[];
+  // allSpecies: any[];
   description: string;
   listName: string;
   listType: string;
@@ -296,7 +296,7 @@ export interface AllSpeciesLists {
   pagination: Pagination;
   offset: number;
   descIconClass: string;
-  allSpeciesListsToSelect: any[];
+  // allSpeciesListsToSelect: any[];
   searchName: string;
   ascIconClass: string;
   listCount: string;

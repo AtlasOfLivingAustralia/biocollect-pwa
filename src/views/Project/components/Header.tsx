@@ -1,39 +1,37 @@
-import { useState } from 'react';
+/** biome-ignore-all lint/security/noDangerouslySetInnerHtml: Needed for custom HTML in project aim */
 import {
-  Group,
-  Box,
-  Image,
-  Skeleton,
-  Title,
-  Text,
-  ScrollArea,
-  Breadcrumbs,
+  ActionIcon,
   Anchor,
+  Badge,
+  Box,
+  Breadcrumbs,
+  Button,
   Card,
   Center,
-  Spoiler,
-  ActionIcon,
-  Button,
-  Tooltip,
-  Stack,
-  Badge,
   Divider,
-  Typography,
   Flex,
+  Group,
+  Image,
+  ScrollArea,
+  Skeleton,
+  Spoiler,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+  Typography,
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-import { useOnLine } from '#/helpers/funcs';
-import type { BioCollectProject } from '#/types';
-
 import { Background, TimeSpan } from '#/components';
 import { ALABadge } from '#/components/ALABadge';
-import { Wave, Corner } from '#/components/Wave';
-
+import { Corner, Wave } from '#/components/Wave';
+import { useOnLine } from '#/helpers/funcs';
+import type { BioCollectProject } from '#/types';
+import { ProjectTag } from './ProjectTag';
 // Local components
 import { SocialLinks } from './SocialLinks';
-import { ProjectTag } from './ProjectTag';
 
 interface HeaderProps {
   project: BioCollectProject;
@@ -45,7 +43,7 @@ interface SpoilerControlProps {
 }
 
 const SpoilerControl = ({ hide }: SpoilerControlProps) => (
-  <Center pt="lg">{hide ? 'Hide' : 'Show more'}</Center>
+  <Center pt='lg'>{hide ? 'Hide' : 'Show more'}</Center>
 );
 
 export function Header({ project, mobile }: HeaderProps) {
@@ -59,19 +57,19 @@ export function Header({ project, mobile }: HeaderProps) {
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image
               src={project.fullSizeImageUrl}
-              height="23vh"
+              height='23vh'
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageLoaded(true)}
             />
           </Skeleton>
         ) : (
-          <Background h="23vh" />
+          <Background h='23vh' />
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Stack mt={-60} align="center" gap="xl">
+      <Stack mt={-60} align='center' gap='xl'>
         <Card
-          shadow="md"
+          shadow='md'
           style={{
             width: 'calc(75vw)',
             maxWidth: 400,
@@ -83,15 +81,13 @@ export function Header({ project, mobile }: HeaderProps) {
           <Title order={2} lineClamp={3}>
             {project.name || 'The title / name of the project'}
           </Title>
-          <Title order={3} c="dimmed" px="sm">
+          <Title order={3} c='dimmed' px='sm'>
             {project.organisationName}
           </Title>
           {(!project.isExternal || project.tags.length > 0) && (
-            <Group mt="lg" gap="xs" justify='center'>
+            <Group mt='lg' gap='xs' justify='center'>
               {!project.isExternal && <ALABadge />}
-              {project.difficulty && (
-                <Badge color="blue">{project.difficulty} difficulty</Badge>
-              )}
+              {project.difficulty && <Badge color='blue'>{project.difficulty} difficulty</Badge>}
               {project.tags.map((tag) => (
                 <ProjectTag key={tag} tag={tag} />
               ))}
@@ -99,44 +95,40 @@ export function Header({ project, mobile }: HeaderProps) {
           )}
           {project.urlWeb && onLine && (
             <Button
-              component="a"
+              component='a'
               href={project.urlWeb}
-              target="_blank"
+              target='_blank'
               leftSection={<IconExternalLink size={18} />}
-              color="gray"
-              size="sm"
-              mt="xl"
+              color='gray'
+              size='sm'
+              mt='xl'
             >
               VIEW WEBSITE
             </Button>
           )}
           {project.links.length > 0 && (
             <>
-              <Divider mt="xl" mb="lg" variant="dashed" />
-              <SocialLinks links={project.links} justify="center" />
+              <Divider mt='xl' mb='lg' variant='dashed' />
+              <SocialLinks links={project.links} justify='center' />
             </>
           )}
         </Card>
-        <TimeSpan
-          start={project.startDate}
-          end={project.endDate}
-          style={{ flexGrow: 1 }}
-        />
+        <TimeSpan start={project.startDate} end={project.endDate} style={{ flexGrow: 1 }} />
       </Stack>
-      <Box px={36} pt="xl" pb="sm">
+      <Box px={36} pt='xl' pb='sm'>
         <Center>
-          <Breadcrumbs mb="md">
-            <Anchor component={Link} to=".." size="sm">
+          <Breadcrumbs mb='md'>
+            <Anchor component={Link} to='..' size='sm'>
               Search
             </Anchor>
-            <Text c="dimmed" size="sm">
+            <Text c='dimmed' size='sm'>
               {project.name.substring(0, 38)}
             </Text>
           </Breadcrumbs>
         </Center>
         {project.aim && (
           <Spoiler
-            mt="md"
+            mt='md'
             maxHeight={200}
             styles={{ control: { width: '100%' } }}
             showLabel={<SpoilerControl />}
@@ -154,7 +146,7 @@ export function Header({ project, mobile }: HeaderProps) {
       </Box>
     </Box>
   ) : (
-    <Group justify='space-between' align="start" gap={0}>
+    <Group justify='space-between' align='start' gap={0}>
       <Box
         py={36}
         pl={36}
@@ -164,27 +156,27 @@ export function Header({ project, mobile }: HeaderProps) {
           maxWidth: 800,
         }}
       >
-        <Breadcrumbs mb="md">
-          <Anchor component={Link} to=".." size="sm">
+        <Breadcrumbs mb='md'>
+          <Anchor component={Link} to='..' size='sm'>
             Search
           </Anchor>
-          <Text c="dimmed" size="sm">
+          <Text c='dimmed' size='sm'>
             {project.name}
           </Text>
         </Breadcrumbs>
         <Title>{project.name}</Title>
-        <Flex align="flex-start" gap="sm" mt="xs">
-          <Title order={3} c="dimmed">
+        <Flex align='flex-start' gap='sm' mt='xs'>
+          <Title order={3} c='dimmed'>
             {project.organisationName}
           </Title>
           {project.urlWeb && onLine && (
-            <Tooltip label="Visit Website" position="right">
+            <Tooltip label='Visit Website' position='right'>
               <ActionIcon
-                component="a"
+                component='a'
                 href={project.urlWeb}
-                target="_blank"
-                radius="xl"
-                variant="transparent"
+                target='_blank'
+                radius='xl'
+                variant='transparent'
               >
                 <IconExternalLink />
               </ActionIcon>
@@ -192,22 +184,16 @@ export function Header({ project, mobile }: HeaderProps) {
           )}
         </Flex>
         {(!project.isExternal || project.tags.length > 0) && (
-          <Group mt="md" mb="xl" gap="xs">
+          <Group mt='md' mb='xl' gap='xs'>
             {!project.isExternal && <ALABadge />}
-            {project.difficulty && (
-              <Badge color="blue">{project.difficulty} difficulty</Badge>
-            )}
+            {project.difficulty && <Badge color='blue'>{project.difficulty} difficulty</Badge>}
             {project.tags.map((tag) => (
               <ProjectTag key={tag} tag={tag} />
             ))}
           </Group>
         )}
         {project.aim && (
-          <ScrollArea.Autosize
-            type="hover"
-            offsetScrollbars
-            mah={125}
-          >
+          <ScrollArea.Autosize type='hover' offsetScrollbars mah={125}>
             <Typography>
               <Text
                 dangerouslySetInnerHTML={{
@@ -217,11 +203,9 @@ export function Header({ project, mobile }: HeaderProps) {
             </Typography>
           </ScrollArea.Autosize>
         )}
-        <Group mt="xl" justify="space-between" align="flex-start">
+        <Group mt='xl' justify='space-between' align='flex-start'>
           <TimeSpan start={project.startDate} end={project.endDate} />
-          {project.links.length > 0 && (
-            <SocialLinks links={project.links} align="flex-start" />
-          )}
+          {project.links.length > 0 && <SocialLinks links={project.links} align='flex-start' />}
         </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>

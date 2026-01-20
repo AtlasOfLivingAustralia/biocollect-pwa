@@ -24,11 +24,12 @@ import { detect } from 'detect-browser';
 import { useEffect, useState } from 'react';
 
 import { isPWAInstalled } from '#/helpers/funcs/isPWAInstalled';
+import type { BeforeInstallPromptEvent } from '#/globals';
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
-  const [install, setInstall] = useState<Event | null>(
-    (window as any).beforeInstallPromptEvent || null
+  const [install, setInstall] = useState<BeforeInstallPromptEvent | null>(
+    window.beforeInstallPromptEvent || null,
   );
   const [installed, setInstalled] = useLocalStorage<boolean>({
     key: 'pwa-installed',
@@ -42,14 +43,14 @@ export function InstallButton() {
     if (!install) {
       window.addEventListener('beforeinstallprompt', (event) => {
         event.preventDefault();
-        setInstall(event);
+        setInstall(event as unknown as BeforeInstallPromptEvent);
       });
     }
   }, []);
 
   const onClick = async () => {
     if (install) {
-      const { outcome } = await (install as any).prompt();
+      const { outcome } = await install.prompt();
       if (outcome === 'accepted') setInstalled(true);
       return;
     }
@@ -63,8 +64,20 @@ export function InstallButton() {
 
     // Redirect to different support URL based on browsers
     switch (browser?.name) {
+      case 'edge':
+      case 'edge-ios':
+      case 'edge-chromium':
+        url = 'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux';
+        break;
+      case 'firefox':
+        url = 'https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing';
+        break;
+      case 'samsung':
+        url = 'https://developer.samsung.com/automation/progressive-web-app.html';
+        break;
       case 'chrome':
       case 'crios':
+      default:
         if (browser.os === 'Android OS') {
           url =
             'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DAndroid&oco=1';
@@ -75,20 +88,6 @@ export function InstallButton() {
           url =
             'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DDesktop&oco=1';
         }
-        break;
-      case 'edge':
-      case 'edge-ios':
-      case 'edge-chromium':
-        url =
-          'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux';
-        break;
-      case 'firefox':
-        url =
-          'https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing';
-        break;
-      case 'samsung':
-        url =
-          'https://developer.samsung.com/automation/progressive-web-app.html';
         break;
     }
 
@@ -105,15 +104,9 @@ export function InstallButton() {
     <>
       <Button
         onClick={onClick}
-        size="xs"
-        variant="light"
-        leftSection={
-          install ? (
-            <IconDownload size="1rem" />
-          ) : (
-            <IconQuestionMark size="1rem" />
-          )
-        }
+        size='xs'
+        variant='light'
+        leftSection={install ? <IconDownload size='1rem' /> : <IconQuestionMark size='1rem' />}
       >
         {install ? 'Install' : 'Install Instructions'}
       </Button>
@@ -128,33 +121,29 @@ export function InstallButton() {
           blur: 3,
         }}
         zIndex={1000}
-        size="xl"
+        size='xl'
       >
         <Tabs
-          defaultValue={
-            ['ios', 'safari'].includes(browser?.name || '')
-              ? browser?.name
-              : 'other'
-          }
+          defaultValue={['ios', 'safari'].includes(browser?.name || '') ? browser?.name : 'other'}
           mih={300}
         >
-          <Tabs.List mb="md">
-            <Tabs.Tab value="ios" leftSection={<IconBrandApple size="0.9rem" />}>
+          <Tabs.List mb='md'>
+            <Tabs.Tab value='ios' leftSection={<IconBrandApple size='0.9rem' />}>
               iOS
             </Tabs.Tab>
-            <Tabs.Tab value="safari" leftSection={<IconBrandSafari size="0.9rem" />}>
+            <Tabs.Tab value='safari' leftSection={<IconBrandSafari size='0.9rem' />}>
               Safari Desktop
             </Tabs.Tab>
-            <Tabs.Tab value="other" leftSection={<IconBrowser size="0.9rem" />}>
+            <Tabs.Tab value='other' leftSection={<IconBrowser size='0.9rem' />}>
               Other
             </Tabs.Tab>
           </Tabs.List>
-          <Tabs.Panel value="ios">
-            <List spacing="xs">
+          <Tabs.Panel value='ios'>
+            <List spacing='xs'>
               <List.Item
                 icon={
-                  <ThemeIcon variant="light">
-                    <IconShare2 size="1rem" />
+                  <ThemeIcon variant='light'>
+                    <IconShare2 size='1rem' />
                   </ThemeIcon>
                 }
               >
@@ -162,8 +151,8 @@ export function InstallButton() {
               </List.Item>
               <List.Item
                 icon={
-                  <ThemeIcon variant="light">
-                    <IconNewSection size="1rem" />
+                  <ThemeIcon variant='light'>
+                    <IconNewSection size='1rem' />
                   </ThemeIcon>
                 }
               >
@@ -171,8 +160,8 @@ export function InstallButton() {
               </List.Item>
               <List.Item
                 icon={
-                  <ThemeIcon variant="light">
-                    <IconHandClick size="1rem" />
+                  <ThemeIcon variant='light'>
+                    <IconHandClick size='1rem' />
                   </ThemeIcon>
                 }
               >
@@ -180,54 +169,36 @@ export function InstallButton() {
               </List.Item>
             </List>
           </Tabs.Panel>
-          <Tabs.Panel value="safari">
+          <Tabs.Panel value='safari'>
             <Text>
-              Progressive Web Applications (PWAs) cannot be installed using
-              Safari. Please use an alternative browser such as{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              Progressive Web Applications (PWAs) cannot be installed using Safari. Please use an
+              alternative browser such as{' '}
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Google Chrome
               </Anchor>
               ,{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Edge
               </Anchor>{' '}
               or{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Firefox
               </Anchor>
               .
             </Text>
           </Tabs.Panel>
-          <Tabs.Panel value="other">
+          <Tabs.Panel value='other'>
             <Text>
               Please use an alternative browser such as{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Google Chrome
               </Anchor>
               ,{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Edge
               </Anchor>{' '}
               or{' '}
-              <Anchor
-                href="https://www.google.com.au/intl/en_au/chrome/"
-                target="_blank"
-              >
+              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Firefox
               </Anchor>{' '}
               to install the BioCollect PWA.

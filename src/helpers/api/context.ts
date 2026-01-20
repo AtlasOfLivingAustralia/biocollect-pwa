@@ -1,6 +1,6 @@
 import { createContext } from 'react';
-import biocollect from './endpoints/biocollect';
 import { BioCollectDexie } from './dexie';
+import biocollect from './endpoints/biocollect';
 
 interface APIContext {
   db: BioCollectDexie;

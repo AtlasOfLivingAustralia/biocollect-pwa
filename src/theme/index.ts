@@ -1,12 +1,12 @@
-import type { MantineThemeOverride } from "@mantine/core";
+import type { MantineThemeOverride } from '@mantine/core';
 
-export const theme: MantineThemeOverride ={
-	defaultRadius: 'lg',
+export const theme: MantineThemeOverride = {
+  defaultRadius: 'lg',
   fontFamily: `Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
   headings: {
     fontFamily: `Lato, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', Oxygen, Ubuntu, sans-serif`,
   },
-	colors: {
+  colors: {
     dark: [
       '#C1C2C5',
       '#A6A7AB',
@@ -20,4 +20,4 @@ export const theme: MantineThemeOverride ={
       '#101113',
     ],
   },
-}
+};
