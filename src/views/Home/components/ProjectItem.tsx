@@ -51,6 +51,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
   const loading = !project;
   const surveys = project?.projectActivities || [];
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   return (
     <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
@@ -79,13 +80,13 @@ export function ProjectItem({ project }: ProjectItemProps) {
               borderTopLeftRadius: 'var(--mantine-radius-lg)',
             }}
           >
-            {project?.urlImage ? (
+            {(project?.urlImage && !imageError) ? (
               <Skeleton visible={!imageLoaded} radius={0}>
                 <Image
                   src={project?.urlImage}
                   height={125}
                   onLoad={() => setImageLoaded(true)}
-                  onError={() => setImageLoaded(true)}
+                  onError={() => setImageError(true)}
                 />
               </Skeleton>
             ) : (
