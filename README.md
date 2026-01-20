@@ -17,6 +17,8 @@ Some of the NPM packages used by this project are:
 - [mantine](https://mantine.dev): UI component library / styling
 - [react-oidc-context](https://www.npmjs.com/package/react-oidc-context): OpenID authentication
 - [react-router-dom](https://reactrouter.com): Client-side routing
+- [dexie](https://dexie.org/): Client-side DB for caching
+- [jwt-decode](https://www.npmjs.com/package/jwt-decode): Decoding JWT tokens
 
 ### Why Mantine?
 
@@ -28,8 +30,7 @@ As this application is a demonstration (and not indicative of a final product), 
 
 The recommended IDE for this project is [Visual Studio Code](https://code.visualstudio.com), with the following extensions:
 
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Biome](https://marketplace.visualstudio.com/items?itemName=biomejs.biome)
 
 Setup VSCode to format on save using [this](https://www.alphr.com/auto-format-vs-code) guide.
 
