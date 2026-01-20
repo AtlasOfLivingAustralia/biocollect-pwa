@@ -12,7 +12,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { IconArchive } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useSearchParams } from 'react-router-dom';
 import { Wave } from '#/components/Wave';

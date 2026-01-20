@@ -41,7 +41,7 @@ export function Debug() {
         <Button onClick={handleRefresh}>Refresh tokens</Button>
         <Button onClick={expireToken}>Expire Tokens</Button>
         <Button onClick={() => clipboard.copy(auth.user?.access_token)}>Copy Access Token</Button>
-        <Text>Expires at {new Date((auth.user?.expires_at || 0) * 1000).toLocaleString('en-AU')}</Text>
+        <Text>Expires at {new Date((auth.user?.expires_at || 0) * 1000).toLocaleString()}</Text>
         {clipboard.copied && <Text>Copied</Text>}
       </Group>
       <Code block>{JSON.stringify(auth.user, null, 2)}</Code>
