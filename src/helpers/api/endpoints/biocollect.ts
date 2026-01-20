@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Helpers
-import { toQueryString } from '#/helpers/utils/searchParamUtil';
+import { toQueryString } from '#/helpers/funcs';
 import type {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,

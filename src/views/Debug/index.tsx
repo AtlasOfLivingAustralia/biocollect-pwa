@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import { useAuth } from 'react-oidc-context';
 
 import { APIContext } from '#/helpers/api';
+import { handleRefresh } from '#/helpers/auth/handleRefresh';
 
 const getStoredState = () => {
   const [storeKey, storeState] = Object.entries(localStorage).find(([key]) =>
@@ -37,8 +38,10 @@ export function Debug() {
     <Box p='xl'>
       <Title mb='sm'>Authentication</Title>
       <Group mb='sm' gap='sm'>
+        <Button onClick={handleRefresh}>Refresh tokens</Button>
         <Button onClick={expireToken}>Expire Tokens</Button>
         <Button onClick={() => clipboard.copy(auth.user?.access_token)}>Copy Access Token</Button>
+        <Text>Expires at {new Date((auth.user?.expires_at || 0) * 1000).toLocaleString('en-AU')}</Text>
         {clipboard.copied && <Text>Copied</Text>}
       </Group>
       <Code block>{JSON.stringify(auth.user, null, 2)}</Code>

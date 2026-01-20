@@ -34,6 +34,7 @@ import logoLight from '/assets/logo-light-32x32.png';
 
 // Install button
 import { InstallButton } from './InstallButton';
+import { handleSignOut } from '#/helpers/auth/handleSignOut';
 
 export default function Header() {
   const frame = useContext(FrameContext);
@@ -43,24 +44,6 @@ export default function Header() {
   const decoded = useMemo(() => {
     return auth.user ? jwtDecode(auth.user.access_token) : null;
   }, [auth.user]);
-
-  const signOut = async () => {
-    // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
-    if (import.meta.env.VITE_AUTH_AUTHORITY.startsWith('https://cognito-idp')) {
-      const params = new URLSearchParams({
-        client_id: import.meta.env.VITE_AUTH_CLIENT_ID,
-        redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-        logout_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-      });
-
-      await auth.removeUser();
-      window.location.replace(`${import.meta.env.VITE_AUTH_END_SESSION_URI}?${params.toString()}`);
-    } else {
-      await auth.signoutRedirect({
-        post_logout_redirect_uri: import.meta.env.VITE_AUTH_REDIRECT_URI,
-      });
-    }
-  };
 
   return (
     <AppShell.Header p='md'>
@@ -151,7 +134,7 @@ export default function Header() {
               </Menu.Item>
               <Menu.Item
                 id='signOut'
-                onClick={signOut}
+                onClick={handleSignOut}
                 leftSection={<IconLogout size='1rem' />}
                 disabled={auth.isLoading || !onLine}
                 color='red'

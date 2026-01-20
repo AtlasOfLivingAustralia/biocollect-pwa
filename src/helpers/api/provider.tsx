@@ -20,7 +20,7 @@ const APIProvider = (props: PropsWithChildren): ReactElement => {
     } else {
       delete axios.defaults.headers.Authorization;
     }
-  }, [auth.isAuthenticated, auth.user, auth]);
+  }, [auth.isAuthenticated, auth.user]);
 
   return (
     <APIContext.Provider value={{ db: dexie.current, biocollect: biocollect(dexie.current) }}>
