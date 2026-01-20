@@ -120,7 +120,7 @@ export default function Header() {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item component={Link} to="/" leftSection={<IconSearch />}>
+              <Menu.Item component={Link} to="/" leftSection={<IconSearch size="1rem" />}>
                 Search projects
               </Menu.Item>
               <Menu.Item
@@ -130,7 +130,7 @@ export default function Header() {
                     'Unpublished Records'
                   )
                 }
-                leftSection={<IconFileUpload />}
+                leftSection={<IconFileUpload size="1rem" />}
               >
                 Unpublished records
               </Menu.Item>
@@ -141,7 +141,7 @@ export default function Header() {
                     'Manage Storage'
                   )
                 }
-                leftSection={<IconSettings />}
+                leftSection={<IconSettings size="1rem" />}
               >
                 Manage storage
               </Menu.Item>
@@ -149,7 +149,7 @@ export default function Header() {
                 <>
                   <Menu.Divider />
                   <Menu.Label>Development</Menu.Label>
-                  <Menu.Item component={Link} to="/debug" leftSection={<IconBug />}>
+                  <Menu.Item component={Link} to="/debug" leftSection={<IconBug size="1rem" />}>
                     Debug info
                   </Menu.Item>
                 </>
@@ -159,14 +159,14 @@ export default function Header() {
                 component="a"
                 href="https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/"
                 target="_blank"
-                leftSection={<IconQuestionMark />}
+                leftSection={<IconQuestionMark size="1rem" />}
               >
                 Help
               </Menu.Item>
               <Menu.Item
                 id="signOut"
                 onClick={signOut}
-                leftSection={<IconLogout />}
+                leftSection={<IconLogout size="1rem" />}
                 disabled={auth.isLoading || !onLine}
                 color="red"
               >
