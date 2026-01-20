@@ -12,7 +12,7 @@ import {
 import { useMediaQuery } from '@mantine/hooks';
 import { IconArchive } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useSearchParams } from 'react-router-dom';
 import { Wave } from '#/components/Wave';
@@ -46,7 +46,9 @@ export function Home() {
   // API Context
   const auth = useAuth();
   const api = useContext(APIContext);
-  const decoded = useRef(jwtDecode(auth.user?.access_token || ''));
+  const decoded = useMemo(() => {
+    return auth.user ? jwtDecode(auth.user.access_token) : null;
+  }, [auth.user]);
 
   // Effect hook to fetch project data
   useEffect(() => {
@@ -87,7 +89,7 @@ export function Home() {
             <Stack gap={0} align='center'>
               <Text c='dimmed'>Welcome back,</Text>
               <Title m={0}>
-                {auth.user?.profile.given_name || (decoded.current as { given_name: string })?.given_name || 'User'}
+                {auth.user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name || 'User'}
               </Title>
             </Stack>
           </Group>
@@ -99,7 +101,7 @@ export function Home() {
             <Stack gap={0} align='flex-start'>
               <Text c='dimmed'>Welcome back,</Text>
               <Title m={0}>
-                {auth.user?.profile.given_name || (decoded.current as { given_name: string })?.given_name || 'User'}
+                {auth.user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name || 'User'}
               </Title>
             </Stack>
             <SearchControls params={params} setParams={setParams} />

@@ -21,7 +21,7 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
-import { useContext, useRef } from 'react';
+import { useContext, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { Link } from 'react-router-dom';
 
@@ -39,8 +39,10 @@ export default function Header() {
   const frame = useContext(FrameContext);
   const auth = useAuth();
   const onLine = useOnLine();
-  const decoded = useRef(jwtDecode(auth.user?.access_token || ''));
   const isDark = useComputedColorScheme();
+  const decoded = useMemo(() => {
+    return auth.user ? jwtDecode(auth.user.access_token) : null;
+  }, [auth.user]);
 
   const signOut = async () => {
     // Handle Cognito signout differently (they don't supply an end session endpoint via OIDC discovery)
@@ -88,11 +90,11 @@ export default function Header() {
 
                   // Use the given name from the profile field, otherwise fallback to the JWT
                   const given_name =
-                    user?.profile.given_name || (decoded.current as { given_name: string })?.given_name;
+                    user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name;
 
                   // Use the family name from the profile field, otherwise fallback to the JWT
                   const family_name =
-                    user?.profile.family_name || (decoded.current as { family_name: string })?.family_name;
+                    user?.profile.family_name || (decoded as { family_name: string } | null)?.family_name;
 
                   // If the user has a first & last name
                   return given_name && family_name ? (
