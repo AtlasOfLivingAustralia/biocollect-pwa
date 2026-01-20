@@ -135,7 +135,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
           opacity={0.55}
           color='light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))'
         />
-        <Drawer.Content pt={mobile ? 0 : 71}>
+        <Drawer.Content>
           <Drawer.Header>
             <Group gap='md'>
               <IconFiles />

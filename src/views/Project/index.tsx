@@ -196,7 +196,7 @@ function ProjectBody() {
           </Grid.Col>
           {(project.contactName || project.contactDetails) && (
             <Grid.Col span={{ xs: 12, sm: 12, md: 4, lg: 4, xl: 3 }}>
-              <Paper p='md' withBorder radius='md'>
+              <Paper p='md' withBorder>
                 <Group align='center' mb='lg'>
                   <IconPhone />
                   <Title order={4}>Contact</Title>
