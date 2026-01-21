@@ -1,15 +1,14 @@
 import { useContext, useRef } from 'react';
-import { useAuth } from 'react-oidc-context';
 import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom';
 import { APIContext } from '#/helpers/api';
 import Layout from '#/layout';
 // App views
 import { Debug, ErrorView, Home, Project, SignIn, Welcome } from '#/views';
+import { userManager } from './helpers/auth';
 
 const isDev = import.meta.env.DEV;
 
 export default function Routes() {
-  const auth = useAuth();
   const api = useContext(APIContext);
   const isInitialRouteProject = useRef(window.location.pathname.startsWith('/project/'));
 
@@ -20,8 +19,9 @@ export default function Routes() {
           path: '/',
           element: <Layout />,
           errorElement: <ErrorView />,
-          loader: () => {
-            if (auth.isAuthenticated) {
+          loader: async () => {
+            const user = await userManager.getUser();
+            if (user) {
               // If we haven't seen the welcome screen yet, show it
               if (!localStorage.getItem('pwa-welcome')) return redirect('/welcome');
 
@@ -73,7 +73,10 @@ export default function Routes() {
         {
           path: '/signin',
           element: <SignIn />,
-          loader: () => (auth.isAuthenticated ? redirect('/') : null),
+          loader: async () => {
+            const user = await userManager.getUser();
+            if (user) return redirect('/')
+          },
         },
       ],
       {

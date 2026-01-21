@@ -69,14 +69,6 @@ function App() {
     }
   }, [auth.isAuthenticated]);
 
-  if (auth.isLoading) {
-    return (
-      <Center style={{ width: '100vw', height: '100vh' }}>
-        <Loader />
-      </Center>
-    );
-  }
-
   return <Routes />;
 }
 
