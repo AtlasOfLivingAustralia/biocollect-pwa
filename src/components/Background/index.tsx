@@ -34,7 +34,7 @@ export function Background({
     <Box
       style={{
         ...style,
-        backgroundColor: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))',
+        backgroundColor: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))',
         backgroundImage: `url(${logoAlaBg})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 65,

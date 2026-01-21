@@ -19,5 +19,17 @@ export const theme: MantineThemeOverride = {
       '#141517',
       '#101113',
     ],
+    rust: [
+      '#ffeee9',
+      '#f9ddd7',
+      '#ebbab0',
+      '#df9485',
+      '#d47561',
+      '#ce6049',
+      '#c44d34',
+      '#b4462f',
+      '#a13d28',
+      '#8e311f',
+    ],
   },
 };

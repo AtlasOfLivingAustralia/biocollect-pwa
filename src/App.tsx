@@ -5,7 +5,7 @@ import { FrameContext } from '#/helpers/frame';
 import { preventExpire, useOnLine } from '#/helpers/funcs';
 // App-specific imports
 import Routes from './Routes';
-import { handleSignOut } from './helpers/auth';
+import { handleRefresh, handleSignOut } from './helpers/auth';
 
 function App() {
   const auth = useAuth();
@@ -15,9 +15,10 @@ function App() {
   console.log(`[App] isLoading: ${auth.isLoading} | isAuthenticated: ${auth.isAuthenticated}`);
 
   // Helper function to try and refresh the auth token
-  const tryTokenRefresh = async () => {
+  const tryTokenRefresh = async (from: string) => {
+    console.log('trying token refresh', from)
     try {
-      await auth.signinSilent();
+      await handleRefresh();
     } catch (_) {
       await handleSignOut();
     }
@@ -43,7 +44,7 @@ function App() {
   // Check to check & refresh the authentication (if needed)
   useEffect(() => {
     if (onLine) {
-      tryTokenRefresh();
+      tryTokenRefresh('onLine hook');
     } else {
       preventExpire();
     }
@@ -52,13 +53,21 @@ function App() {
   useEffect(() => {
     // Setup a token refresh interval if a valid interval is configured.
     const refreshInterval = Number.parseInt(import.meta.env.VITE_AUTH_TOKEN_REFRESH_INTERVAL, 10);
-    console.log('[Auth] Valid token refresh interval found');
+    console.log(`[Auth] Valid token refresh interval found, ${refreshInterval / 1000}s`);
 
     // Setup the refresh interbal
-    setInterval(() => {
-      if (onLine) tryTokenRefresh();
-    }, refreshInterval || 600000);
-  }, []);
+    let refreshHandler: ReturnType<typeof setInterval> | null = null;
+
+    if (auth.isAuthenticated) {
+      refreshHandler = setInterval(() => {
+        if (onLine) tryTokenRefresh('interval hook');
+      }, refreshInterval || 600000);
+    }
+
+    return () => {
+      if (refreshHandler) clearInterval(refreshHandler);
+    }
+  }, [auth.isAuthenticated]);
 
   if (auth.isLoading) {
     return (

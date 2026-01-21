@@ -9,6 +9,8 @@ interface TokenResponse {
   token_type: string;
 }
 
+const REFRESH_BUFFER = 1000 * 60 * 5; // 5 minutes;
+
 export async function handleRefresh(): Promise<boolean> {
   const url = await userManager.metadataService.getTokenEndpoint();
   const user = await userManager.getUser();
@@ -19,10 +21,15 @@ export async function handleRefresh(): Promise<boolean> {
   }
 
   // Ensure the user is logged in & has a refresh token
-  if (!user?.refresh_token) {
-    throw new Error(
-      "Tried to refresh, but no user is not logged in / doesn't have a refresh token!",
-    );
+  if (!user?.refresh_token || !user?.expires_at) {
+    console.log("[Auth] Not refreshing,  user is not logged in / doesn't have a refresh token.");
+    return false;
+  }
+
+  // Token is not expiring within the next 5 minutes, don't refresh
+  if (user.expires_at * 1000 <= Date.now() - REFRESH_BUFFER) {
+    console.log('[Auth] Not refreshing, token not expiring in the next 5 minutes.');
+    return false;
   }
 
   // Make the request using 'fetch' rather than axios, as axios appends the JWT to the headers automatically which we don't want
@@ -63,6 +70,6 @@ export async function handleRefresh(): Promise<boolean> {
 
     return true;
   } else {
-    return false;
+    throw new Error('Failed to fetch new token!');
   }
 }
