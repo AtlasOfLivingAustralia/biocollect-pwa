@@ -27,7 +27,7 @@ export async function handleRefresh(): Promise<boolean> {
   }
 
   // Token is not expiring within the next 5 minutes, don't refresh
-  if (user.expires_at * 1000 <= Date.now() - REFRESH_BUFFER) {
+  if (user.expires_at * 1000 > Date.now() + REFRESH_BUFFER) {
     console.log('[Auth] Not refreshing, token not expiring in the next 5 minutes.');
     return false;
   }
