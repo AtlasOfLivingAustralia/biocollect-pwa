@@ -126,7 +126,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
         </Box>
         <Box px='md' pt='md' pb='xs'>
           <Skeleton visible={loading}>
-            <Text size='sm' lineClamp={3}>
+            <Text size='sm' lineClamp={3} h={61}>
               {project?.description || 'Project description that will typically span two lines'}
             </Text>
           </Skeleton>
@@ -141,7 +141,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
             }
             mb={6}
           />
-          <ScrollArea h={80} type='auto'>
+          <ScrollArea h={90} type='auto'>
             <Stack px='md' mb='md' gap='sm'>
               {(() => {
                 if (loading) {

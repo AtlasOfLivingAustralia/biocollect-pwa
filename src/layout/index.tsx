@@ -1,4 +1,4 @@
-import { AppShell, Center, Loader } from '@mantine/core';
+import { AppShell } from '@mantine/core';
 import {
   completeNavigationProgress,
   NavigationProgress,
@@ -6,13 +6,11 @@ import {
   startNavigationProgress,
 } from '@mantine/nprogress';
 import { useEffect } from 'react';
-import { useAuth } from 'react-oidc-context';
 import { Outlet, useNavigation } from 'react-router-dom';
 
 import Header from './Header';
 
 export default function Layout() {
-  const { isLoading } = useAuth();
   const { state } = useNavigation();
 
   useEffect(() => {
@@ -23,14 +21,6 @@ export default function Layout() {
       completeNavigationProgress();
     }
   }, [state]);
-
-  if (isLoading) {
-    return (
-      <Center style={{ width: '100vw', height: '100vh' }}>
-        <Loader />
-      </Center>
-    );
-  }
 
   return (
     <>

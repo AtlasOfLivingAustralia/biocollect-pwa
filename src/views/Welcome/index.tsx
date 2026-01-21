@@ -115,7 +115,6 @@ export function Welcome() {
     <WelcomeDetails />
   ) : (
     <Background
-      semiTransparent
       style={{
         display: 'flex',
         alignItems: 'center',
