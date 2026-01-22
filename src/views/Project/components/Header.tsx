@@ -48,18 +48,19 @@ const SpoilerControl = ({ hide }: SpoilerControlProps) => (
 
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const [imageError, setImageError] = useState<boolean>(false);
   const onLine = useOnLine();
 
   return mobile ? (
     <Box>
       <Box style={{ position: 'relative' }}>
-        {project.fullSizeImageUrl ? (
+        {(project.fullSizeImageUrl && !imageError) ? (
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image
               src={project.fullSizeImageUrl}
               height='23vh'
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)}
+              onLoad={() => { setImageLoaded(true) }}
+              onError={() => { setImageError(true) }}
             />
           </Skeleton>
         ) : (
@@ -209,13 +210,13 @@ export function Header({ project, mobile }: HeaderProps) {
         </Group>
       </Box>
       <Box style={{ position: 'relative', width: 514, height: 320 }}>
-        {project.fullSizeImageUrl ? (
+        {(project.fullSizeImageUrl && !imageError) ? (
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image
               src={project.fullSizeImageUrl}
               height={320}
               onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)}
+              onError={() => setImageError(true)}
             />
           </Skeleton>
         ) : (

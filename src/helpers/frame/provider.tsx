@@ -84,12 +84,6 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         },
         import.meta.env.VITE_API_BIOCOLLECT,
       );
-
-      console.log(
-        '-- Credentials posted! --',
-        auth.user?.access_token,
-        import.meta.env.VITE_API_BIOCOLLECT,
-      );
     }
   };
 

@@ -1,8 +1,7 @@
-import { Center, Loader } from '@mantine/core';
-import { useContext, useEffect } from 'react';
-import { useAuth } from 'react-oidc-context';
 import { FrameContext } from '#/helpers/frame';
 import { preventExpire, useOnLine } from '#/helpers/funcs';
+import { useContext, useEffect } from 'react';
+import { useAuth } from 'react-oidc-context';
 // App-specific imports
 import Routes from './Routes';
 import { handleRefresh, handleSignOut } from './helpers/auth';

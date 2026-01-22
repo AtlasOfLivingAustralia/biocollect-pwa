@@ -57,8 +57,8 @@ export function ProjectItem({ project }: ProjectItemProps) {
     <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
       <Paper
         style={{ display: 'flex', flexDirection: 'column' }}
-        shadow='lg'
-        radius='lg'
+        shadow='xl'
+        radius='xl'
         withBorder
         h='100%'
       >
@@ -77,7 +77,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
               maxWidth: 220,
               height: 125,
               overflow: 'clip',
-              borderTopLeftRadius: 'var(--mantine-radius-lg)',
+              borderTopLeftRadius: 'var(--mantine-radius-xl)',
             }}
           >
             {(project?.urlImage && !imageError) ? (
