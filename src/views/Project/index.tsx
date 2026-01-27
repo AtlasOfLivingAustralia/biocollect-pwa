@@ -118,7 +118,7 @@ function ProjectBody() {
       />
       <Box py='xl' mb='xl' px={36}>
         <Grid gutter='xl' pb='xl'>
-          <Grid.Col style={{ xs: 12, sm: 12, md: 8, lg: 8, xl: 9 }}>
+          <Grid.Col span={{ xs: 12, sm: 12, md: 8, lg: 8, xl: 9 }}>
             <Accordion variant='contained'>
               {project.description && (
                 <Accordion.Item value='description'>

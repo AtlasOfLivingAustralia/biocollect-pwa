@@ -21,7 +21,7 @@ export function StorageSummary() {
               <Progress.Label>{prettyBytes(stats?.used || 0)}</Progress.Label>
             </Progress.Section>
             <Progress.Section color='transparent' value={100 - progress}>
-              <Progress.Label>{prettyBytes(stats?.free || 0)}</Progress.Label>
+              <Progress.Label c='light-dark(var(--mantine-color-dark-4), white)'>{prettyBytes(stats?.free || 0)}</Progress.Label>
             </Progress.Section>
           </Progress.Root>
         </Skeleton>

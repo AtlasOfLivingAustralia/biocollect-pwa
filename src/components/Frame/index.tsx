@@ -21,7 +21,7 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(({ onLoad, ...pr
         width='100%'
         height='100%'
         style={{
-          border: `1px solid light-dark(var(--mantine-color-dark-5), var(--mantine-color-gray-4))`,
+          border: 'none'
         }}
         onLoad={(event) => {
           setLoaded(true);

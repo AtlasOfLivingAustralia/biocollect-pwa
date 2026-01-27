@@ -95,7 +95,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
             <Corner
               style={{
                 position: 'absolute',
-                zIndex: 100,
+                zIndex: 10,
                 bottom: 0,
                 transform: 'scaleX(-100%)',
                 width: 'calc(100% + 1px)',
@@ -104,7 +104,7 @@ export function ProjectItem({ project }: ProjectItemProps) {
               preserveAspectRatio='none'
             />
           </Box>
-          <Stack pr='xl' pt='sm' gap={0} align='flex-end' style={{ textAlign: 'right' }}>
+          <Stack pr='xl' pt='md' gap={0} align='flex-end' style={{ textAlign: 'right' }}>
             <Skeleton visible={loading}>
               <Text fw={700} ff='heading' size='xl' lineClamp={2}>
                 {project?.name || 'Project Name'}

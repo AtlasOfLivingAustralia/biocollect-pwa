@@ -4,6 +4,7 @@ import {
   Grid,
   Group,
   Pagination,
+  Space,
   Stack,
   Text,
   Title,
@@ -145,6 +146,7 @@ export function Home() {
             return range(paramMax).map((id) => <ProjectItem key={id} project={null} />);
           })()}
         </Grid>
+        <Space h={25} />
       </Box>
       <Wave
         preserveAspectRatio='none'

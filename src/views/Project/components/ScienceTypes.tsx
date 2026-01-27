@@ -76,7 +76,7 @@ export function ScienceTypes({ types }: ScienceTypesProps) {
       {types.map((type) => {
         const Icon = typeToIcon[type];
         return (
-          <Paper withBorder key={type} p={6}>
+          <Paper withBorder key={type} py={6} pl={6} pr='sm' radius='xl'>
             <Group gap='xs'>
               <ThemeIcon variant='light' size='md' radius='lg'>
                 <Icon size='1rem' />
