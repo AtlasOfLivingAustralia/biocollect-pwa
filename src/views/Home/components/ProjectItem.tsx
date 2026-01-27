@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
 import { Corner } from '#/components/Wave';

@@ -14,7 +14,7 @@ import { IconArchive } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router';
 import { Wave } from '#/components/Wave';
 // Helper functions / components
 import { APIContext } from '#/helpers/api';

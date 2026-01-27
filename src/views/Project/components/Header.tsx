@@ -23,7 +23,7 @@ import {
 } from '@mantine/core';
 import { IconExternalLink } from '@tabler/icons-react';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Background, TimeSpan } from '#/components';
 import { ALABadge } from '#/components/ALABadge';
 import { Corner, Wave } from '#/components/Wave';

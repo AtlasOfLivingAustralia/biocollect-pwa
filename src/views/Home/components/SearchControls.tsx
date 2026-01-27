@@ -11,7 +11,7 @@ import {
 import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
 import { useEffect } from 'react';
-import type { SetURLSearchParams } from 'react-router-dom';
+import type { SetURLSearchParams } from 'react-router';
 import { useOnLine } from '#/helpers/funcs';
 // Helper functions / components
 import { getBool, getString } from '#/helpers/params';

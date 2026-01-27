@@ -19,14 +19,13 @@ import {
   IconPlugConnectedX,
   IconQuestionMark,
   IconSearch,
-  IconSettings,
   IconSun,
   IconUser,
 } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
 import { useContext, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 import { FrameContext } from '#/helpers/frame';
 import { getInitials, useOnLine } from '#/helpers/funcs';
@@ -36,8 +35,8 @@ import logoDark from '/assets/logo-dark-32x32.png';
 import logoLight from '/assets/logo-light-32x32.png';
 
 // Install button
-import { InstallButton } from './InstallButton';
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
+import { InstallButton } from './InstallButton';
 import { StorageSummary } from './StorageSummary';
 
 export default function Header() {

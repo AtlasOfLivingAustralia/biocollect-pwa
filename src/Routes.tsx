@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react';
-import { createBrowserRouter, RouterProvider, redirect } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, redirect } from 'react-router';
 import { APIContext } from '#/helpers/api';
 import Layout from '#/layout';
 // App views

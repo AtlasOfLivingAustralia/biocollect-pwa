@@ -1,7 +1,7 @@
 import { Button, Center, Code, Stack, Text, Title } from '@mantine/core';
 import { IconArrowBack } from '@tabler/icons-react';
 import { useEffect } from 'react';
-import { isRouteErrorResponse, Link, useRouteError, type ErrorResponse } from 'react-router-dom';
+import { isRouteErrorResponse, Link, useRouteError, type ErrorResponse } from 'react-router';
 
 export function ErrorView() {
   const error = useRouteError() as Error;

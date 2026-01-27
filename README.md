@@ -16,7 +16,7 @@ Some of the NPM packages used by this project are:
 - [axios](https://axios-http.com): HTTP requests
 - [mantine](https://mantine.dev): UI component library / styling
 - [react-oidc-context](https://www.npmjs.com/package/react-oidc-context): OpenID authentication
-- [react-router-dom](https://reactrouter.com): Client-side routing
+- [react-router](https://reactrouter.com): Client-side routing
 - [dexie](https://dexie.org/): Client-side DB for caching
 - [jwt-decode](https://www.npmjs.com/package/jwt-decode): Decoding JWT tokens
 

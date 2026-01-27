@@ -20,7 +20,7 @@ import logoLight from '/assets/logo-light-64x64.png';
 import splash from '/assets/splash.jpg';
 
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 export function SignIn() {
   const auth = useAuth();

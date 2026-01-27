@@ -24,7 +24,7 @@ import {
   IconPhone,
 } from '@tabler/icons-react';
 import { Suspense } from 'react';
-import { Await, Link, useAsyncValue, useLoaderData } from 'react-router-dom';
+import { Await, Link, useAsyncValue, useLoaderData } from 'react-router';
 
 import { Wave } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
