@@ -26,6 +26,7 @@
     "dexie-react-hooks": "^4.2.0",
     "jwt-decode": "^4.0.0",
     "oidc-client-ts": "^3.4.1",
+    "pretty-bytes": "^7.1.0",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
     "react-oidc-context": "^3.3.0",

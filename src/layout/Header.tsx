@@ -8,16 +8,19 @@ import {
   ThemeIcon,
   UnstyledButton,
   useComputedColorScheme,
+  useMantineColorScheme,
 } from '@mantine/core';
 import {
   IconBug,
   IconFileUpload,
   IconLogout,
+  IconMoon,
   IconPlugConnected,
   IconPlugConnectedX,
   IconQuestionMark,
   IconSearch,
   IconSettings,
+  IconSun,
   IconUser,
 } from '@tabler/icons-react';
 import { jwtDecode } from 'jwt-decode';
@@ -35,8 +38,11 @@ import logoLight from '/assets/logo-light-32x32.png';
 // Install button
 import { InstallButton } from './InstallButton';
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
+import { StorageSummary } from './StorageSummary';
 
 export default function Header() {
+  const { toggleColorScheme } = useMantineColorScheme();
+  const colorScheme = useComputedColorScheme();
   const frame = useContext(FrameContext);
   const auth = useAuth();
   const onLine = useOnLine();
@@ -103,17 +109,7 @@ export default function Header() {
               >
                 Unpublished records
               </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/settings`,
-                    'Manage Storage',
-                  )
-                }
-                leftSection={<IconSettings size='1rem' />}
-              >
-                Manage storage
-              </Menu.Item>
+              <StorageSummary />
               {import.meta.env.DEV && (
                 <>
                   <Menu.Divider />
@@ -124,6 +120,9 @@ export default function Header() {
                 </>
               )}
               <Menu.Divider />
+              <Menu.Item closeMenuOnClick={false} leftSection={colorScheme === 'light' ? <IconSun size='1rem' /> : <IconMoon size='1rem' />} onClick={toggleColorScheme}>
+                Toggle theme
+              </Menu.Item>
               <Menu.Item
                 component='a'
                 href='https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/'

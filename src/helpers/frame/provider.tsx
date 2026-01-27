@@ -23,7 +23,7 @@ interface FrameEvent {
 
 const FrameProvider = (props: PropsWithChildren): ReactElement => {
   const [title, setTitle] = useState<string | undefined>();
-  const [src, setSrc] = useState<string>('');
+  const [src, setSrc] = useState<string | null>();
   const [canConfirm, setCanConfirm] = useState<boolean>(false);
   const [callbacks, setCallbacks] = useState<FrameCallbacks>();
   const [opened, { open: openFrame, close }] = useDisclosure(false);
@@ -94,7 +94,10 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
       <Modal
         fullScreen={mobile}
         opened={opened}
-        onClose={close}
+        onClose={() => {
+          close();
+          setTimeout(() => setSrc(null), 500);
+        }}
         title={
           <Text size='lg' ff='heading'>
             {title || 'BioCollect'}
@@ -109,22 +112,26 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         zIndex={1000}
         styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}
       >
-        <Frame
-          ref={frameRef}
-          src={src}
-          onLoad={handleLoad}
-          allow='geolocation;'
-          height={`calc(100vh - ${mobile ? 125 : 275}px)`}
-        />
-        {callbacks?.confirm && (
-          <Group mt='sm' justify='center' gap='xs'>
-            <Button id='confirmDownloadModal' onClick={callbacks.confirm} loading={!canConfirm}>
-              Confirm Download
-            </Button>
-            <Button onClick={close} color='gray'>
-              Cancel
-            </Button>
-          </Group>
+        {src && (
+          <>
+            <Frame
+              ref={frameRef}
+              src={src}
+              onLoad={handleLoad}
+              allow='geolocation;'
+              height={`calc(100vh - ${mobile ? 125 : 275}px)`}
+            />
+            {callbacks?.confirm && (
+              <Group mt='sm' justify='center' gap='xs'>
+                <Button id='confirmDownloadModal' onClick={callbacks.confirm} loading={!canConfirm}>
+                  Confirm Download
+                </Button>
+                <Button onClick={close} color='gray'>
+                  Cancel
+                </Button>
+              </Group>
+            )}
+          </>
         )}
       </Modal>
       {props.children}

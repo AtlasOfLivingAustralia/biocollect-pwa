@@ -16,6 +16,7 @@ import { handleSignIn } from './helpers/auth/handleSignIn';
 // Mantine styles
 import '@mantine/core/styles.css';
 import { theme } from '#/theme';
+import PWAProvider from './helpers/pwa/provider';
 
 function Main() {
   return (
@@ -24,15 +25,17 @@ function Main() {
       onSigninCallback={handleSignIn}
     >
       <APIProvider>
-        <MantineProvider theme={theme} defaultColorScheme='dark'>
-          <ModalsProvider>
-            <FrameProvider>
-              <RecordsDrawerProvider>
-                <App />
-              </RecordsDrawerProvider>
-            </FrameProvider>
-          </ModalsProvider>
-        </MantineProvider>
+        <PWAProvider>
+          <MantineProvider theme={theme} defaultColorScheme='dark'>
+            <ModalsProvider>
+              <FrameProvider>
+                <RecordsDrawerProvider>
+                  <App />
+                </RecordsDrawerProvider>
+              </FrameProvider>
+            </ModalsProvider>
+          </MantineProvider>
+        </PWAProvider>
       </APIProvider>
     </AuthProvider>
   );
