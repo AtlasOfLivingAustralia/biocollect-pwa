@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { SetURLSearchParams } from 'react-router';
 import { useOnLine } from '#/helpers/funcs';
 // Helper functions / components
@@ -34,22 +34,22 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
   const [searchQuery, setSearchQuery] = useDebouncedState('', 350);
 
   // Handle for updating the max result count
-  const handleChangeMax = (newMax: number) => {
+  const handleChangeMax = useCallback((newMax: number) => {
     params.set('page', '1');
     params.set('max', newMax.toString());
     setParams(params);
-  };
+  }, [params]);
 
   // Handle for updating the sort parameter
-  const handleChangeSort = (pSort: string) => {
+  const handleChangeSort = useCallback((pSort: string) => {
     setParams({ ...params, pSort });
-  };
+  }, [params]);
 
   // Handle for updating the sort parameter
-  const handleChangeOffline = (offline: boolean) => {
+  const handleChangeOffline = useCallback((offline: boolean) => {
     params.set('offline', offline.toString());
     setParams(params);
-  };
+  }, [params]);
 
   // Handling search querying
   useEffect(() => {

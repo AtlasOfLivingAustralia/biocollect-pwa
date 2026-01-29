@@ -8,24 +8,25 @@ import type { BioCollectSurvey } from '#/types';
 
 interface SurveyActionsProps extends FlexProps {
   survey?: BioCollectSurvey;
+  onLine?: boolean;
+  downloaded?: boolean;
 }
 
-export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
+export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyActionsProps) {
   const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
-
-  const loading = !survey;
 
   return (
     <Flex gap={6} align='center' {...rest}>
       <Text size='xs' c='dimmed'>
         Records
       </Text>
-      <Skeleton visible={loading} w={28}>
-        <Tooltip label='All records' withArrow disabled={loading} position='left'>
+      <Skeleton visible={!survey} w={28}>
+        <Tooltip label='All records' withArrow disabled={!survey} position='left'>
           <ActionIcon
             id={survey && `${survey.projectActivityId}ViewRecord`}
             variant='light'
+            disabled={!onLine}
             onClick={
               survey &&
               (() => {
@@ -44,12 +45,12 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
           </ActionIcon>
         </Tooltip>
       </Skeleton>
-      <Skeleton visible={loading} w={28}>
-        <Tooltip label='My records' withArrow disabled={loading} position='left'>
+      <Skeleton visible={!survey} w={28}>
+        <Tooltip label='My records' withArrow disabled={!survey} position='left'>
           <ActionIcon
             id={survey && `${survey.projectActivityId}MyRecords`}
             variant='light'
-            disabled={!survey}
+            disabled={!onLine}
             onClick={
               survey &&
               (() => {
@@ -70,11 +71,12 @@ export function SurveyActions({ survey, ...rest }: SurveyActionsProps) {
           </ActionIcon>
         </Tooltip>
       </Skeleton>
-      <Skeleton visible={loading} w={28}>
-        <Tooltip label='Add a record' withArrow disabled={loading} position='left'>
+      <Skeleton visible={!survey} w={28}>
+        <Tooltip label='Add a record' withArrow disabled={!survey} position='left'>
           <ActionIcon
             id={survey && `${survey.projectActivityId}AddRecord`}
             variant='light'
+            disabled={!onLine && !downloaded}
             onClick={
               survey &&
               (() => {

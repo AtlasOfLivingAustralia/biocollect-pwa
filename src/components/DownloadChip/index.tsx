@@ -1,26 +1,23 @@
 import { Button, type ButtonProps, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconCheck, IconDownload } from '@tabler/icons-react';
-import { useLiveQuery } from 'dexie-react-hooks';
+import { IconCheck, IconDownload, IconPlugOff } from '@tabler/icons-react';
 import { useContext } from 'react';
 import { APIContext } from '#/helpers/api';
 import { FrameContext } from '#/helpers/frame';
+
 // Helpers
-import { useOnLine } from '#/helpers/funcs';
 import type { BioCollectSurvey } from '#/types';
 
 interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
   survey?: BioCollectSurvey;
   label?: string;
+  onLine?: boolean;
+  downloaded?: boolean;
 }
 
-export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
+export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
   const api = useContext(APIContext);
-  const onLine = useOnLine();
-
-
-  const downloaded = useLiveQuery(async () => Boolean(await api.db.cached.get(survey?.id || '')))
 
   // Handler for the download popup
   const handleDownload = () =>
@@ -71,6 +68,13 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
     }
   };
 
+  let Icon = IconDownload;
+  if (downloaded) {
+    Icon = IconCheck;
+  } else if (!onLine) {
+    Icon = IconPlugOff;
+  }
+
   return (
     <Button
       id={`${survey?.projectActivityId}Download`}
@@ -78,7 +82,7 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
       variant='light'
       disabled={!onLine}
       onClick={handleChipClick}
-      leftSection={downloaded ? <IconCheck size='1rem' /> : <IconDownload size='1rem' />}
+      leftSection={<Icon size="1rem" />}
       maw={250}
       {...rest}
     >

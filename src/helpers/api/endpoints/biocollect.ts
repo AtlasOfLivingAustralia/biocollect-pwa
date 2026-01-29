@@ -152,7 +152,15 @@ export default (db: BioCollectDexie) => ({
 
       return surveys;
     } else {
-      return await db.surveys.where('projectId').equals(projectId).toArray();
+      // Return the surveys that have been explicitly stored
+      const surveys = await db.surveys.where('projectId').equals(projectId).toArray();
+      if (surveys.length > 0) {
+        return surveys;
+      }
+
+      // Otherwise, return the projectActivities from the project search
+      const project = await db.projects.get(projectId);
+      return project?.projectActivities || [];
     }
   },
 

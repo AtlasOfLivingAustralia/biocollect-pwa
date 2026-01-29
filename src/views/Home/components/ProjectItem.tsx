@@ -13,32 +13,37 @@ import {
   Text,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
 import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { APIContext } from '#/helpers/api';
+import { useOnLine } from '#/helpers/funcs';
 
 interface ProjectItemSurveyProps {
   survey?: BioCollectSurvey;
 }
 
 function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
-  const loading = !survey;
+  const onLine = useOnLine();
+  const api = useContext(APIContext);
+  const downloaded = Boolean(useLiveQuery(async () => await api.db.cached.get(survey?.id || '')));
 
   return (
     <Group justify='space-between' gap={0}>
       <Box>
-        <Skeleton visible={loading} radius='lg'>
-          {loading || !survey ? (
+        <Skeleton visible={!survey} radius='lg'>
+          {!survey ? (
             <Chip>Placeholder Chip</Chip>
           ) : (
-            <DownloadChip survey={survey} label={survey?.name || 'Survey Name'} />
+            <DownloadChip survey={survey} label={survey.name} onLine={onLine} downloaded={downloaded} />
           )}
         </Skeleton>
       </Box>
-      <SurveyActions survey={survey} />
+      <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
     </Group>
   );
 }

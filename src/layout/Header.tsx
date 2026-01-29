@@ -16,7 +16,7 @@ import {
   IconLogout,
   IconMoon,
   IconPlugConnected,
-  IconPlugConnectedX,
+  IconPlugOff,
   IconQuestionMark,
   IconSearch,
   IconSun,
@@ -59,7 +59,7 @@ export default function Header() {
             <Image width='auto' height={32} src={isDark ? logoLight : logoDark} />
           </Link>
           <ThemeIcon color={onLine ? 'green' : 'red'} radius='lg' variant='light'>
-            {onLine ? <IconPlugConnected size='1rem' /> : <IconPlugConnectedX size='1rem' />}
+            {onLine ? <IconPlugConnected size='1rem' /> : <IconPlugOff size='1rem' />}
           </ThemeIcon>
         </Group>
         <Group>

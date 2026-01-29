@@ -153,27 +153,22 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
           <Drawer.Body mt='lg'>
             <Stack pb='sm'>
               {filters.projectActivityId && (
-                <>
-                  <Text size='sm' tt='uppercase' c='dimmed' fw='bold'>
-                    Unpublished
-                  </Text>
-                  <Button
-                    id={`${filters.projectActivityId}UnpublishedRecords`}
-                    leftSection={<IconExternalLink size='1rem' />}
-                    mb='xs'
-                    variant='outline'
-                    onClick={() => {
-                      close();
-                      frame.open(
-                        `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList?projectActivityId=${filters.projectActivityId
-                        }`,
-                        'Unpublished Records',
-                      );
-                    }}
-                  >
-                    View unpublished records
-                  </Button>
-                </>
+                <Button
+                  id={`${filters.projectActivityId}UnpublishedRecords`}
+                  leftSection={<IconExternalLink size='1rem' />}
+                  mb='xs'
+                  variant='light'
+                  onClick={() => {
+                    close();
+                    frame.open(
+                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList?projectActivityId=${filters.projectActivityId
+                      }`,
+                      'Unpublished Records',
+                    );
+                  }}
+                >
+                  View unpublished records
+                </Button>
               )}
               <Text size='sm' tt='uppercase' c='dimmed' fw='bold'>
                 Published
