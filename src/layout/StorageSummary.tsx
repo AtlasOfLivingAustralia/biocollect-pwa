@@ -1,13 +1,10 @@
-import { FrameContext } from "#/helpers/frame";
 import { usePWA } from "#/helpers/pwa";
-import { Box, Flex, Menu, Progress, Skeleton, Text } from "@mantine/core";
-import { IconSettings } from "@tabler/icons-react";
+import { Box, Flex, Loader, Menu, Progress, Skeleton, Text } from "@mantine/core";
+import { IconTrash } from "@tabler/icons-react";
 import prettyBytes from "pretty-bytes";
-import { useContext } from "react";
 
 export function StorageSummary() {
-  const { storageStats: stats } = usePWA();
-  const frame = useContext(FrameContext);
+  const { storageStats: stats, clearingStorage, clearStorage } = usePWA();
   const progress = stats ? (stats.used / stats.maximum) * 100 : 0;
 
   return <>
@@ -17,12 +14,21 @@ export function StorageSummary() {
       <Box style={{ flexGrow: 1 }}>
         <Skeleton mt={1.5} visible={!stats}>
           <Progress.Root size='xl'>
-            <Progress.Section value={progress}>
-              <Progress.Label>{prettyBytes(stats?.used || 0)}</Progress.Label>
-            </Progress.Section>
-            <Progress.Section color='transparent' value={100 - progress}>
-              <Progress.Label c='light-dark(var(--mantine-color-dark-4), white)'>{prettyBytes(stats?.free || 0)}</Progress.Label>
-            </Progress.Section>
+            {clearingStorage ? (
+              <Progress.Section value={100} animated>
+                <Progress.Label>Clearing storage</Progress.Label>
+              </Progress.Section>
+            ) : (
+              <>
+                <Progress.Section value={progress}>
+                  <Progress.Label>{prettyBytes(stats?.used || 0)}</Progress.Label>
+                </Progress.Section>
+                <Progress.Section color='transparent' value={100 - progress}>
+                  <Progress.Label c='light-dark(var(--mantine-color-dark-4), white)'>{prettyBytes(stats?.free || 0)}</Progress.Label>
+                </Progress.Section>
+              </>
+            )}
+
           </Progress.Root>
         </Skeleton>
       </Box>
@@ -33,15 +39,13 @@ export function StorageSummary() {
       </Box>
     </Flex>
     <Menu.Item
-      onClick={() =>
-        frame.open(
-          `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/settings`,
-          'Manage Storage',
-        )
-      }
-      leftSection={<IconSettings size='1rem' />}
+      color='red'
+      onClick={clearStorage}
+      leftSection={clearingStorage ? <Loader size={16} color="grey" /> : <IconTrash size='1rem' />}
+      closeMenuOnClick={false}
+      disabled={clearingStorage}
     >
-      Manage storage
+      Clear storage
     </Menu.Item>
   </>
 }

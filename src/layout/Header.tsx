@@ -138,7 +138,7 @@ export default function Header() {
                 disabled={auth.isLoading || !onLine}
                 color='red'
               >
-                Sign Out
+                Sign out
               </Menu.Item>
             </Menu.Dropdown>
           </Menu>

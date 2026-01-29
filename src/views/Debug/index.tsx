@@ -7,26 +7,6 @@ import { useAuth } from 'react-oidc-context';
 import { APIContext } from '#/helpers/api';
 import { handleRefresh } from '#/helpers/auth/handleRefresh';
 
-const getStoredState = () => {
-  const [storeKey, storeState] = Object.entries(localStorage).find(([key]) =>
-    key.startsWith('oidc.user'),
-  ) || [null, null];
-
-  // If a user exists in the store, return the parsed JSON, otherwise return null
-  return [storeKey, JSON.parse(storeState || '{}')];
-};
-
-const expireToken = () => {
-  const [key, state] = getStoredState();
-  localStorage.setItem(
-    key,
-    JSON.stringify({
-      ...state,
-      expires_at: Math.floor(Date.now() / 1000) + 2,
-    }),
-  );
-};
-
 export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
@@ -39,7 +19,6 @@ export function Debug() {
       <Title mb='sm'>Authentication</Title>
       <Group mb='sm' gap='sm'>
         <Button onClick={handleRefresh}>Refresh tokens</Button>
-        <Button onClick={expireToken}>Expire Tokens</Button>
         <Button onClick={() => clipboard.copy(auth.user?.access_token)}>Copy Access Token</Button>
         <Text>Expires at {new Date((auth.user?.expires_at || 0) * 1000).toLocaleString()}</Text>
         {clipboard.copied && <Text>Copied</Text>}

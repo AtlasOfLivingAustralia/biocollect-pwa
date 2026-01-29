@@ -68,21 +68,25 @@ export function Header({ project, mobile }: HeaderProps) {
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
-      <Stack mt={-60} align='center' gap='xl'>
+      <Stack mt={-120} align='center' gap='xl'>
         <Card
-          shadow='md'
+          shadow='xl'
+          radius='xl'
+          p='lg'
           style={{
             width: 'calc(75vw)',
             maxWidth: 400,
             textAlign: 'center',
             zIndex: 200,
+            backgroundColor: 'light-dark(rgba(255,255,255,0.4), rgba(45,45,45,0.4))',
+            backdropFilter: 'blur(12px)'
           }}
           withBorder
         >
           <Title order={2} lineClamp={3}>
             {project.name || 'The title / name of the project'}
           </Title>
-          <Title order={3} c='dimmed' px='sm'>
+          <Title order={4} c='dimmed' px='sm'>
             {project.organisationName}
           </Title>
           {(!project.isExternal || project.tags.length > 0) && (
@@ -100,8 +104,9 @@ export function Header({ project, mobile }: HeaderProps) {
               href={project.urlWeb}
               target='_blank'
               leftSection={<IconExternalLink size={18} />}
+              variant='subtle'
               color='gray'
-              size='sm'
+              size='xs'
               mt='xl'
             >
               VIEW WEBSITE
@@ -179,7 +184,7 @@ export function Header({ project, mobile }: HeaderProps) {
                 radius='xl'
                 variant='transparent'
               >
-                <IconExternalLink />
+                <IconExternalLink size='1rem' />
               </ActionIcon>
             </Tooltip>
           )}

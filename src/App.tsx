@@ -1,5 +1,5 @@
 import { FrameContext } from '#/helpers/frame';
-import { preventExpire, useOnLine } from '#/helpers/funcs';
+import { useOnLine } from '#/helpers/funcs';
 import { useContext, useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 // App-specific imports
@@ -15,10 +15,11 @@ function App() {
 
   // Helper function to try and refresh the auth token
   const tryTokenRefresh = async (from: string) => {
-    console.log('trying token refresh', from)
+    console.log('trying token refresh', from);
     try {
       await handleRefresh();
-    } catch (_) {
+    } catch (error) {
+      console.log('[Auth] Refresh error', error);
       await handleSignOut();
     }
   };
@@ -42,11 +43,7 @@ function App() {
 
   // Check to check & refresh the authentication (if needed)
   useEffect(() => {
-    if (onLine) {
-      tryTokenRefresh('onLine hook');
-    } else {
-      preventExpire();
-    }
+    tryTokenRefresh('onLine hook');
   }, [onLine]);
 
   useEffect(() => {
@@ -59,7 +56,7 @@ function App() {
 
     if (auth.isAuthenticated) {
       refreshHandler = setInterval(() => {
-        if (onLine) tryTokenRefresh('interval hook');
+        tryTokenRefresh('interval hook');
       }, refreshInterval || 600000);
     }
 

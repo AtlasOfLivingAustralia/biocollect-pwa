@@ -19,7 +19,8 @@ export function DownloadChip({ survey, label, ...rest }: DownloadChipProps) {
   const api = useContext(APIContext);
   const onLine = useOnLine();
 
-  const downloaded = useLiveQuery(async () => Boolean(await api.db.cached.get(survey?.id)))
+
+  const downloaded = useLiveQuery(async () => Boolean(await api.db.cached.get(survey?.id || '')))
 
   // Handler for the download popup
   const handleDownload = () =>

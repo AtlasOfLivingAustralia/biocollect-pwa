@@ -1,6 +1,8 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: We need this to create new User objects easily  */
 import { jwtDecode } from 'jwt-decode';
-import { authConfig, userManager } from './config';
 import { User, type IdTokenClaims } from 'oidc-client-ts';
+import { isOnline } from '../funcs';
+import { authConfig, userManager } from './config';
 
 interface TokenResponse {
   id_token: string;
@@ -9,21 +11,42 @@ interface TokenResponse {
   token_type: string;
 }
 
-const REFRESH_BUFFER = 1000 * 60 * 5; // 5 minutes;
+const REFRESH_BUFFER = 1000 * 60 * 5; // 5 minutes
+const EXPIRY_BUFFER = 60 * 60 * 24 * 360; // 360 days
 
 export async function handleRefresh(): Promise<boolean> {
+  const online = isOnline();
   const url = await userManager.metadataService.getTokenEndpoint();
   const user = await userManager.getUser();
 
-  // Ensure a URL was returned
-  if (!url) {
-    throw new Error('Failed to fetch token endpoint!');
-  }
-
   // Ensure the user is logged in & has a refresh token
-  if (!user?.refresh_token || !user?.expires_at) {
+  if (!user || !user?.refresh_token || !user?.expires_at) {
     console.log("[Auth] Not refreshing,  user is not logged in / doesn't have a refresh token.");
     return false;
+  }
+
+  // If the user is offline, prevent token expiry
+  if (!online) {
+    const newUser = new User({
+      ...user,
+      access_token: user?.access_token!,
+      token_type: user?.token_type!,
+      profile: user?.profile!,
+      expires_at: Math.round(Date.now() / 1000) + EXPIRY_BUFFER,
+    });
+
+    // Persist the new user in the store & re-raise the UserLoaded event
+    await userManager.storeUser(newUser);
+    await userManager.getUser(true);
+
+    console.log('[Auth] Token expiry extended!');
+
+    return true;
+  }
+
+  // Ensure a URL was returned
+  if (!url) {
+    throw new Error('[Auth] Failed to fetch token endpoint!');
   }
 
   // Token is not expiring within the next 5 minutes, don't refresh
@@ -70,6 +93,6 @@ export async function handleRefresh(): Promise<boolean> {
 
     return true;
   } else {
-    throw new Error('Failed to fetch new token!');
+    throw new Error('[Auth] Failed to fetch new token!');
   }
 }

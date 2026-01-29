@@ -36,11 +36,10 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
   const auth = useAuth();
 
   useEffect(() => {
-    if (callbacks?.confirm && !isFrame()) {
+    if (!isFrame()) {
       // Define a message handler to listen for download events
       const messageHandler = (message: MessageEvent<FrameEvent>) => {
         const { data } = message;
-        if (message.data?.event) console.log('[iFrame Message]', message.data?.event);
 
         if (data.event === 'download-complete') {
           setCanConfirm(true);
@@ -84,6 +83,8 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         },
         import.meta.env.VITE_API_BIOCOLLECT,
       );
+
+      console.log('Credentials posted!');
     }
   };
 
