@@ -3,7 +3,7 @@ export const getNumber = (name: string, fallback: number, params: URLSearchParam
   return Number.isNaN(param) ? fallback : param;
 };
 
-export const getString = (name: string, fallback: string | undefined, params: URLSearchParams) => {
+export const getString = (name: string, fallback: string, params: URLSearchParams) => {
   return params.get(name) || fallback;
 };
 

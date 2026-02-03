@@ -2,11 +2,11 @@ import { Button, type ButtonProps, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconCheck, IconDownload, IconPlugOff } from '@tabler/icons-react';
 import { useContext } from 'react';
-import { APIContext } from '#/helpers/api';
 import { FrameContext } from '#/helpers/frame';
 
 // Helpers
 import type { BioCollectSurvey } from '#/types';
+import { dexie } from '#/helpers/api/dexie';
 
 interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
   survey?: BioCollectSurvey;
@@ -17,7 +17,6 @@ interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
 
 export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
-  const api = useContext(APIContext);
 
   // Handler for the download popup
   const handleDownload = () =>
@@ -27,7 +26,7 @@ export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: Dow
       {
         confirm: async () => {
           if (survey) {
-            await api.db.cached.put({
+            await dexie.cached.put({
               surveyId: survey.id,
               projectId: survey.projectId,
             });
@@ -59,7 +58,7 @@ export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: Dow
           cancel: 'Cancel',
         },
         onConfirm: async () => {
-          await api.db.cached.delete(survey.id);
+          await dexie.cached.delete(survey.id);
           handleDownload();
         },
       });

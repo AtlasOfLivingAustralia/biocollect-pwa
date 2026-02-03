@@ -1,20 +1,20 @@
+import { Frame } from '#/components';
+import { isFrame } from '#/helpers/funcs';
 import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { jwtDecode } from 'jwt-decode';
 import {
   type PropsWithChildren,
   type ReactElement,
-  useContext,
+  useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import { useAuth } from 'react-oidc-context';
-import { Frame } from '#/components';
-import { APIContext } from '#/helpers/api';
-import { isFrame } from '#/helpers/funcs';
 
 // Contexts
+import { dexie } from '../api/dexie';
+import { userManager } from '../auth';
 import FrameContext, { type FrameCallbacks } from './context';
 
 interface FrameEvent {
@@ -32,8 +32,6 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const api = useContext(APIContext);
-  const auth = useAuth();
 
   useEffect(() => {
     if (!isFrame()) {
@@ -46,7 +44,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         } else if (data.event === 'download-removed') {
           setCanConfirm(false);
         } else if (data.event === 'surveys-removed') {
-          api.db.cached.clear();
+          dexie.cached.clear();
         }
       };
 
@@ -56,8 +54,30 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
     }
   }, [callbacks]);
 
+  // Callback function to pass user credentials when IFrame has loaded
+  const postToken = useCallback(async () => {
+    if (frameRef?.current?.contentWindow) {
+      const user = await userManager.getUser();
+
+      frameRef.current.contentWindow.postMessage(
+        {
+          event: 'credentials',
+          data: {
+            userId:
+              user?.profile['custom:userid'] ||
+              (jwtDecode(user?.access_token || '') as { userid: number })?.userid,
+            token: user?.access_token,
+          },
+        },
+        import.meta.env.VITE_API_BIOCOLLECT,
+      );
+
+      console.log('Credentials posted!');
+    }
+  }, []);
+
   // Callback function to open the records drawer
-  const open = (newSrc: string, title: string, callbacks?: FrameCallbacks) => {
+  const open = useCallback((newSrc: string, title: string, callbacks?: FrameCallbacks) => {
     setSrc(newSrc);
     setTitle(title);
 
@@ -66,29 +86,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
     setCanConfirm(false);
 
     openFrame();
-  };
-
-  // Callback function to pass user credentials when IFrame has loaded
-  const handleLoad = () => {
-    if (frameRef?.current?.contentWindow) {
-      frameRef.current.contentWindow.postMessage(
-        {
-          event: 'credentials',
-          data: {
-            userId:
-              auth.user?.profile['custom:userid'] ||
-              (jwtDecode(auth?.user?.access_token || '') as { userid: number })?.userid,
-            token: auth.user?.access_token,
-          },
-        },
-        import.meta.env.VITE_API_BIOCOLLECT,
-      );
-
-      console.log('Credentials posted!');
-    }
-  };
-
-  useEffect(handleLoad, [auth.user?.access_token]);
+  }, []);
 
   return (
     <FrameContext.Provider value={{ open, close }}>
@@ -118,9 +116,9 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
             <Frame
               ref={frameRef}
               src={src}
-              onLoad={handleLoad}
               allow='geolocation;'
               height={`calc(100vh - ${mobile ? 125 : 275}px)`}
+              onLoad={postToken}
             />
             {callbacks?.confirm && (
               <Group mt='sm' justify='center' gap='xs'>

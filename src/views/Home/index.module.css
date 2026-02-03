@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  padding-top: var(--mantine-spacing-xl);
+  padding-bottom: var(--mantine-spacing-xl);
+  padding-left: 36px;
+  padding-right: 36px;
+}
+
+@media (max-width: 62em) {
+  .header {
+    flex-direction: column;
+    padding-left: 22px;
+    padding-right: 22px;
+    gap: 16px;
+  }
+
+  .name {
+    text-align: center;
+  }
+}

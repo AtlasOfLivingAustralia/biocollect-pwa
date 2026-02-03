@@ -13,24 +13,21 @@ import {
   Text,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
 import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
-import { useLiveQuery } from 'dexie-react-hooks';
-import { APIContext } from '#/helpers/api';
 import { useOnLine } from '#/helpers/funcs';
 
 interface ProjectItemSurveyProps {
   survey?: BioCollectSurvey;
+  downloaded?: boolean;
 }
 
-function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
+function ProjectItemSurvey({ survey, downloaded }: ProjectItemSurveyProps) {
   const onLine = useOnLine();
-  const api = useContext(APIContext);
-  const downloaded = Boolean(useLiveQuery(async () => await api.db.cached.get(survey?.id || '')));
 
   return (
     <Group justify='space-between' gap={0}>
@@ -50,9 +47,10 @@ function ProjectItemSurvey({ survey }: ProjectItemSurveyProps) {
 
 interface ProjectItemProps {
   project: BioCollectProject | null;
+  downloaded?: { [survey: string]: true }
 }
 
-export function ProjectItem({ project }: ProjectItemProps) {
+export function ProjectItem({ project, downloaded }: ProjectItemProps) {
   const loading = !project;
   const surveys = project?.projectActivities || [];
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
@@ -148,19 +146,15 @@ export function ProjectItem({ project }: ProjectItemProps) {
           />
           <ScrollArea h={90} type='auto'>
             <Stack px='md' mb='md' gap='sm'>
-              {(() => {
-                if (loading) {
-                  return <ProjectItemSurvey />;
-                } else if (surveys.length > 0) {
-                  return surveys.map((survey) => <ProjectItemSurvey key={survey.id} survey={survey} />);
-                } else {
-                  return (
-                    <Text ta='center' size='sm' c='dimmed' h={28.2}>
-                      No surveys available
-                    </Text>
-                  );
-                }
-              })()}
+              {loading && <ProjectItemSurvey />}
+              {(!loading && surveys.length > 0) &&
+                surveys.map((survey) => <ProjectItemSurvey key={survey.id} survey={survey} downloaded={downloaded?.[survey.id]} />)
+              }
+              {(!loading && surveys.length === 0) && (
+                <Text ta='center' size='sm' c='dimmed' h={28.2}>
+                  No surveys available
+                </Text>
+              )}
             </Stack>
           </ScrollArea>
         </Stack>

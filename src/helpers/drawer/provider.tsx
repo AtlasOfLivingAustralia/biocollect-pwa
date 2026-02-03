@@ -22,7 +22,8 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { APIContext } from '#/helpers/api';
+import { biocollect } from '#/helpers/api';
+
 // Helpers
 import { FrameContext } from '#/helpers/frame';
 import type {
@@ -32,6 +33,7 @@ import type {
   FilterQueries,
 } from '#/types';
 import { ActivityItem } from './components/ActivityItem';
+
 // Local components
 import RecordsDrawerContext from './context';
 
@@ -44,7 +46,6 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
 
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const api = useContext(APIContext);
   const frame = useContext(FrameContext);
 
   // search state hooks
@@ -101,14 +102,11 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
         sort: 'dateCreatedSort',
       };
 
-      const resp = await api.biocollect.searchActivities(view, pagedFilters);
+      const resp = await biocollect.searchActivities(view, pagedFilters);
 
       setSearch(resp);
-
       setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
-
       setHasMore(resp.activities.length === PAGE_SIZE);
-
       setLoadingMore(false);
     }
 

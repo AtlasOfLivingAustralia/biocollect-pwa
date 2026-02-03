@@ -41,7 +41,7 @@ import { handleSignOut } from '#/helpers/auth/handleSignOut';
 import { InstallButton } from './InstallButton';
 import { StorageSummary } from './StorageSummary';
 
-export default function Header() {
+export function Header() {
   const { toggleColorScheme } = useMantineColorScheme();
   const frame = useContext(FrameContext);
   const auth = useAuth();

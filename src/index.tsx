@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import Main from './main';
 import type { BeforeInstallPromptEvent } from './globals';
+
+import Main from './main';
 
 const strictMode = true;
 console.log(`App Mode: ${import.meta.env.MODE}`);

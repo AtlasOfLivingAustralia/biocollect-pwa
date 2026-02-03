@@ -23,3 +23,5 @@ export class BioCollectDexie extends Dexie {
     });
   }
 }
+
+export const dexie = new BioCollectDexie();

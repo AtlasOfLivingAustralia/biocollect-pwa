@@ -80,11 +80,18 @@ export default (db: BioCollectDexie) => ({
       const { data } = await axios.get<BioCollectProjectSearch>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/search?${params.toString()}`,
       );
-      const formatted = await formatProjectSearch(data);
+      const formattedSearch = await formatProjectSearch(data);
+      const surveys = formattedSearch.projects.flatMap(
+        ({ projectActivities }) => projectActivities || [],
+      );
 
-      // Store the projects in IDB & return
-      await db.projects.bulkPut(formatted.projects);
-      return formatted;
+      // Store the projects & surveys in IDB & return
+      await Promise.all([
+        db.projects.bulkPut(formattedSearch.projects),
+        db.surveys.bulkPut(surveys),
+      ]);
+
+      return formattedSearch;
     } else {
       // Fix for WebKit empty DB issue
       // https://github.com/dexie/Dexie.js/issues/1052
@@ -152,15 +159,7 @@ export default (db: BioCollectDexie) => ({
 
       return surveys;
     } else {
-      // Return the surveys that have been explicitly stored
-      const surveys = await db.surveys.where('projectId').equals(projectId).toArray();
-      if (surveys.length > 0) {
-        return surveys;
-      }
-
-      // Otherwise, return the projectActivities from the project search
-      const project = await db.projects.get(projectId);
-      return project?.projectActivities || [];
+      return await db.surveys.where('projectId').equals(projectId).toArray();
     }
   },
 

@@ -1,15 +1,14 @@
 import {
   type PropsWithChildren,
   type ReactElement,
-  useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
 // Contexts
+import { dexie } from '../api/dexie';
 import PWAContext, { type StorageSummaryStats } from './context';
-import { APIContext } from '../api';
 
 interface StorageSummaryEvent {
   event: string;
@@ -20,7 +19,6 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   const [storageStats, setStorageStats] = useState<StorageSummaryStats | null>(null);
   const [clearingStorage, setClearingStorage] = useState<boolean>(false);
   const ref = useRef<HTMLIFrameElement>(null);
-  const api = useContext(APIContext);
 
   const send = (event: string, data?: unknown) => {
     if (ref.current?.contentWindow) {
@@ -50,7 +48,7 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     setClearingStorage(true);
 
     // Clear the cached table in the DB
-    api.db.cached.clear();
+    dexie.cached.clear();
   };
 
   return (

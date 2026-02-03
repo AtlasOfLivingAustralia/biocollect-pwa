@@ -1,30 +1,17 @@
 import { AppShell } from '@mantine/core';
-import {
-  completeNavigationProgress,
-  NavigationProgress,
-  resetNavigationProgress,
-  startNavigationProgress,
-} from '@mantine/nprogress';
-import { useEffect } from 'react';
-import { Outlet, useNavigation } from 'react-router';
+import { Outlet } from 'react-router';
 
-import Header from './Header';
+import { Header } from './Header';
+import { NavigationProgress } from './NavigationProgress';
+import { TokenHandler } from './TokenHandler';
 
 export default function Layout() {
-  const { state } = useNavigation();
 
-  useEffect(() => {
-    if (state === 'loading') {
-      resetNavigationProgress();
-      startNavigationProgress();
-    } else {
-      completeNavigationProgress();
-    }
-  }, [state]);
 
   return (
     <>
-      <NavigationProgress stepInterval={0} />
+      <NavigationProgress />
+      <TokenHandler />
       <AppShell header={{ height: 70 }}>
         <Header />
         <AppShell.Main>

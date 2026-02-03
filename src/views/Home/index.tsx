@@ -1,8 +1,8 @@
+import { Wave } from '#/components/Wave';
 import {
   Box,
   Center,
   Grid,
-  Group,
   Pagination,
   Space,
   Stack,
@@ -12,156 +12,158 @@ import {
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { IconArchive } from '@tabler/icons-react';
-import { jwtDecode } from 'jwt-decode';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { useAuth } from 'react-oidc-context';
-import { useSearchParams } from 'react-router';
-import { Wave } from '#/components/Wave';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
 // Helper functions / components
-import { APIContext } from '#/helpers/api';
-import { useOnLine } from '#/helpers/funcs';
-import { getBool, getNumber, getString } from '#/helpers/params';
+import { biocollect } from '#/helpers/api';
 import type { BioCollectProjectSearch } from '#/types';
 
 // Local components
+import { dexie } from '#/helpers/api/dexie';
+import { useLiveQuery } from 'dexie-react-hooks';
+import { useLoaderData } from 'react-router';
 import { ProjectItem } from './components/ProjectItem';
-import { SearchControls } from './components/SearchControls';
+import { DEFAULTS, SearchControls, type SearchState } from './components/SearchControls';
+import classes from './index.module.css';
 
 const range = (max: number) => (max > 0 ? [...new Array(max).keys()] : []);
 
-export function Home() {
-  const onLine = useOnLine();
+type SurveyDownloads = { [project: string]: { [survey: string]: true } };
 
-  // URL parameters & state
-  const [params, setParams] = useSearchParams();
-  const paramMax = getNumber('max', 30, params);
-  const paramPage = getNumber('page', 1, params);
+function HomeLoading({ max }: { max: number }) {
+  return range(max).map((id) => <ProjectItem key={id} project={null} />)
+}
+
+function areProjectsDifferent(old: BioCollectProjectSearch | null, updated: BioCollectProjectSearch) {
+  // If the reference is the same, nothing changed
+  if (old === updated) return false;
+
+  // Going from null -> data is a change
+  if (old === null) return true;
+
+  // If the totals differ, it's definitely changed
+  if (old.total !== updated.total) return true;
+
+  // Compare projectId lists in a robust way
+  const oldIds = old.projects.map(({ projectId }) => projectId);
+  const updatedIds = updated.projects.map(({ projectId }) => projectId);
+
+  if (oldIds.length !== updatedIds.length) return true;
+
+  oldIds.sort();
+  updatedIds.sort();
+
+  for (let i = 0; i < oldIds.length; i++) {
+    if (oldIds[i] !== updatedIds[i]) return true;
+  }
+
+  return false;
+}
+
+const waveColour = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))';
+
+export function Home() {
+  const givenName = useLoaderData<string>();
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))';
 
   // API data state
   const [projectSearch, setProjectSearch] = useState<BioCollectProjectSearch | null>(null);
-  const [lastTotal, setLastTotal] = useState<number>(30);
+  const [page, setPage] = useState<number>(1)
+  const [searchState, setSearchState] = useState<SearchState>(DEFAULTS);
+  const lastTotal = useRef<number>(null);
 
-  // API Context
-  const auth = useAuth();
-  const api = useContext(APIContext);
-  const decoded = useMemo(() => {
-    return auth.user ? jwtDecode(auth.user.access_token) : null;
-  }, [auth.user]);
+  // Watch for changes to the downloaded surveys
+  const downloadedSurveys = useLiveQuery<SurveyDownloads>(async () => (await dexie.cached.toArray()).reduce((prev, cur) => ({
+    ...prev, [cur.projectId]: {
+      ...((prev as SurveyDownloads)[cur.projectId] || {}),
+      [cur.surveyId]: true
+    }
+  }), {}));
+
+  const fetch = useCallback(async () => {
+    if (projectSearch !== null) setProjectSearch(null);
+
+    try {
+      const data = await biocollect.projectSearch(
+        (page - 1) * searchState.max,
+        searchState.max,
+        searchState.sort,
+        searchState.userPage,
+        searchState.search,
+        searchState.offline,
+      );
+
+      if (areProjectsDifferent(projectSearch, data)) {
+        setProjectSearch(data);
+      }
+
+      // Update the last total ref
+      lastTotal.current = data.total;
+    } catch (error) {
+      console.error(error);
+    }
+  }, [searchState, projectSearch, page])
 
   // Effect hook to fetch project data
-  useEffect(() => {
-    async function fetchProjects() {
-      setProjectSearch(null);
-      try {
-        const paramMax = getNumber('max', 30, params);
-        const data = await api.biocollect.projectSearch(
-          (getNumber('page', 1, params) - 1) * paramMax,
-          paramMax,
-          getString('pSort', 'dateCreatedSort', params),
-          getBool('isUserPage', true, params),
-          getString('search', undefined, params),
-          getBool('offline', !onLine, params),
-        );
-        setProjectSearch(data);
-        setLastTotal(data.total);
-      } catch (error) {
-        // TODO: Error handling
-        console.error(error);
-      }
-    }
-
-    fetchProjects();
-  }, [params, onLine]);
-
-  // Handle for updating the pagination
-  const handleChangePage = (page: number) => {
-    params.set('page', page.toString());
-    setParams(params);
-  };
+  useEffect(() => { fetch() }, [searchState, page]);
 
   return (
     <>
-      {mobile ? (
-        <Stack py='xl' px={22}>
-          <Group justify='center'>
-            <Stack gap={0} align='center'>
-              <Text c='dimmed'>Welcome back,</Text>
-              <Title m={0}>
-                {auth.user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name || 'User'}
-              </Title>
-            </Stack>
-          </Group>
-          <SearchControls params={params} setParams={setParams} />
+      <div className={classes.header}>
+        <Stack className={classes.name} gap={0}>
+          <Text c='dimmed'>Welcome back,</Text>
+          <Title m={0}>
+            {givenName}
+          </Title>
         </Stack>
-      ) : (
-        <Box py='xl' px={36}>
-          <Group justify='space-between'>
-            <Stack gap={0} align='flex-start'>
-              <Text c='dimmed'>Welcome back,</Text>
-              <Title m={0}>
-                {auth.user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name || 'User'}
-              </Title>
-            </Stack>
-            <SearchControls params={params} setParams={setParams} />
-          </Group>
-        </Box>
-      )}
+        <SearchControls onUpdate={setSearchState} setPage={setPage} />
+      </div>
       <Wave
         preserveAspectRatio='none'
-        waveColour={highlight}
+        waveColour={waveColour}
         waveType={mobile ? 'body' : 'bodyFull'}
         height={75}
         width='100%'
       />
       <Box
         style={{
-          background: highlight,
+          background: waveColour,
           marginTop: -8,
           padding: mobile ? 22 : 32,
         }}
       >
         <Grid>
-          {(() => {
-            if (projectSearch) {
-              return projectSearch.total > 0 ? (
-                projectSearch.projects.map((project) => (
-                  <ProjectItem key={project.projectId} project={project} />
-                ))
-              ) : (
-                <Grid.Col span={12}>
-                  <Stack align='center' gap={8}>
-                    <IconArchive size='4rem' />
-                    <Text mt='md' ff='heading' size='xl'>
-                      No projects found
-                    </Text>
-                    <Text c='dimmed'>Try refining your search criteria</Text>
-                  </Stack>
-                </Grid.Col>
-              );
-            }
-
-            return range(paramMax).map((id) => <ProjectItem key={id} project={null} />);
-          })()}
+          {(projectSearch?.total || 0) > 0 && projectSearch?.projects.map((project) => (
+            <ProjectItem key={project.projectId} project={project} downloaded={downloadedSurveys?.[project.projectId]} />
+          ))}
+          {projectSearch && projectSearch.total === 0 && ((<Grid.Col span={12}>
+            <Stack align='center' gap={8}>
+              <IconArchive size='4rem' />
+              <Text mt='md' ff='heading' size='xl'>
+                No projects found
+              </Text>
+              <Text c='dimmed'>Try refining your search criteria</Text>
+            </Stack>
+          </Grid.Col>))}
+          {!projectSearch && <HomeLoading max={searchState.max} />}
         </Grid>
         <Space h={25} />
       </Box>
       <Wave
         preserveAspectRatio='none'
-        waveColour={highlight}
+        waveColour={waveColour}
         waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
         height={75}
         width='100%'
       />
-      {lastTotal !== null && (
+      {lastTotal.current && (
         <Center pb='xl'>
           <Pagination
             mb='md'
-            value={paramPage}
-            total={Math.floor(lastTotal / paramMax)}
-            onChange={handleChangePage}
+            value={page}
+            total={Math.floor(lastTotal.current / searchState.max)}
+            onChange={setPage}
           />
         </Center>
       )}

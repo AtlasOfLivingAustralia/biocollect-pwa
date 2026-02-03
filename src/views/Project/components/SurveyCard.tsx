@@ -1,10 +1,9 @@
 import { Badge, Box, Card, Group, Text, Title } from '@mantine/core';
 import { IconCalendar } from '@tabler/icons-react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useContext } from 'react';
 
 import { DownloadChip, SurveyActions } from '#/components';
-import { APIContext } from '#/helpers/api';
+import { dexie } from '#/helpers/api/dexie';
 import { useOnLine } from '#/helpers/funcs';
 import type { BioCollectSurvey } from '#/types';
 
@@ -14,8 +13,7 @@ interface SurveyCardProps {
 
 export function SurveyCard({ survey }: SurveyCardProps) {
   const onLine = useOnLine();
-  const api = useContext(APIContext);
-  const downloaded = Boolean(useLiveQuery(async () => await api.db.cached.get(survey?.id || '')));
+  const downloaded = Boolean(useLiveQuery(async () => await dexie.cached.get(survey?.id || '')));
 
   return (
     <Card radius='lg' shadow='md' withBorder bg='light-dark(white, var(--mantine-color-dark-5)'>

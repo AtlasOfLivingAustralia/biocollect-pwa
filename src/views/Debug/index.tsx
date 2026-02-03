@@ -1,18 +1,17 @@
 import { Box, Button, Code, Group, Text, Title } from '@mantine/core';
 import { useClipboard } from '@mantine/hooks';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { useContext } from 'react';
 import { useAuth } from 'react-oidc-context';
 
-import { APIContext } from '#/helpers/api';
+
+import { dexie } from '#/helpers/api/dexie';
 import { handleRefresh } from '#/helpers/auth/handleRefresh';
 
 export function Debug() {
   const clipboard = useClipboard({ timeout: 1000 });
   const auth = useAuth();
-  const api = useContext(APIContext);
 
-  const projects = useLiveQuery(async () => await api.db.projects.limit(1).toArray());
+  const projects = useLiveQuery(async () => await dexie.projects.limit(1).toArray());
 
   return (
     <Box p='xl'>

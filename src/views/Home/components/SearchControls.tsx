@@ -6,71 +6,83 @@ import {
   Stack,
   Text,
   TextInput,
-  useMantineTheme,
 } from '@mantine/core';
-import { useDebouncedState, useMediaQuery } from '@mantine/hooks';
+import { useDebouncedState } from '@mantine/hooks';
 import { IconSearch } from '@tabler/icons-react';
-import { useCallback, useEffect } from 'react';
-import type { SetURLSearchParams } from 'react-router';
+import { useEffect, useRef, useState } from 'react';
 import { useOnLine } from '#/helpers/funcs';
-// Helper functions / components
-import { getBool, getString } from '#/helpers/params';
+import { isEqual } from 'lodash-es';
 
-interface SearchControlsProps {
-  params: URLSearchParams;
-  setParams: SetURLSearchParams;
+export interface SearchState {
+  max: number;
+  sort: string;
+  userPage: boolean;
+  search: string;
+  offline: boolean;
 }
 
-export function SearchControls({ params, setParams }: SearchControlsProps) {
+export const DEFAULTS: SearchState = {
+  max: 10,
+  sort: 'dateCreatedSort',
+  userPage: true,
+  search: '',
+  offline: false
+}
+
+interface SearchControlsProps {
+  onUpdate: (state: SearchState) => void;
+  setPage: (page: number) => void;
+}
+
+export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
   const onLine = useOnLine();
-  const paramSearch = getString('search', undefined, params);
-  const paramOffline = getBool('offline', !onLine, params);
 
-  // Styling hooks
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
+  const [max, setMax] = useState<number>(DEFAULTS.max);
+  const [sort, setSort] = useState<string>(DEFAULTS.sort);
+  const [userPage] = useState<boolean>(DEFAULTS.userPage);
+  const [offline, setOffline] = useState<boolean>(DEFAULTS.offline);
+  const lastState = useRef<SearchState>(DEFAULTS);
 
-  // API data state
-  const [searchQuery, setSearchQuery] = useDebouncedState('', 350);
+  // Search state
+  const [search, setSearch] = useDebouncedState<string>(DEFAULTS.search, 350);
+  const lastSearch = useRef<string>(DEFAULTS.search);
 
-  // Handle for updating the max result count
-  const handleChangeMax = useCallback((newMax: number) => {
-    params.set('page', '1');
-    params.set('max', newMax.toString());
-    setParams(params);
-  }, [params]);
-
-  // Handle for updating the sort parameter
-  const handleChangeSort = useCallback((pSort: string) => {
-    setParams({ ...params, pSort });
-  }, [params]);
-
-  // Handle for updating the sort parameter
-  const handleChangeOffline = useCallback((offline: boolean) => {
-    params.set('offline', offline.toString());
-    setParams(params);
-  }, [params]);
-
-  // Handling search querying
   useEffect(() => {
-    if (searchQuery !== null && searchQuery.length > 0) {
-      params.delete('page');
-      params.set('search', searchQuery);
-    } else {
-      params.delete('search');
+    const update: SearchState = {
+      max,
+      sort,
+      userPage,
+      search,
+      offline,
+    };
+
+    // Don't update if the state is the same
+    if (isEqual(update, lastState.current)) return;
+
+    onUpdate(update);
+
+    if (lastSearch.current !== search) {
+      lastSearch.current = search;
+      setPage(1);
     }
 
-    setParams(params);
-  }, [searchQuery]);
+    lastState.current = update;
+  }, [max, sort, userPage, search, offline]);
 
-  return mobile ? (
-    <Grid>
-      <Grid.Col span={12}>
+
+  // Update the offline flag when our connectivity changes
+  useEffect(() => {
+    setOffline(!onLine);
+  }, [onLine]);
+
+  return (
+    <Grid ml='lg'>
+      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
         <TextInput
           leftSection={<IconSearch />}
           placeholder='Project Name'
-          defaultValue={paramSearch}
-          onChange={(e) => setSearchQuery(e.currentTarget.value)}
+          defaultValue={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
           label={
             <Text size='xs' fw='bold' c='dimmed'>
               Project Search
@@ -79,9 +91,9 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
         />
       </Grid.Col>
       {onLine && (
-        <Grid.Col span={{ xs: 6, sm: 4 }}>
+        <Grid.Col span={{ xs: 12, md: 3 }}>
           <Select
-            value={params.get('pSort') || 'dateCreatedSort'}
+            value={sort}
             label={
               <Text size='xs' fw='bold' c='dimmed'>
                 Sort By
@@ -93,18 +105,18 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
               { value: '_score', label: 'Relevance' },
               { value: 'organisationSort', label: 'Organisation' },
             ]}
-            onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
+            onChange={(sort) => setSort(sort || 'dateCreatedSort')}
           />
         </Grid.Col>
       )}
-      <Grid.Col span={{ xs: 6, sm: onLine ? 4 : 6 }}>
+      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
         <Select
-          value={params.get('max') || '10'}
-          data={['10', '20', '30', '50'].map((max) => ({
-            value: max,
-            label: `${max} items`,
+          value={max.toString()}
+          data={['10', '20', '30', '50'].map((maxOption) => ({
+            value: maxOption,
+            label: `${maxOption} items`,
           }))}
-          onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
+          onChange={(max) => setMax(parseInt(max || '10', 10))}
           label={
             <Text size='xs' fw='bold' c='dimmed'>
               Result Count
@@ -112,74 +124,13 @@ export function SearchControls({ params, setParams }: SearchControlsProps) {
           }
         />
       </Grid.Col>
-      <Grid.Col span={{ xs: onLine ? 12 : 6, sm: onLine ? 4 : 6 }}>
+      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
         <Stack justify='flex-end' h='100%'>
           <Paper py={7} px='xs' withBorder>
             <Checkbox
-              label='Offline Surveys'
-              checked={paramOffline}
-              onChange={() => handleChangeOffline(!paramOffline)}
-            />
-          </Paper>
-        </Stack>
-      </Grid.Col>
-    </Grid>
-  ) : (
-    <Grid>
-      <Grid.Col span={5}>
-        <TextInput
-          leftSection={<IconSearch />}
-          placeholder='Project Name'
-          defaultValue={paramSearch}
-          onChange={(e) => setSearchQuery(e.currentTarget.value)}
-          label={
-            <Text size='xs' fw='bold' c='dimmed'>
-              Project Search
-            </Text>
-          }
-        />
-      </Grid.Col>
-      {onLine && (
-        <Grid.Col span={2}>
-          <Select
-            value={params.get('pSort') || 'dateCreatedSort'}
-            label={
-              <Text size='xs' fw='bold' c='dimmed'>
-                Sort By
-              </Text>
-            }
-            data={[
-              { value: 'dateCreatedSort', label: 'Most Recent' },
-              { value: 'nameSort', label: 'Name' },
-              { value: '_score', label: 'Relevance' },
-              { value: 'organisationSort', label: 'Organisation' },
-            ]}
-            onChange={(sort) => handleChangeSort(sort || 'dateCreatedSort')}
-          />
-        </Grid.Col>
-      )}
-      <Grid.Col span={2}>
-        <Select
-          value={params.get('max') || '10'}
-          data={['10', '20', '30', '50'].map((max) => ({
-            value: max,
-            label: `${max} items`,
-          }))}
-          onChange={(max) => handleChangeMax(parseInt(max || '10', 10))}
-          label={
-            <Text size='xs' fw='bold' c='dimmed'>
-              Result Count
-            </Text>
-          }
-        />
-      </Grid.Col>
-      <Grid.Col span={3}>
-        <Stack justify='flex-end' h='100%'>
-          <Paper py={7} px='xs' withBorder>
-            <Checkbox
-              label='Offline Surveys'
-              checked={paramOffline}
-              onChange={() => handleChangeOffline(!paramOffline)}
+              label='Downloaded'
+              checked={offline}
+              onChange={() => setOffline(!offline)}
             />
           </Paper>
         </Stack>

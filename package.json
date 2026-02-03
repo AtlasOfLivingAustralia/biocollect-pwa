@@ -25,6 +25,7 @@
     "dexie": "^4.2.1",
     "dexie-react-hooks": "^4.2.0",
     "jwt-decode": "^4.0.0",
+    "lodash-es": "^4.17.23",
     "oidc-client-ts": "^3.4.1",
     "pretty-bytes": "^7.1.0",
     "react": "^19.2.4",
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.3.13",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^25.0.9",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",

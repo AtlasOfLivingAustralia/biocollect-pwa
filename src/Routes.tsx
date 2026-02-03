@@ -1,15 +1,18 @@
-import { useContext, useRef } from 'react';
+import { useRef } from 'react';
 import { createBrowserRouter, RouterProvider, redirect } from 'react-router';
-import { APIContext } from '#/helpers/api';
-import Layout from '#/layout';
-// App views
+import { jwtDecode } from 'jwt-decode';
+
+// Helpers
 import { Debug, ErrorView, Home, Project, SignIn, Welcome } from '#/views';
-import { userManager } from './helpers/auth';
+import { userManager } from '#/helpers/auth';
+import { biocollect } from '#/helpers/api';
+
+// Layout component
+import Layout from '#/layout';
 
 const isDev = import.meta.env.DEV;
 
 export default function Routes() {
-  const api = useContext(APIContext);
   const isInitialRouteProject = useRef(window.location.pathname.startsWith('/project/'));
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
@@ -34,6 +37,21 @@ export default function Routes() {
           children: [
             {
               path: '',
+              loader: async () => {
+                const user = await userManager.getUser();
+                if (user) {
+                  // If the given_name is supplied, return that
+                  if (user.profile.given_name) {
+                    return user.profile.given_name;
+                  }
+
+                  // If not, decode the access token & get it from that
+                  const decoded = jwtDecode(user.access_token);
+                  return (decoded as { given_name: string } | null)?.given_name || 'User';
+                }
+
+                return redirect('/signin');
+              },
               element: <Home />,
             },
             {
@@ -45,11 +63,11 @@ export default function Routes() {
                 if (isInitialRouteProject.current) isInitialRouteProject.current = false;
 
                 // Fetch the project first
-                const project = await api.biocollect.getProject(pid);
+                const project = await biocollect.getProject(pid);
                 const userIsProjectMember = project?.userIsProjectMember === true;
 
                 // Then fetch surveys using the member flag
-                const surveys = await api.biocollect.listSurveys(pid, userIsProjectMember);
+                const surveys = await biocollect.listSurveys(pid, userIsProjectMember);
 
                 return {
                   data: initialProject ? Promise.all([project, surveys]) : [project, surveys],
