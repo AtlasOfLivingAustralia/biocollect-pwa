@@ -7,7 +7,6 @@ import { RecordsDrawerProvider } from '#/helpers/drawer';
 import { FrameProvider } from '#/helpers/frame';
 import { theme } from '#/theme';
 
-import PWAProvider from './helpers/pwa/provider';
 import App from './App';
 
 // Auth helpers
@@ -24,17 +23,15 @@ function Main() {
       userManager={userManager}
       onSigninCallback={handleSignIn}
     >
-      <PWAProvider>
-        <MantineProvider theme={theme} defaultColorScheme='dark'>
-          <ModalsProvider>
-            <FrameProvider>
-              <RecordsDrawerProvider>
-                <App />
-              </RecordsDrawerProvider>
-            </FrameProvider>
-          </ModalsProvider>
-        </MantineProvider>
-      </PWAProvider>
+      <MantineProvider theme={theme} defaultColorScheme='dark'>
+        <ModalsProvider>
+          <FrameProvider>
+            <RecordsDrawerProvider>
+              <App />
+            </RecordsDrawerProvider>
+          </FrameProvider>
+        </ModalsProvider>
+      </MantineProvider>
     </AuthProvider>
   );
 }

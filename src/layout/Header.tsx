@@ -19,6 +19,7 @@ import {
   IconPlugOff,
   IconQuestionMark,
   IconSearch,
+  IconSettings,
   IconSun,
   IconUser,
 } from '@tabler/icons-react';
@@ -39,7 +40,6 @@ import logoLight from '/assets/logo-light-32x32.png';
 // Install button
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
 import { InstallButton } from './InstallButton';
-import { StorageSummary } from './StorageSummary';
 
 export function Header() {
   const { toggleColorScheme } = useMantineColorScheme();
@@ -109,7 +109,17 @@ export function Header() {
               >
                 Unpublished records
               </Menu.Item>
-              <StorageSummary />
+              <Menu.Item
+                onClick={() =>
+                  frame.open(
+                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/settings`,
+                    'Manage Storage',
+                  )
+                }
+                leftSection={<IconSettings size='1rem' />}
+              >
+                Manage storage
+              </Menu.Item>
               {import.meta.env.DEV && (
                 <>
                   <Menu.Divider />
