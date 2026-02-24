@@ -13,6 +13,7 @@ import type {
 
 // Local classes
 import { BioCollectDexie } from '../dexie';
+import { getHubId } from '#/helpers/funcs/useHub';
 
 const escapeRegExp = (input: string) => input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -54,6 +55,8 @@ export default (db: BioCollectDexie) => ({
     search?: string,
     hasDownloadedSurveys = true,
   ): Promise<BioCollectProjectSearch> => {
+    const hubId = getHubId();
+
     if (navigator.onLine && !hasDownloadedSurveys) {
       // Define basic query parameters
       const params = new URLSearchParams({
@@ -64,14 +67,11 @@ export default (db: BioCollectDexie) => ({
         max: max.toString(),
         offset: offset.toString(),
         isUserPage: isUserPage.toString(),
+        hub: hubId,
       });
 
       // Append public projects filter query
       params.append('fq', 'allParticipants:ALL');
-
-      // Append configurable hub param
-      const paramHub = import.meta.env.VITE_API_BIOCOLLECT_HUB;
-      if (paramHub) params.append('hub', paramHub);
 
       // Append user search
       if (search && search.length > 0) params.append('q', search);
@@ -84,6 +84,11 @@ export default (db: BioCollectDexie) => ({
       const surveys = formattedSearch.projects.flatMap(
         ({ projectActivities }) => projectActivities || [],
       );
+
+      // Add the hub ID to the stored projects
+      formattedSearch.projects.forEach((project) => {
+        project.hub = hubId;
+      });
 
       // Store the projects & surveys in IDB & return
       await Promise.all([
@@ -105,6 +110,9 @@ export default (db: BioCollectDexie) => ({
 
       // Create the base collection query
       let query = db.projects.toCollection();
+
+      // Append the hub
+      query.and(({ hub }) => hubId === hub);
 
       // Append the search query
       if (search && search.length > 0)

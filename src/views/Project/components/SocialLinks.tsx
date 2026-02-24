@@ -50,7 +50,7 @@ export function SocialLinks({ links, ...rest }: SocialLinksProps) {
               component='a'
               href={link.url}
               target='_blank'
-              variant='filled'
+              variant='light'
               size='xl'
               radius='lg'
             >

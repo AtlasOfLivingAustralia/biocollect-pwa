@@ -13,6 +13,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useOnLine } from '#/helpers/funcs';
 import { isEqual } from 'lodash-es';
 
+import classes from './SearchControls.module.css';
+
 export interface SearchState {
   max: number;
   sort: string;
@@ -76,8 +78,8 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
   }, [onLine]);
 
   return (
-    <Grid ml='lg'>
-      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
+    <Grid className={classes.controls}>
+      <Grid.Col span={{ xs: 12, md: onLine ? 6 : 4 }}>
         <TextInput
           leftSection={<IconSearch />}
           placeholder='Project Name'
@@ -91,7 +93,7 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
         />
       </Grid.Col>
       {onLine && (
-        <Grid.Col span={{ xs: 12, md: 3 }}>
+        <Grid.Col span={{ xs: 12, md: 6 }}>
           <Select
             value={sort}
             label={
@@ -109,7 +111,7 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
           />
         </Grid.Col>
       )}
-      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
+      <Grid.Col span={{ xs: 12, md: onLine ? 6 : 4 }}>
         <Select
           value={max.toString()}
           data={['10', '20', '30', '50'].map((maxOption) => ({
@@ -124,7 +126,7 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
           }
         />
       </Grid.Col>
-      <Grid.Col span={{ xs: 12, md: onLine ? 3 : 4 }}>
+      <Grid.Col span={{ xs: 12, md: onLine ? 6 : 4 }}>
         <Stack justify='flex-end' h='100%'>
           <Paper py={7} px='xs' withBorder>
             <Checkbox

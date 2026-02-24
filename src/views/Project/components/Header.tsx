@@ -92,7 +92,7 @@ export function Header({ project, mobile }: HeaderProps) {
           {(!project.isExternal || project.tags.length > 0) && (
             <Group mt='lg' gap='xs' justify='center'>
               {!project.isExternal && <ALABadge />}
-              {project.difficulty && <Badge color='blue'>{project.difficulty} difficulty</Badge>}
+              {project.difficulty && <Badge>{project.difficulty} difficulty</Badge>}
               {project.tags.map((tag) => (
                 <ProjectTag key={tag} tag={tag} />
               ))}
@@ -192,7 +192,7 @@ export function Header({ project, mobile }: HeaderProps) {
         {(!project.isExternal || project.tags.length > 0) && (
           <Group mt='md' mb='xl' gap='xs'>
             {!project.isExternal && <ALABadge />}
-            {project.difficulty && <Badge color='blue'>{project.difficulty} difficulty</Badge>}
+            {project.difficulty && <Badge>{project.difficulty} difficulty</Badge>}
             {project.tags.map((tag) => (
               <ProjectTag key={tag} tag={tag} />
             ))}

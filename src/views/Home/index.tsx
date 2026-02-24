@@ -2,7 +2,9 @@ import { Wave } from '#/components/Wave';
 import {
   Box,
   Center,
+  Flex,
   Grid,
+  Image,
   Pagination,
   Space,
   Stack,
@@ -24,6 +26,8 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { useLoaderData } from 'react-router';
 import { ProjectItem } from './components/ProjectItem';
 import { DEFAULTS, SearchControls, type SearchState } from './components/SearchControls';
+import { HubSwitcher } from './components/HubSwitcher';
+
 import classes from './index.module.css';
 
 const range = (max: number) => (max > 0 ? [...new Array(max).keys()] : []);
@@ -71,6 +75,7 @@ export function Home() {
   const [projectSearch, setProjectSearch] = useState<BioCollectProjectSearch | null>(null);
   const [page, setPage] = useState<number>(1)
   const [searchState, setSearchState] = useState<SearchState>(DEFAULTS);
+  const [hubSwitch, setHubSwitch] = useState<boolean>(false);
   const lastTotal = useRef<number>(null);
 
   // Watch for changes to the downloaded surveys
@@ -91,7 +96,7 @@ export function Home() {
         searchState.sort,
         searchState.userPage,
         searchState.search,
-        searchState.offline,
+        searchState.offline
       );
 
       if (areProjectsDifferent(projectSearch, data)) {
@@ -106,17 +111,23 @@ export function Home() {
   }, [searchState, projectSearch, page])
 
   // Effect hook to fetch project data
-  useEffect(() => { fetch() }, [searchState, page]);
+  useEffect(() => { fetch() }, [searchState, hubSwitch, page]);
 
   return (
     <>
       <div className={classes.header}>
-        <Stack className={classes.name} gap={0}>
-          <Text c='dimmed'>Welcome back,</Text>
-          <Title m={0}>
-            {givenName}
-          </Title>
-        </Stack>
+        <Flex className={classes.content} justify='center' align='center'>
+          <Stack className={classes.name} gap={0} justify='center'>
+            <Text c='dimmed'>G'day,</Text>
+            <Title m={0}>
+              {givenName}
+            </Title>
+          </Stack>
+          <HubSwitcher onChange={() => {
+            setPage(1);
+            setHubSwitch(!hubSwitch)
+          }} />
+        </Flex>
         <SearchControls onUpdate={setSearchState} setPage={setPage} />
       </div>
       <Wave
@@ -157,7 +168,7 @@ export function Home() {
         height={75}
         width='100%'
       />
-      {lastTotal.current && (
+      {lastTotal.current !== null && (
         <Center pb='xl'>
           <Pagination
             mb='md'
