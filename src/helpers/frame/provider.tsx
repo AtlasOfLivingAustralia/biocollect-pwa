@@ -98,7 +98,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
           setTimeout(() => setSrc(null), 500);
         }}
         title={
-          <Text size='lg' ff='heading'>
+          <Text size='lg' ff='heading' lineClamp={1}>
             {title || 'BioCollect'}
           </Text>
         }
