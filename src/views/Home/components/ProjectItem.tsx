@@ -21,6 +21,8 @@ import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
 import { useOnLine } from '#/helpers/funcs';
 
+import classes from './ProjectItem.module.css';
+
 interface ProjectItemSurveyProps {
   survey?: BioCollectSurvey;
   downloaded?: boolean;
@@ -36,7 +38,7 @@ function ProjectItemSurvey({ survey, downloaded }: ProjectItemSurveyProps) {
           {!survey ? (
             <Chip>Placeholder Chip</Chip>
           ) : (
-            <DownloadChip survey={survey} label={survey.name} onLine={onLine} downloaded={downloaded} />
+            <DownloadChip className={classes.download} survey={survey} label={survey.name} onLine={onLine} downloaded={downloaded} />
           )}
         </Skeleton>
       </Box>

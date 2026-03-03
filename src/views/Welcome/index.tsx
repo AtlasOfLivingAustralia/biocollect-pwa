@@ -57,7 +57,7 @@ function WelcomeDetails() {
             }
           >
             Press
-            <DownloadChip display='inline' mx={6} /> to save surveys for offline use
+            <DownloadChip onLine display='inline' mx={6} /> to save surveys for offline use
           </List.Item>
           <List.Item
             icon={
