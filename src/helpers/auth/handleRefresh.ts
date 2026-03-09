@@ -16,7 +16,6 @@ const EXPIRY_BUFFER = 60 * 60 * 24 * 360; // 360 days
 
 export async function handleRefresh(): Promise<boolean> {
   const online = isOnline();
-  const url = await userManager.metadataService.getTokenEndpoint();
   const user = await userManager.getUser();
 
   // Ensure the user is logged in & has a refresh token
@@ -43,6 +42,8 @@ export async function handleRefresh(): Promise<boolean> {
 
     return true;
   }
+
+  const url = await userManager.metadataService.getTokenEndpoint();
 
   // Ensure a URL was returned
   if (!url) {

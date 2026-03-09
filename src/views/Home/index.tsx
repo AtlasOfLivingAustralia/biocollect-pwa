@@ -1,10 +1,10 @@
 import { Wave } from '#/components/Wave';
 import {
   Box,
+  Button,
   Center,
   Flex,
   Grid,
-  Image,
   Pagination,
   Space,
   Stack,
@@ -13,7 +13,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconArchive } from '@tabler/icons-react';
+import { IconArchive, IconFileSad } from '@tabler/icons-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 // Helper functions / components
@@ -24,10 +24,11 @@ import type { BioCollectProjectSearch } from '#/types';
 import { dexie } from '#/helpers/api/dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { useLoaderData } from 'react-router';
+import { HubSwitcher } from './components/HubSwitcher';
 import { ProjectItem } from './components/ProjectItem';
 import { DEFAULTS, SearchControls, type SearchState } from './components/SearchControls';
-import { HubSwitcher } from './components/HubSwitcher';
 
+import type { AxiosError } from 'axios';
 import classes from './index.module.css';
 
 const range = (max: number) => (max > 0 ? [...new Array(max).keys()] : []);
@@ -73,6 +74,7 @@ export function Home() {
 
   // API data state
   const [projectSearch, setProjectSearch] = useState<BioCollectProjectSearch | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(1)
   const [searchState, setSearchState] = useState<SearchState>(DEFAULTS);
   const [hubSwitch, setHubSwitch] = useState<boolean>(false);
@@ -87,7 +89,12 @@ export function Home() {
   }), {}));
 
   const fetch = useCallback(async () => {
-    if (projectSearch !== null) setProjectSearch(null);
+    if (projectSearch !== null) {
+      setProjectSearch(null);
+    }
+    if (error !== null) {
+      setError(null);
+    }
 
     try {
       const data = await biocollect.projectSearch(
@@ -106,7 +113,8 @@ export function Home() {
       // Update the last total ref
       lastTotal.current = data.total;
     } catch (error) {
-      console.error(error);
+      setError((error as AxiosError).message);
+      console.error('Search error!', error);
     }
   }, [searchState, projectSearch, page])
 
@@ -157,7 +165,17 @@ export function Home() {
               <Text c='dimmed'>Try refining your search criteria</Text>
             </Stack>
           </Grid.Col>))}
-          {!projectSearch && <HomeLoading max={searchState.max} />}
+          {error && ((<Grid.Col span={12}>
+            <Stack align='center' gap={8}>
+              <IconFileSad size='4rem' />
+              <Text mt='md' ff='heading' size='xl'>
+                Connection Error
+              </Text>
+              <Text c='dimmed'>We can&apos;t reach the ALA servers, please try again later.</Text>
+              <Button mt='lg' onClick={() => setHubSwitch(!hubSwitch)}>Retry</Button>
+            </Stack>
+          </Grid.Col>))}
+          {!projectSearch && !error && <HomeLoading max={searchState.max} />}
         </Grid>
         <Space h={25} />
       </Box>
