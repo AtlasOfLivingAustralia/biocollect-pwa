@@ -13,6 +13,7 @@ interface TokenResponse {
 
 const REFRESH_BUFFER = 1000 * 60 * 5; // 5 minutes
 const EXPIRY_BUFFER = 60 * 60 * 24 * 360; // 360 days
+const ARTIFICIAL_EXPIRY_THRESHOLD = 1000 * 60 * 60 * 24 * 200; // 200 days
 
 export async function handleRefresh(): Promise<boolean> {
   const online = isOnline();
@@ -50,8 +51,16 @@ export async function handleRefresh(): Promise<boolean> {
     throw new Error('[Auth] Failed to fetch token endpoint!');
   }
 
+  const now = Date.now();
+  const timeUntilExpiry = user.expires_at * 1000 - now;
+  const hasOfflineExpiry = timeUntilExpiry > ARTIFICIAL_EXPIRY_THRESHOLD;
+
+  if (hasOfflineExpiry) {
+    console.log('[Auth] Expiry appears artificially extended, forcing refresh.');
+  }
+
   // Token is not expiring within the next 5 minutes, don't refresh
-  if (user.expires_at * 1000 > Date.now() + REFRESH_BUFFER) {
+  if (!hasOfflineExpiry && user.expires_at * 1000 > now + REFRESH_BUFFER) {
     console.log('[Auth] Not refreshing, token not expiring in the next 5 minutes.');
     return false;
   }
