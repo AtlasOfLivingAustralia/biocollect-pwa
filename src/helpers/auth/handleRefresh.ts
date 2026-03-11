@@ -5,15 +5,30 @@ import { isOnline } from '../funcs';
 import { authConfig, userManager } from './config';
 
 interface TokenResponse {
-  id_token: string;
+  id_token?: string;
   access_token: string;
   expires_in: number;
   token_type: string;
 }
 
 const REFRESH_BUFFER = 1000 * 60 * 5; // 5 minutes
-const EXPIRY_BUFFER = 60 * 60 * 24 * 360; // 360 days
-const ARTIFICIAL_EXPIRY_THRESHOLD = 1000 * 60 * 60 * 24 * 200; // 200 days
+const EXPIRY_BUFFER = 60 * 60 * 24 * 7; // 7 days
+const OFFLINE_EXPIRY_FLAG_KEY = 'auth.offlineExpiryExtended';
+
+const getOfflineExpiryFlag = () =>
+  typeof window !== 'undefined' && window.localStorage.getItem(OFFLINE_EXPIRY_FLAG_KEY) === 'true';
+
+const setOfflineExpiryFlag = (enabled: boolean) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  if (enabled) {
+    window.localStorage.setItem(OFFLINE_EXPIRY_FLAG_KEY, 'true');
+  } else {
+    window.localStorage.removeItem(OFFLINE_EXPIRY_FLAG_KEY);
+  }
+};
 
 export async function handleRefresh(): Promise<boolean> {
   const online = isOnline();
@@ -39,6 +54,8 @@ export async function handleRefresh(): Promise<boolean> {
     await userManager.storeUser(newUser);
     await userManager.getUser(true);
 
+    setOfflineExpiryFlag(true);
+
     console.log('[Auth] Token expiry extended!');
 
     return true;
@@ -52,8 +69,7 @@ export async function handleRefresh(): Promise<boolean> {
   }
 
   const now = Date.now();
-  const timeUntilExpiry = user.expires_at * 1000 - now;
-  const hasOfflineExpiry = timeUntilExpiry > ARTIFICIAL_EXPIRY_THRESHOLD;
+  const hasOfflineExpiry = getOfflineExpiryFlag();
 
   if (hasOfflineExpiry) {
     console.log('[Auth] Expiry appears artificially extended, forcing refresh.');
@@ -80,7 +96,10 @@ export async function handleRefresh(): Promise<boolean> {
   // If the request was successful, update the token in the userManager
   if (resp.ok) {
     const data = (await resp.json()) as TokenResponse;
-    const profile = jwtDecode(data.id_token) as IdTokenClaims;
+    const idToken = data.id_token ?? user.id_token;
+    const profile = data.id_token
+      ? (jwtDecode(data.id_token) as IdTokenClaims)
+      : (user.profile as IdTokenClaims);
 
     // Calculate new expiry time
     const now = Math.floor(Date.now() / 1000);
@@ -90,7 +109,7 @@ export async function handleRefresh(): Promise<boolean> {
       access_token: data.access_token,
       token_type: data.token_type ?? 'Bearer',
       refresh_token: user.refresh_token,
-      id_token: data.id_token,
+      id_token: idToken,
       scope: user.scope,
       session_state: user.session_state ?? null,
       expires_at,
@@ -100,9 +119,11 @@ export async function handleRefresh(): Promise<boolean> {
     // Persist the new user in the store & re-raise the UserLoaded event
     await userManager.storeUser(newUser);
     await userManager.getUser(true);
+    setOfflineExpiryFlag(false);
 
     return true;
   } else {
-    throw new Error('[Auth] Failed to fetch new token!');
+    const responseText = await resp.text();
+    throw new Error(`[Auth] Failed to fetch new token! status=${resp.status} body=${responseText}`);
   }
 }
