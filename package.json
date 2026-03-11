@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host --mode dev",
     "build:dev": "tsc && vite build --mode dev",
+    "run:functionaltest": "vite --host --mode functionaltest",
     "build:functionaltest": "tsc && vite build --mode functionaltest",
     "build:cicd": "./cicd/build.sh",
     "lint": "biome lint ./src",
