@@ -52,7 +52,7 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
               <Image className={classes.logo} src={hub?.logo} w="100%" h="100%" radius='xl' />
             </div>
           </Skeleton>
-          <Stack className={classes.details} gap={0} py={4}>
+          <Stack className={classes.details} gap={4} py={4}>
             <Skeleton visible={!hub}>
               <Text size='lg' fw='bold' ff='heading'>{hub?.name || "Hub name"}</Text>
             </Skeleton>
