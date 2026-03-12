@@ -195,7 +195,7 @@ export default (db: BioCollectDexie) => ({
   listHubs: async (): Promise<BioCollectHub[]> => {
     if (navigator.onLine) {
       const { data } = await axios.get<BioCollectHub[]>(
-        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/hub/list`,
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/hub/pwaList`,
       );
       await db.hubs.bulkPut(data);
       return data;
