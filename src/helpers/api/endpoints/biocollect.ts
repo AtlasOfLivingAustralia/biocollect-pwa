@@ -5,6 +5,7 @@ import { toQueryString } from '#/helpers/funcs';
 import type {
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
+  BioCollectHub,
   BioCollectProject,
   BioCollectProjectSearch,
   BioCollectSurvey,
@@ -188,6 +189,18 @@ export default (db: BioCollectDexie) => ({
       return data;
     } else {
       return { activities: [] };
+    }
+  },
+
+  listHubs: async (): Promise<BioCollectHub[]> => {
+    if (navigator.onLine) {
+      const { data } = await axios.get<BioCollectHub[]>(
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/hub/list`,
+      );
+      await db.hubs.bulkPut(data);
+      return data;
+    } else {
+      return db.hubs.toArray();
     }
   },
 });

@@ -1,5 +1,10 @@
 import Dexie, { type Table } from 'dexie';
-import type { BioCollectBioActivity, BioCollectProject, BioCollectSurvey } from '#/types';
+import type {
+  BioCollectBioActivity,
+  BioCollectHub,
+  BioCollectProject,
+  BioCollectSurvey,
+} from '#/types';
 
 interface Cached {
   surveyId: string;
@@ -8,6 +13,7 @@ interface Cached {
 
 export class BioCollectDexie extends Dexie {
   // For TypeScript types
+  hubs!: Table<BioCollectHub>;
   projects!: Table<BioCollectProject>;
   surveys!: Table<BioCollectSurvey>;
   activities!: Table<BioCollectBioActivity>;
@@ -16,7 +22,8 @@ export class BioCollectDexie extends Dexie {
   constructor() {
     super(`biocollect-${import.meta.env.MODE}`);
     this.version(1).stores({
-      projects: '++projectId,name', // Primary key and indexed props
+      hubs: '++id,name',
+      projects: '++projectId,url', // Primary key and indexed props
       surveys: '++id,projectId,pwaDownloaded',
       activities: '++activityId,projectId,projectActivityId,userId',
       cached: '++surveyId,projectId',

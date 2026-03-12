@@ -372,3 +372,11 @@ export interface BioCollectBioActivity {
 export interface BioCollectBioActivitySearch {
   activities: BioCollectBioActivity[];
 }
+
+export interface BioCollectHub {
+  id: string;
+  url: string;
+  name: string;
+  description: string;
+  logo: string;
+}
