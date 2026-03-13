@@ -1,0 +1,4 @@
+.header {    
+  background-color: light-dark(rgba(255,255,255,0.4), rgba(22, 23, 25, 0.6)) !important;
+  backdrop-filter: blur(12px);
+}

@@ -1,5 +1,6 @@
-import { ActionIcon, Group, GroupProps, Paper, Tooltip } from '@mantine/core';
+import { ActionIcon, Group, type GroupProps, Tooltip } from '@mantine/core';
 import {
+  type Icon,
   IconBrandAndroid,
   IconBrandApple,
   IconBrandFacebook,
@@ -13,9 +14,8 @@ import {
   IconBrandVimeo,
   IconBrandYoutube,
   IconRss,
-  Icon,
 } from '@tabler/icons-react';
-import { ProjectLink } from 'types';
+import type { ProjectLink } from '#/types';
 
 const roleToIcon: { [key: string]: Icon } = {
   facebook: IconBrandFacebook,
@@ -39,20 +39,20 @@ interface SocialLinksProps extends GroupProps {
 
 export function SocialLinks({ links, ...rest }: SocialLinksProps) {
   return (
-    <Group spacing="xs" {...rest}>
+    <Group gap='xs' {...rest}>
       {links.map((link) => {
         const Icon = roleToIcon[link.role];
         if (!Icon) return null;
 
         return (
-          <Tooltip key={link.role} label={link.role} position="top">
+          <Tooltip key={link.role} label={link.role} position='top'>
             <ActionIcon
-              component="a"
+              component='a'
               href={link.url}
-              target="_blank"
-              variant="filled"
-              size="xl"
-              radius="lg"
+              target='_blank'
+              variant='light'
+              size='xl'
+              radius='lg'
             >
               <Icon />
             </ActionIcon>

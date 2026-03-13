@@ -1,5 +1,3 @@
-import { Suspense } from 'react';
-import { Await, Link, useAsyncValue, useLoaderData } from 'react-router-dom';
 import {
   Accordion,
   Box,
@@ -16,6 +14,7 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import {
   IconArrowBack,
   IconClipboardList,
@@ -24,23 +23,25 @@ import {
   IconInfoCircle,
   IconPhone,
 } from '@tabler/icons-react';
-import { BioCollectProject, BioCollectSurvey } from 'types';
-import { useMediaQuery } from '@mantine/hooks';
+import { Suspense } from 'react';
+import { Await, Link, useAsyncValue, useLoaderData } from 'react-router';
 
-import { Header } from './components/Header';
-import { Wave } from 'components/Wave';
-import { SurveyCard } from './components/SurveyCard';
-import { ScienceTypes } from './components/ScienceTypes';
+import { Wave } from '#/components/Wave';
+import type { BioCollectProject, BioCollectSurvey } from '#/types';
 import { DownloadInstructions } from './components/DownloadInstructions';
+// Local components
+import { Header } from './components/Header';
+import { ScienceTypes } from './components/ScienceTypes';
+import { SurveyCard } from './components/SurveyCard';
 
 type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 
 export function Project() {
-  const { data } = useLoaderData() as any;
+  const { data } = useLoaderData<{ data: ProjectLoaderArr }>();
   return (
     <Suspense
       fallback={
-        <Center h="calc(100vh - 71px)">
+        <Center h='calc(100vh - 71px)'>
           <Loader />
         </Center>
       }
@@ -56,16 +57,15 @@ function ProjectBody() {
   const [project, surveys] = useAsyncValue() as ProjectLoaderArr;
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const highlight =
-    theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[2];
-    
+  const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))';
+
   if (!project) {
     return (
-      <Center w="100%" h="calc(100vh - 71px)">
-        <Stack align="center">
+      <Center w='100%' h='calc(100vh - 71px)'>
+        <Stack align='center'>
           <Title>404</Title>
           <Text>The requested project could not be found</Text>
-          <Button mt="lg" leftIcon={<IconArrowBack />} component={Link} to="/">
+          <Button mt='lg' leftSection={<IconArrowBack />} component={Link} to='/'>
             Go home
           </Button>
         </Stack>
@@ -76,67 +76,67 @@ function ProjectBody() {
   return (
     <>
       <Header project={project} mobile={mobile} />
-      <Box px={36} pb="sm">
-        <Divider mb="xl" opacity={0.45} />
+      <Box px={36} pb='sm'>
+        <Divider mb='xl' opacity={0.45} />
         <DownloadInstructions />
       </Box>
       <Wave
-        style={{ marginTop: theme.spacing.xl, marginBottom: -30 }}
-        preserveAspectRatio="none"
+        style={{ marginTop: 'var(--mantine-spacing-xl)', marginBottom: -30 }}
+        preserveAspectRatio='none'
         waveColour={highlight}
         waveType={mobile ? 'body' : 'bodyFull'}
         height={75}
-        width="100%"
+        width='100%'
       />
-      <Box py="xl" px={36} bg={highlight}>
-        <Group align="center" mb="lg" mt={-20}>
-          <ThemeIcon variant="light" size={50} radius={25}>
+      <Box py='xl' px={36} bg={highlight}>
+        <Group align='center' mb='lg' mt={-20}>
+          <ThemeIcon variant='light' size={50} radius={25}>
             <IconClipboardList />
           </ThemeIcon>
           <Title order={2}>Surveys</Title>
         </Group>
-        <Grid gutter="xl">
-        {surveys.length > 0 ? (
-          surveys.map((survey) => (
-            <Grid.Col key={survey.id} xs={12} sm={12} md={6} lg={4} xl={4}>
-              <SurveyCard survey={survey} />
+        <Grid gutter='xl'>
+          {surveys.length > 0 ? (
+            surveys.map((survey) => (
+              <Grid.Col key={survey.id} span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 4 }}>
+                <SurveyCard survey={survey} />
+              </Grid.Col>
+            ))
+          ) : (
+            <Grid.Col span={12}>
+              <Text>No surveys</Text>
             </Grid.Col>
-          ))
-        ) : (
-          <Grid.Col span={12}>
-            <Text>No surveys</Text>
-          </Grid.Col>
-        )}
+          )}
         </Grid>
       </Box>
       <Wave
-        preserveAspectRatio="none"
+        preserveAspectRatio='none'
         waveColour={highlight}
         waveType={mobile ? 'bodyBottom' : 'bodyBottomFull'}
         height={75}
-        width="100%"
+        width='100%'
       />
-      <Box py="xl" mb="xl" px={36}>
-        <Grid gutter="xl" pb="xl">
-          <Grid.Col xs={12} sm={12} md={8} lg={8} xl={9}>
-            <Accordion variant="contained">
+      <Box py='xl' mb='xl' px={36}>
+        <Grid gutter='xl' pb='xl'>
+          <Grid.Col span={{ xs: 12, sm: 12, md: 8, lg: 8, xl: 9 }}>
+            <Accordion variant='contained'>
               {project.description && (
-                <Accordion.Item value="description">
+                <Accordion.Item value='description'>
                   <Accordion.Control>
-                    <Group align="center">
+                    <Group align='center'>
                       <IconInfoCircle />
                       <Title order={4}>Description</Title>
                     </Group>
                   </Accordion.Control>
                   <Accordion.Panel>
-                    <Text size="sm">{project.description}</Text>
+                    <Text size='sm'>{project.description}</Text>
                   </Accordion.Panel>
                 </Accordion.Item>
               )}
               {project.scienceType.length > 0 && (
-                <Accordion.Item value="scienceType">
+                <Accordion.Item value='scienceType'>
                   <Accordion.Control>
-                    <Group align="center">
+                    <Group align='center'>
                       <IconFlask2 />
                       <Title order={4}>Science Type</Title>
                     </Group>
@@ -149,75 +149,75 @@ function ProjectBody() {
               {(project.projectEquipment ||
                 project.projectTask ||
                 project.projectHowToParticipate) && (
-                <Accordion.Item value="getInvolved">
-                  <Accordion.Control>
-                    <Group align="center">
-                      <IconHeartHandshake />
-                      <Title order={4}>Get Involved</Title>
-                    </Group>
-                  </Accordion.Control>
-                  <Accordion.Panel>
-                    <Stack spacing="xs">
-                      {project.projectEquipment && (
-                        <Stack spacing={0}>
-                          <Text weight="bold" size="sm">
-                            Equipment
-                          </Text>
-                          <Text color="dimmed" size="sm">
-                            {project.projectEquipment}
-                          </Text>
-                        </Stack>
-                      )}
-                      {project.projectTask && (
-                        <Stack spacing={0}>
-                          <Text weight="bold" size="sm">
-                            Tasks
-                          </Text>
-                          <Text color="dimmed" size="sm">
-                            {project.projectTask}
-                          </Text>
-                        </Stack>
-                      )}
-                      {project.projectHowToParticipate && (
-                        <Stack spacing={0}>
-                          <Text weight="bold" size="sm">
-                            How to Participate
-                          </Text>
-                          <Text color="dimmed" size="sm">
-                            {project.projectHowToParticipate}
-                          </Text>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </Accordion.Panel>
-                </Accordion.Item>
-              )}
+                  <Accordion.Item value='getInvolved'>
+                    <Accordion.Control>
+                      <Group align='center'>
+                        <IconHeartHandshake />
+                        <Title order={4}>Get Involved</Title>
+                      </Group>
+                    </Accordion.Control>
+                    <Accordion.Panel>
+                      <Stack gap='xs'>
+                        {project.projectEquipment && (
+                          <Stack gap={0}>
+                            <Text fw='bold' size='sm'>
+                              Equipment
+                            </Text>
+                            <Text c='dimmed' size='sm'>
+                              {project.projectEquipment}
+                            </Text>
+                          </Stack>
+                        )}
+                        {project.projectTask && (
+                          <Stack gap={0}>
+                            <Text fw='bold' size='sm'>
+                              Tasks
+                            </Text>
+                            <Text c='dimmed' size='sm'>
+                              {project.projectTask}
+                            </Text>
+                          </Stack>
+                        )}
+                        {project.projectHowToParticipate && (
+                          <Stack gap={0}>
+                            <Text fw='bold' size='sm'>
+                              How to Participate
+                            </Text>
+                            <Text c='dimmed' size='sm'>
+                              {project.projectHowToParticipate}
+                            </Text>
+                          </Stack>
+                        )}
+                      </Stack>
+                    </Accordion.Panel>
+                  </Accordion.Item>
+                )}
             </Accordion>
           </Grid.Col>
           {(project.contactName || project.contactDetails) && (
-            <Grid.Col xs={12} sm={12} md={4} lg={4} xl={3}>
-              <Paper p="md" withBorder radius="md">
-                <Group align="center" mb="lg">
+            <Grid.Col span={{ xs: 12, sm: 12, md: 4, lg: 4, xl: 3 }}>
+              <Paper p='md' withBorder>
+                <Group align='center' mb='lg'>
                   <IconPhone />
                   <Title order={4}>Contact</Title>
                 </Group>
                 <Stack>
                   {project.contactName && (
-                    <Stack spacing={0}>
-                      <Text weight="bold" size="sm">
+                    <Stack gap={0}>
+                      <Text fw='bold' size='sm'>
                         Contact Name
                       </Text>
-                      <Text color="dimmed" size="sm">
+                      <Text c='dimmed' size='sm'>
                         {project.contactName}
                       </Text>
                     </Stack>
                   )}
                   {project.contactDetails && (
-                    <Stack spacing={0}>
-                      <Text weight="bold" size="sm">
+                    <Stack gap={0}>
+                      <Text fw='bold' size='sm'>
                         Contact Details
                       </Text>
-                      <Text color="dimmed" size="sm">
+                      <Text c='dimmed' size='sm'>
                         {project.contactDetails}
                       </Text>
                     </Stack>

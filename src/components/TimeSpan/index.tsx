@@ -1,4 +1,4 @@
-import { Group, Text, Paper, Stack, Progress, PaperProps } from '@mantine/core';
+import { Box, Group, Paper, type PaperProps, Progress, Stack, Text } from '@mantine/core';
 import { IconCalendar, IconCalendarDue } from '@tabler/icons-react';
 
 interface TimeSpanProps extends PaperProps {
@@ -13,18 +13,17 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
   if (!startDate && !endDate) return null;
 
   return (
-    <Paper radius="md" withBorder {...rest}>
-      <Group py={8} px="xs" position="center">
+    <Paper withBorder {...rest}>
+      <Group py={8} px='xs' justify='center'>
         {startDate && (
           <>
             <IconCalendar />
-            <Stack spacing={0}>
-              <Text size="xs" color="dimmed" weight="bold">
+            <Stack gap={0}>
+              <Text size='xs' c='dimmed' fw='bold'>
                 Start Date
               </Text>
-              <Text size="sm">
-                {startDate.getDay()}/{startDate.getMonth() + 1}/
-                {startDate.getFullYear()}
+              <Text size='sm'>
+                {startDate.getDay()}/{startDate.getMonth() + 1}/{startDate.getFullYear()}
               </Text>
             </Stack>
           </>
@@ -33,13 +32,12 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
         {endDate && (
           <>
             <IconCalendarDue />
-            <Stack spacing={0}>
-              <Text size="xs" color="dimmed" weight="bold">
+            <Stack gap={0}>
+              <Text size='xs' c='dimmed' fw='bold'>
                 End Date
               </Text>
-              <Text size="sm">
-                {endDate.getDay()}/{endDate.getMonth() + 1}/
-                {endDate.getFullYear()}
+              <Text size='sm'>
+                {endDate.getDay()}/{endDate.getMonth() + 1}/{endDate.getFullYear()}
               </Text>
             </Stack>
           </>
@@ -49,28 +47,14 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
         endDate &&
         (() => {
           const value = Math.min(
-            ((endDate.getTime() - Date.now()) /
-              (endDate.getTime() - startDate.getTime())) *
-              100,
-            100
+            ((endDate.getTime() - Date.now()) / (endDate.getTime() - startDate.getTime())) * 100,
+            100,
           );
 
           return (
-            <Progress
-              styles={{
-                root: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
-                bar: {
-                  borderTopLeftRadius: `0!important`,
-                  borderTopRightRadius: `${
-                    value < 100 ? '0.25rem' : 0
-                  }!important`,
-                  borderBottomRightRadius: `${
-                    value < 100 ? '0.25rem' : 0
-                  }!important`,
-                },
-              }}
-              value={value}
-            />
+            <Box px='sm' pb='sm'>
+              <Progress value={value} />
+            </Box>
           );
         })()}
     </Paper>

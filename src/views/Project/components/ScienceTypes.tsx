@@ -1,5 +1,6 @@
 import { Group, Paper, Text, ThemeIcon } from '@mantine/core';
 import {
+  type Icon,
   IconActivity,
   IconActivityHeartbeat,
   IconAffiliate,
@@ -30,9 +31,7 @@ import {
   IconUsers,
   IconWorld,
   IconZoomCheck,
-  Icon,
 } from '@tabler/icons-react';
-import { ProjectLink } from 'types';
 
 const typeToIcon: { [key: string]: Icon } = {
   Animals: IconDog,
@@ -73,16 +72,16 @@ interface ScienceTypesProps {
 
 export function ScienceTypes({ types }: ScienceTypesProps) {
   return (
-    <Group spacing="sm">
+    <Group gap='sm'>
       {types.map((type) => {
         const Icon = typeToIcon[type];
         return (
-          <Paper withBorder key={type} p={6}>
-            <Group spacing="xs">
-              <ThemeIcon variant="light" size="md" radius="lg">
-                <Icon size="1rem" />
+          <Paper withBorder key={type} py={6} pl={6} pr='sm' radius='xl'>
+            <Group gap='xs'>
+              <ThemeIcon variant='light' size='md' radius='lg'>
+                <Icon size='1rem' />
               </ThemeIcon>
-              <Text size="sm" color="dimmed">
+              <Text size='sm' c='dimmed'>
                 {type}
               </Text>
             </Group>

@@ -1,11 +1,11 @@
-import { ReactElement, Suspense as ReactSuspense } from 'react';
 import { Center, Loader } from '@mantine/core';
+import { type ReactElement, Suspense as ReactSuspense } from 'react';
 
 interface SuspenseProps {
   children?: ReactElement;
 }
 const Fallback = () => (
-  <Center sx={{ display: 'flex', flexGrow: 1 }}>
+  <Center style={{ display: 'flex', flexGrow: 1 }}>
     <Loader />
   </Center>
 );

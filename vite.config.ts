@@ -1,12 +1,12 @@
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption } from 'vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
 // PWA Imports
-import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
-import { RouteMatchCallback } from 'workbox-core';
-import { RuntimeCaching } from 'workbox-build';
+import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
+import type { RouteMatchCallback } from 'workbox-core';
+import type { RuntimeCaching } from 'workbox-build';
 
 // Prefer localhost
 import dns from 'dns';
@@ -82,13 +82,22 @@ const pwaOptions: Partial<VitePWAOptions> = {
   registerType: 'autoUpdate',
   injectRegister: 'auto',
   devOptions: {
-    enabled: true,
+    enabled: false,
   },
 };
 
 // https://vitejs.dev/config/
 export default defineConfig({
   base: '/mobile-app',
-  plugins: [react(), tsconfigPaths(), visualizer() as any, VitePWA(pwaOptions)],
+  plugins: [
+    react({
+      babel: {
+        plugins: ['babel-plugin-react-compiler'],
+      },
+    }),
+    tsconfigPaths(),
+    visualizer() as PluginOption,
+    VitePWA(pwaOptions),
+  ],
   envDir: './config',
 });

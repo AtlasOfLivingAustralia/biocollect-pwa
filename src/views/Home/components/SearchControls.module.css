@@ -1,0 +1,9 @@
+.controls {
+  max-width: 600px;
+}
+
+@media (max-width: 75em) {
+  .controls {
+    max-width: none;
+  }
+}
