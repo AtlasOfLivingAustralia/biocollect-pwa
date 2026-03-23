@@ -7,11 +7,37 @@ import classes from './HubSwitcher.module.css';
 import type { BioCollectHub } from "#/types";
 import { biocollect } from "#/helpers/api";
 
+import logoAla from '/assets/logo-ala-background-light-trans.png';
+
 interface HubSwitcherProps {
   onChange: () => void;
 }
 
 const LOGO_SIZE = 50;
+
+interface HubLogoProps {
+  logo?: string;
+}
+
+function HubLogo({ logo }: HubLogoProps) {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  return (
+    <Skeleton visible={loading && !error} w={LOGO_SIZE} h={LOGO_SIZE} circle>
+      <Image
+        width={LOGO_SIZE}
+        height={LOGO_SIZE}
+        src={(logo && logo.length > 0 && !error) ? logo : logoAla}
+        radius='xl'
+        onLoad={() => setLoading(false)}
+        onError={() => {
+          setError(true);
+        }}
+      />
+    </Skeleton>
+  );
+}
 
 export function HubSwitcher({ onChange }: HubSwitcherProps) {
   const [hubs, setHubs] = useState<BioCollectHub[] | null>(null);
@@ -22,7 +48,7 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
     id,
     label: name,
     description,
-    leftSection: <Image width={50} height={50} src={logo} radius='xl' />,
+    leftSection: <HubLogo logo={logo} />,
     rightSection: url === hubId ? <Badge variant='default'>Current hub</Badge> : undefined,
     onClick: () => {
       // Only trigger the update if we're switching to a new hub
@@ -40,18 +66,14 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
     }
 
     fetchHubs();
-  }, [])
+  }, []);
 
   return (
     <>
       <Spotlight searchProps={{ placeholder: 'Search for a hub' }} actions={actions} />
       <UnstyledButton disabled={!hubs} className={classes.root} onClick={spotlight.open}>
         <Flex align='center' gap='md'>
-          <Skeleton visible={!hub} w={LOGO_SIZE} h={LOGO_SIZE} circle>
-            <div style={{ width: LOGO_SIZE, height: LOGO_SIZE }} className={classes.wrapper}>
-              <Image className={classes.logo} src={hub?.logo} w="100%" h="100%" radius='xl' />
-            </div>
-          </Skeleton>
+          <HubLogo logo={hub?.logo} />
           <Stack className={classes.details} gap={4} py={4}>
             <Skeleton visible={!hub}>
               <Text size='lg' fw='bold' ff='heading'>{hub?.name || "Hub name"}</Text>
