@@ -1,25 +1,19 @@
-import { useContext, useRef } from 'react';
-import {
-  RouterProvider,
-  redirect,
-  createBrowserRouter,
-  defer,
-} from 'react-router-dom';
+import { useRef } from 'react';
+import { createBrowserRouter, RouterProvider, redirect } from 'react-router';
+import { jwtDecode } from 'jwt-decode';
 
-// App views
-import { Home, Project, SignIn, Error, Debug, Welcome } from 'views';
-import { useAuth } from 'react-oidc-context';
-import { APIContext } from 'helpers/api';
-import Layout from 'layout';
+// Helpers
+import { Debug, ErrorView, Home, Project, SignIn, Welcome } from '#/views';
+import { userManager } from '#/helpers/auth';
+import { biocollect } from '#/helpers/api';
+
+// Layout component
+import Layout from '#/layout';
 
 const isDev = import.meta.env.DEV;
 
 export default function Routes() {
-  const auth = useAuth();
-  const api = useContext(APIContext);
-  const isInitialRouteProject = useRef(
-    window.location.pathname.startsWith('/project/')
-  );
+  const isInitialRouteProject = useRef(window.location.pathname.startsWith('/project/'));
 
   const router = useRef<ReturnType<typeof createBrowserRouter>>(
     createBrowserRouter(
@@ -27,12 +21,12 @@ export default function Routes() {
         {
           path: '/',
           element: <Layout />,
-          errorElement: <Error />,
-          loader: () => {
-            if (auth.isAuthenticated) {
+          errorElement: <ErrorView />,
+          loader: async () => {
+            const user = await userManager.getUser();
+            if (user) {
               // If we haven't seen the welcome screen yet, show it
-              if (!Boolean(localStorage.getItem('pwa-welcome')))
-                return redirect('/welcome');
+              if (!localStorage.getItem('pwa-welcome')) return redirect('/welcome');
 
               // Otherwise, stay on the home route
               return null;
@@ -43,39 +37,50 @@ export default function Routes() {
           children: [
             {
               path: '',
+              loader: async () => {
+                const user = await userManager.getUser();
+                if (user) {
+                  // If the given_name is supplied, return that
+                  if (user.profile.given_name) {
+                    return user.profile.given_name;
+                  }
+
+                  // If not, decode the access token & get it from that
+                  const decoded = jwtDecode(user.access_token);
+                  return (decoded as { given_name: string } | null)?.given_name || 'User';
+                }
+
+                return redirect('/signin');
+              },
               element: <Home />,
             },
             {
               path: 'project/:projectId',
               element: <Project />,
-              loader: async ({ params, ...rest }) => {
+              loader: async ({ params }) => {
                 const pid = params.projectId || '';
                 const initialProject = isInitialRouteProject.current;
-                if (isInitialRouteProject.current)
-                  isInitialRouteProject.current = false;
+                if (isInitialRouteProject.current) isInitialRouteProject.current = false;
 
                 // Fetch the project first
-                const project = await api.biocollect.getProject(pid);
+                const project = await biocollect.getProject(pid);
                 const userIsProjectMember = project?.userIsProjectMember === true;
 
                 // Then fetch surveys using the member flag
-                const surveys = await api.biocollect.listSurveys(pid, userIsProjectMember);
+                const surveys = await biocollect.listSurveys(pid, userIsProjectMember);
 
-                // Defer based on whether the initial route is the project route
-                return defer({
-                  data: initialProject
-                    ? Promise.all([project, surveys])
-                    : [project, surveys],
-                });
+                return {
+                  data: initialProject ? Promise.all([project, surveys]) : [project, surveys],
+                };
               },
             },
             ...(isDev
               ? [
-                  {
-                    path: '/debug',
-                    element: <Debug />,
-                  },
-                ]
+                {
+                  path: '/debug',
+                  element: <Debug />,
+                },
+              ]
               : []),
           ],
         },
@@ -86,13 +91,16 @@ export default function Routes() {
         {
           path: '/signin',
           element: <SignIn />,
-          loader: () => (auth.isAuthenticated ? redirect('/') : null),
+          loader: async () => {
+            const user = await userManager.getUser();
+            if (user) return redirect('/')
+          },
         },
       ],
       {
         basename: '/mobile-app',
-      }
-    )
+      },
+    ),
   );
 
   return <RouterProvider router={router.current} />;

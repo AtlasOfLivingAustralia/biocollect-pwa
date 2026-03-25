@@ -1,110 +1,89 @@
+import { Background } from '#/components';
 import {
   Button,
-  Divider,
+  Flex,
   Group,
   Image,
   Paper,
-  Space,
   Stack,
   Text,
   Title,
-  useMantineTheme,
+  useComputedColorScheme,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { Background } from 'components';
 import { useAuth } from 'react-oidc-context';
+import classes from './index.module.css';
 
+// Logos
+import logoAla from '/assets/logo-ala-white.png';
 import logoDark from '/assets/logo-dark-64x64.png';
 import logoLight from '/assets/logo-light-64x64.png';
-import logoAla from '/assets/logo-ala-white.png';
-import { Wave } from 'components/Wave';
+import splash from '/assets/splash.jpg';
+
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 
 export function SignIn() {
   const auth = useAuth();
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const isDark = useComputedColorScheme() === 'dark';
+  const navigate = useNavigate();
 
-  return mobile ? (
+  // Automatically navigate to the home once signed in
+  useEffect(() => {
+    if (auth.isAuthenticated) navigate('/')
+  }, [auth.isAuthenticated]);
+
+  return (
     <Background
-      semiTransparent
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '100vw',
-        height: '100vh',
-      }}
+      className={classes.background}
     >
-      <Paper p="xl" radius={0} w="100%" shadow="md">
-        <Stack align="center" spacing="xs" miw={275}>
-          <Image
-            width={64}
-            height={64}
-            src={theme.colorScheme === 'dark' ? logoLight : logoDark}
-          />
-          <Stack spacing={0} align="center">
-            <Title order={2}>BioCollect</Title>
-            <Text size="sm" color="dimmed">
-              Citizen Science Projects
-            </Text>
-          </Stack>
-          <Divider my="sm" w="100%" opacity={0.6} />
-          <Button
-            id="signIn"
-            leftIcon={<Image width={16} height={16} src={logoAla} />}
-            onClick={() => auth.signinRedirect()}
-          >
-            Sign in with ALA
-          </Button>
-        </Stack>
-      </Paper>
-    </Background>
-  ) : (
-    <Background
-      semiTransparent
-      style={{
-        display: 'flex',
-        width: '100vw',
-        height: '100vh',
-      }}
-    >
-      <Paper h="100%" py="xl" pl="xl" pr="xs" radius={0}>
-        <Stack spacing="xs" miw={250}>
-          <Group>
-            <Image
-              width={64}
-              height={64}
-              src={theme.colorScheme === 'dark' ? logoLight : logoDark}
-            />
-            <Stack spacing={0}>
-              <Title order={2}>BioCollect</Title>
-              <Text size="sm" color="dimmed">
-                Citizen Science Projects
-              </Text>
+      <Flex pos='relative'>
+        <Paper className={classes.details} shadow='xl' radius='xl'>
+          <Stack p='xl' justify='space-between' h="100%">
+            <Stack gap={0}>
+              <Image mb='lg' w={50} h={50} src={isDark ? logoLight : logoDark} />
+              <Text fz={28} ff='heading'>Welcome back</Text>
+              <Text c='dimmed'>A world of citizen science projects await</Text>
             </Stack>
-          </Group>
-          <Space h={45} />
-          <Button
-            id="signIn"
-            leftIcon={<Image width={16} height={16} src={logoAla} />}
-            onClick={() => auth.signinRedirect()}
-            fullWidth
-          >
-            Sign in with ALA
-          </Button>
-        </Stack>
-      </Paper>
-      <Wave
-        preserveAspectRatio="none"
-        vertical
-        style={{
-          height: '100%',
-          width: 125,
-          transform: 'scaleY(-100%)',
-          marginLeft: -2,
-        }}
-        waveType="lessSimple"
-      />
-    </Background>
-  );
+            <Group pb='lg'>
+              <Button
+                loading={auth.isLoading || auth.isAuthenticated}
+                mt='xl'
+                id='signIn'
+                color='rust'
+                leftSection={<Image width={16} height={16} src={logoAla} />}
+                onClick={() => auth.signinRedirect()}
+              >
+                Sign in with ALA
+              </Button>
+            </Group>
+          </Stack>
+        </Paper>
+        <div className={classes.wrapper}>
+          <div className={`${classes.blur} ${auth.isLoading ? classes.in : ''}`}></div>
+          <Image pos='relative' className={classes.feature} radius='xl' h="100%" src={splash} />
+          <Paper className={classes.card} radius='xl' p='xl' shadow='xl'>
+            <Stack h="100%" align='center' justify='center' gap='xs' pb='sm' miw={240}>
+              <Image w={64} h={64} src={isDark ? logoLight : logoDark} />
+              <Stack gap={0} align='center' mb='sm'>
+                <Title order={2}>BioCollect</Title>
+                <Text size='sm' c='dimmed'>
+                  Citizen Science Projects
+                </Text>
+              </Stack>
+              <Button
+                loading={auth.isLoading || auth.isAuthenticated}
+                mt='xl'
+                id='signIn'
+                color='rust'
+                leftSection={<Image width={16} height={16} src={logoAla} />}
+                onClick={() => auth.signinRedirect()}
+              >
+                Sign in with ALA
+              </Button>
+            </Stack>
+          </Paper>
+        </div>
+      </Flex>
+    </Background >
+  )
 }

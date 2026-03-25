@@ -1,7 +1,7 @@
 export const isFrame = () => {
   try {
     return window.self !== window.top;
-  } catch (e) {
+  } catch (_) {
     return true;
   }
 };

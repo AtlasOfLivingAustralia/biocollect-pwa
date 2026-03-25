@@ -1,46 +1,23 @@
-import { useEffect } from 'react';
-import { Box, Center, Loader } from '@mantine/core';
+import { AppShell } from '@mantine/core';
+import { Outlet } from 'react-router';
 
-import { Outlet, useNavigation } from 'react-router-dom';
-import { useAuth } from 'react-oidc-context';
-
-import {
-  NavigationProgress,
-  startNavigationProgress,
-  completeNavigationProgress,
-  resetNavigationProgress,
-} from '@mantine/nprogress';
-
-import Header from './Header';
+import { Header } from './Header';
+import { NavigationProgress } from './NavigationProgress';
+import { TokenHandler } from './TokenHandler';
 
 export default function Layout() {
-  const { isLoading } = useAuth();
-  const { state } = useNavigation();
 
-  useEffect(() => {
-    if (state === 'loading') {
-      resetNavigationProgress();
-      startNavigationProgress();
-    } else {
-      completeNavigationProgress();
-    }
-  }, [state]);
-
-  if (isLoading) {
-    return (
-      <Center sx={{ width: '100vw', height: '100vh' }}>
-        <Loader />
-      </Center>
-    );
-  }
 
   return (
     <>
-      <NavigationProgress stepInterval={0} />
-      <Header />
-      <Box pt={71}>
-        <Outlet />
-      </Box>
+      <NavigationProgress />
+      <TokenHandler />
+      <AppShell header={{ height: 70 }}>
+        <Header />
+        <AppShell.Main>
+          <Outlet />
+        </AppShell.Main>
+      </AppShell>
     </>
   );
 }

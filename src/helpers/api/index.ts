@@ -1,2 +1,4 @@
-export { default as APIContext } from './context';
-export { default as APIProvider } from './provider';
+import { dexie } from './dexie';
+import biocollectApi from './endpoints/biocollect';
+
+export const biocollect = biocollectApi(dexie);

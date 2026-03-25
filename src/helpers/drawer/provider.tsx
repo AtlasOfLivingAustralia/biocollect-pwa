@@ -1,53 +1,51 @@
 import {
-  ReactElement,
-  PropsWithChildren,
-  useEffect,
-  useState,
-  useContext,
-  Fragment,
-} from 'react';
-import { shallowEqual, useDisclosure, useMediaQuery, useDebouncedValue } from '@mantine/hooks';
-import {
-  BioCollectBioActivitySearch,
-  BioCollectBioActivityView,
-  FilterQueries,
-  BioCollectBioActivity
-} from 'types';
-
-// Contexts
-import RecordsDrawerContext from './context';
-import {
+  ActionIcon,
   Button,
   Center,
   Divider,
   Drawer,
   Group,
+  Loader,
   Stack,
   Text,
+  TextInput,
   Title,
   useMantineTheme,
-  TextInput,
-  ActionIcon,
-  Loader
 } from '@mantine/core';
-import { FrameContext } from 'helpers/frame';
-
+import { shallowEqual, useDebouncedValue, useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { IconExternalLink, IconFiles, IconSearch, IconX } from '@tabler/icons-react';
-import { APIContext } from 'helpers/api';
+import {
+  Fragment,
+  type PropsWithChildren,
+  type ReactElement,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { biocollect } from '#/helpers/api';
+
+// Helpers
+import { FrameContext } from '#/helpers/frame';
+import type {
+  BioCollectBioActivity,
+  BioCollectBioActivitySearch,
+  BioCollectBioActivityView,
+  FilterQueries,
+} from '#/types';
 import { ActivityItem } from './components/ActivityItem';
 
-const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
+// Local components
+import RecordsDrawerContext from './context';
+
+const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
   const [recordsFor, setRecordsFor] = useState<string | null>(null);
   const [view, setView] = useState<BioCollectBioActivityView | null>(null);
   const [filters, setFilters] = useState<FilterQueries>({});
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
-  const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(
-    null
-  );
+  const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(null);
 
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const api = useContext(APIContext);
   const frame = useContext(FrameContext);
 
   // search state hooks
@@ -65,7 +63,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
   const open = (
     newView: BioCollectBioActivityView,
     newFilters?: FilterQueries,
-    newRecordsFor?: string
+    newRecordsFor?: string,
   ) => {
     if (newView) setView(newView);
     if (newFilters) setFilters(newFilters);
@@ -80,15 +78,14 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
     setSearchInput('');
 
     // Equality check to reset UI state to loading
-    if (view !== newView || !shallowEqual(filters, newFilters || {}))
-      setSearch(null);
+    if (view !== newView || !shallowEqual(filters, newFilters || {})) setSearch(null);
 
     openDrawer();
   };
 
   // load next page
   const loadMore = () => {
-    if (!loadingMore && hasMore) setPage(p => p + 1);
+    if (!loadingMore && hasMore) setPage((p) => p + 1);
   };
 
   useEffect(() => {
@@ -105,16 +102,11 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         sort: 'dateCreatedSort',
       };
 
-      const resp = await api.biocollect.searchActivities(view, pagedFilters);
+      const resp = await biocollect.searchActivities(view, pagedFilters);
 
       setSearch(resp);
-
-      setItems(prev =>
-        page === 0 ? resp.activities : [...prev, ...resp.activities]
-      );
-
+      setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
       setHasMore(resp.activities.length === PAGE_SIZE);
-
       setLoadingMore(false);
     }
 
@@ -139,90 +131,74 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
         <Drawer.Overlay
           blur={3}
           opacity={0.55}
-          color={
-            theme.colorScheme === 'dark'
-              ? theme.colors.dark[6]
-              : theme.colors.gray[2]
-          }
+          color='light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))'
         />
-        <Drawer.Content pt={mobile ? 0 : 71}>
+        <Drawer.Content>
           <Drawer.Header>
-              <Group spacing="md">
-                <IconFiles />
-                <Stack spacing={0}>
-                  <Title order={3}>Records</Title>
-                  {recordsFor && (
-                    <Text size="sm" color="dimmed">
-                      For {recordsFor}
-                    </Text>
-                  )}
-                </Stack>
-              </Group>
-              <Drawer.CloseButton />
-          </Drawer.Header>
-          <Drawer.Body mt="lg">
-            <Stack pb="sm">
-              {filters.projectActivityId && (
-                <>
-                  <Text
-                    size="sm"
-                    transform="uppercase"
-                    color="dimmed"
-                    weight="bold"
-                  >
-                    Unpublished
+            <Group gap='md'>
+              <IconFiles />
+              <Stack gap={0}>
+                <Title order={3}>Records</Title>
+                {recordsFor && (
+                  <Text size='sm' c='dimmed'>
+                    For {recordsFor}
                   </Text>
-                  <Button
-                    id={`${filters.projectActivityId}UnpublishedRecords`}
-                    leftIcon={<IconExternalLink size="1rem" />}
-                    mb="xs"
-                    variant="outline"
-                    onClick={() => {
-                      close();
-                      frame.open(
-                        `${
-                          import.meta.env.VITE_API_BIOCOLLECT
-                        }/pwa/offlineList?projectActivityId=${
-                          filters.projectActivityId
-                        }`,
-                        'Unpublished Records'
-                      );
-                    }}
-                  >
-                    View unpublished records
-                  </Button>
-                </>
+                )}
+              </Stack>
+            </Group>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body mt='lg'>
+            <Stack pb='sm'>
+              {filters.projectActivityId && (
+                <Button
+                  id={`${filters.projectActivityId}UnpublishedRecords`}
+                  leftSection={<IconExternalLink size='1rem' />}
+                  mb='xs'
+                  variant='light'
+                  onClick={() => {
+                    close();
+                    frame.open(
+                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList?projectActivityId=${filters.projectActivityId
+                      }`,
+                      'Unpublished Records',
+                    );
+                  }}
+                >
+                  View unpublished records
+                </Button>
               )}
-              <Text
-                size="sm"
-                transform="uppercase"
-                color="dimmed"
-                weight="bold"
-              >
+              <Text size='sm' tt='uppercase' c='dimmed' fw='bold'>
                 Published
               </Text>
               <TextInput
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.currentTarget.value)}
-                placeholder="Search activities…"
-                icon={<IconSearch size={16} />}
-                
+                placeholder='Search activities…'
+                leftSection={<IconSearch size={16} />}
                 rightSection={
-                  loadingMore ? <Loader size='xs' /> : searchInput ? (
-                    <ActionIcon
-                      aria-label="Clear search"
-                      onClick={clearSearch}
-                      onMouseDown={(e) => e.preventDefault()}
-                      variant="subtle"
-                    >
-                      <IconX size={16} />
-                    </ActionIcon>
-                  ) : null
+                  (() => {
+                    if (loadingMore) {
+                      return <Loader size='xs' />
+                    } else if (searchInput) {
+                      return (
+                        <ActionIcon
+                          aria-label='Clear search'
+                          onClick={clearSearch}
+                          onMouseDown={(e) => e.preventDefault()}
+                          variant='subtle'
+                        >
+                          <IconX size={16} />
+                        </ActionIcon>
+                      );
+                    }
+                    return null;
+                  })()
                 }
                 rightSectionWidth={36}
-                w="100%"
-                mb="sm"
-                aria-label="Search published activities"
+                w='100%'
+                mb='sm'
+                aria-label='Search published activities'
               />
 
               {(() => {
@@ -238,19 +214,19 @@ const RecordsDrawerProvider = (props: PropsWithChildren<{}>): ReactElement => {
 
                       {hasMore && (
                         <Button
-                          mt="md"
+                          mt='md'
                           onClick={loadMore}
                           fullWidth
                           loading={loadingMore}
-                          variant="light"
+                          variant='light'
                         >
                           Load more
                         </Button>
                       )}
                     </>
                   ) : (
-                    <Center h="100%">
-                      <Text color="dimmed">No records found</Text>
+                    <Center h='100%'>
+                      <Text c='dimmed'>No records found</Text>
                     </Center>
                   );
                 }

@@ -1,25 +1,13 @@
-export const getNumber = (
-  name: string,
-  fallback: number,
-  params: URLSearchParams
-) => {
+export const getNumber = (name: string, fallback: number, params: URLSearchParams) => {
   const param = parseInt(params.get(name) || '', 10);
   return Number.isNaN(param) ? fallback : param;
 };
 
-export const getString = (
-  name: string,
-  fallback: string | undefined,
-  params: URLSearchParams
-) => {
+export const getString = (name: string, fallback: string, params: URLSearchParams) => {
   return params.get(name) || fallback;
 };
 
-export const getBool = (
-  name: string,
-  fallback: boolean,
-  params: URLSearchParams
-) => {
+export const getBool = (name: string, fallback: boolean, params: URLSearchParams) => {
   const param = params.get(name);
   return param ? param === 'true' : fallback;
 };

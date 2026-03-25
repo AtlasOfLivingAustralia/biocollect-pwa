@@ -1,56 +1,32 @@
-import { PropsWithChildren } from 'react';
-import {
-  Box,
-  BoxProps,
-  MantineNumberSize,
-  useMantineTheme,
-} from '@mantine/core';
-
-import logoLight from '/assets/logo-ala-background-light.png';
-import logoLightTrans from '/assets/logo-ala-background-light-trans.png';
-import logoDark from '/assets/logo-ala-background-dark.png';
-import logoDarkTrans from '/assets/logo-ala-background-dark-trans.png';
-
+import { Box, type BoxProps, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
+import type { PropsWithChildren } from 'react';
+import logoLightTrans from '/assets/logo-ala-background-light-trans.png';
 
 interface BackgroundProps extends PropsWithChildren<BoxProps> {
   parallax?: boolean;
-  semiTransparent?: boolean;
-  radius?: MantineNumberSize;
 }
 
 export function Background({
+  style,
   children,
   parallax = true,
-  semiTransparent = false,
-  radius = 0,
   ...rest
 }: BackgroundProps) {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
-  // Determine which background image variant to use
-  let logoAlaBg;
-  if (theme.colorScheme === 'light') {
-    logoAlaBg = semiTransparent ? logoLightTrans : logoLight;
-  } else if (theme.colorScheme === 'dark') {
-    logoAlaBg = semiTransparent ? logoDarkTrans : logoDark;
-  }
-
   return (
     <Box
-      sx={{
-        backgroundColor:
-          theme.colorScheme === 'dark'
-            ? theme.colors.dark[6]
-            : theme.colors.gray[2],
-        backgroundImage: `url(${logoAlaBg})`,
+      style={{
+        ...style,
+        backgroundColor: 'light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-6))',
+        backgroundBlendMode: 'multiply',
+        backgroundImage: `url(${logoLightTrans})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 65,
         backgroundPosition: '-30px -30px',
         backgroundAttachment: !mobile && parallax ? 'fixed' : 'scroll',
-        borderRadius:
-          typeof radius === 'string' ? theme.radius[radius] : radius,
       }}
       {...rest}
     >

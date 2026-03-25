@@ -14,7 +14,7 @@ export function isPWAInstalled(): boolean {
   const isIOSStandalone = nav.standalone === true;
 
   const isAndroidStandalone = Boolean(
-    document.referrer && document.referrer.startsWith('android-app://')
+    document.referrer && document.referrer.startsWith('android-app://'),
   );
 
   return isStandalone || isIOSStandalone || isAndroidStandalone;
