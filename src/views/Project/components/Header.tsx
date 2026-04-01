@@ -77,7 +77,6 @@ export function Header({ project, mobile }: HeaderProps) {
             width: 'calc(75vw)',
             maxWidth: 400,
             textAlign: 'center',
-            zIndex: 200,
             backgroundColor: 'light-dark(rgba(255,255,255,0.4), rgba(45,45,45,0.4))',
             backdropFilter: 'blur(12px)'
           }}
