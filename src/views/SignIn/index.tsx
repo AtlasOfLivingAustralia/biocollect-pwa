@@ -21,6 +21,7 @@ import splash from '/assets/splash.jpg';
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
+import { InstallButton } from '#/layout/InstallButton';
 
 export function SignIn() {
   const auth = useAuth();
@@ -42,12 +43,11 @@ export function SignIn() {
             <Stack gap={0}>
               <Image mb='lg' w={50} h={50} src={isDark ? logoLight : logoDark} />
               <Text fz={28} ff='heading'>Welcome back</Text>
-              <Text c='dimmed'>A world of citizen science projects await</Text>
+              <Text c='dimmed'>A world of data collection awaits</Text>
             </Stack>
-            <Group pb='lg'>
+            <Group mt='xl' pb='lg' justify='space-between' align='center'>
               <Button
                 loading={auth.isLoading || auth.isAuthenticated}
-                mt='xl'
                 id='signIn'
                 color='rust'
                 leftSection={<Image width={16} height={16} src={logoAla} />}
@@ -55,6 +55,7 @@ export function SignIn() {
               >
                 Sign in with ALA
               </Button>
+              <InstallButton />
             </Group>
           </Stack>
         </Paper>
@@ -70,16 +71,19 @@ export function SignIn() {
                   Citizen Science Projects
                 </Text>
               </Stack>
-              <Button
-                loading={auth.isLoading || auth.isAuthenticated}
-                mt='xl'
-                id='signIn'
-                color='rust'
-                leftSection={<Image width={16} height={16} src={logoAla} />}
-                onClick={() => auth.signinRedirect()}
-              >
-                Sign in with ALA
-              </Button>
+              <Stack>
+                <Button
+                  loading={auth.isLoading || auth.isAuthenticated}
+                  mt='xl'
+                  id='signIn'
+                  color='rust'
+                  leftSection={<Image width={16} height={16} src={logoAla} />}
+                  onClick={() => auth.signinRedirect()}
+                >
+                  Sign in with ALA
+                </Button>
+                <InstallButton />
+              </Stack>
             </Stack>
           </Paper>
         </div>

@@ -1,8 +1,9 @@
 import {
   Anchor,
   Button,
-  List,
+  Group,
   Modal,
+  Stack,
   Tabs,
   Text,
   ThemeIcon,
@@ -14,11 +15,13 @@ import {
   IconBrandApple,
   IconBrandSafari,
   IconBrowser,
+  IconDotsFilled,
   IconDownload,
   IconHandClick,
+  IconInfoCircle,
   IconNewSection,
-  IconQuestionMark,
   IconShare2,
+  IconSwipeDown,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
 import { useEffect, useState } from 'react';
@@ -57,7 +60,7 @@ export function InstallButton() {
 
     let url;
 
-    if (!browser) {
+    if (!browser || ['ios', 'safari'].includes(browser.name)) {
       open();
       return;
     }
@@ -105,8 +108,8 @@ export function InstallButton() {
       <Button
         onClick={onClick}
         size='xs'
-        variant='light'
-        leftSection={install ? <IconDownload size='1rem' /> : <IconQuestionMark size='1rem' />}
+        variant='subtle'
+        leftSection={install ? <IconDownload size='1rem' /> : <IconInfoCircle size='1rem' />}
       >
         {install ? 'Install' : 'Install Instructions'}
       </Button>
@@ -139,35 +142,38 @@ export function InstallButton() {
             </Tabs.Tab>
           </Tabs.List>
           <Tabs.Panel value='ios'>
-            <List spacing='xs'>
-              <List.Item
-                icon={
-                  <ThemeIcon variant='light'>
-                    <IconShare2 size='1rem' />
-                  </ThemeIcon>
-                }
-              >
-                Tap <b>Share</b>
-              </List.Item>
-              <List.Item
-                icon={
-                  <ThemeIcon variant='light'>
-                    <IconNewSection size='1rem' />
-                  </ThemeIcon>
-                }
-              >
-                Tap <b>Add to Home Screen</b>
-              </List.Item>
-              <List.Item
-                icon={
-                  <ThemeIcon variant='light'>
-                    <IconHandClick size='1rem' />
-                  </ThemeIcon>
-                }
-              >
-                Tap <b>Add</b> in the top-right corner
-              </List.Item>
-            </List>
+            <Stack gap='sm'>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconSwipeDown size='1rem' />
+                </ThemeIcon>
+                <Text>
+                  Swipe down on the page to reveal the&nbsp;
+                  <ThemeIcon variant='subtle' size='sm'>
+                    <IconDotsFilled size="1rem" />
+                  </ThemeIcon>&nbsp;
+                  button
+                </Text>
+              </Group>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconShare2 size='1rem' />
+                </ThemeIcon>
+                <Text>Tap <b>Share</b></Text>
+              </Group>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconNewSection size='1rem' />
+                </ThemeIcon>
+                <Text>Swipe down, and tap <b>Add to Home Screen</b></Text>
+              </Group>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconHandClick size='1rem' />
+                </ThemeIcon>
+                <Text>Tap <b>Add</b> in the top-right corner</Text>
+              </Group>
+            </Stack>
           </Tabs.Panel>
           <Tabs.Panel value='safari'>
             <Text>
