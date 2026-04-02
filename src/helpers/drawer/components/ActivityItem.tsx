@@ -1,88 +1,140 @@
-import { ActionIcon, Avatar, Box, Group, Skeleton, Stack, Text } from '@mantine/core';
-import { IconEye, IconPencil, IconUser } from '@tabler/icons-react';
-import { useContext } from 'react';
+import { Avatar, Box, Button, Center, Divider, Group, Image, Paper, Skeleton, Stack, Text } from '@mantine/core';
+import { IconEye, IconPencil, IconPhoto, IconUser } from '@tabler/icons-react';
+import { useContext, useState } from 'react';
 import { FrameContext } from '#/helpers/frame';
 import { getInitials, useOnLine } from '#/helpers/funcs';
 // Helpers
 import type { BioCollectBioActivity } from '#/types';
 
 // Local components
-import { RecordsDrawerContext } from '..';
+const IMAGE_SIZE = 100;
+
+function ActivityImage({ activity }: { activity?: BioCollectBioActivity }) {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
+
+  if ((activity && !activity.thumbnailUrl) || error) {
+    return (
+      <Box
+        style={{ borderRadius: 'var(--mantine-radius-lg)' }}
+        w={IMAGE_SIZE}
+        h={IMAGE_SIZE}
+        bg="light-dark(var(--mantine-color-gray-2),var(--mantine-color-dark-4))"
+      >
+        <Center h="100%">
+          <IconPhoto size="1.5rem" />
+        </Center>
+      </Box>
+    )
+  }
+
+  return (
+    <Skeleton visible={loading && !error} w={IMAGE_SIZE} h={IMAGE_SIZE}>
+      <Image
+        width={IMAGE_SIZE}
+        height={IMAGE_SIZE}
+        src={activity?.thumbnailUrl}
+        radius='lg'
+        onLoad={() => setLoading(false)}
+        onError={() => {
+          setError(true);
+        }}
+      />
+    </Skeleton>
+  );
+}
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
 }
 
 export function ActivityItem({ activity }: ActivityItemProps) {
-  const drawer = useContext(RecordsDrawerContext);
   const frame = useContext(FrameContext);
   const loading = !activity;
   const onLine = useOnLine();
 
   return (
-    <Group justify='space-between'>
-      <Stack gap={4}>
-        <Skeleton visible={loading}>
-          <Text>{activity?.name || 'Long Activity Name Here'}</Text>
-        </Skeleton>
-        <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Skeleton circle visible={loading} mr='xs' width={26} height={26} miw={26} mih={26}>
-            <Avatar size='sm' radius='lg'>
-              {activity?.activityOwnerName ? getInitials(activity.activityOwnerName) : <IconUser />}
-            </Avatar>
-          </Skeleton>
-          <Skeleton visible={loading} style={{ flexGrow: 1 }}>
-            <Text size='sm' c='dimmed'>
-              {activity?.activityOwnerName || 'Owner Name'}
-              {activity?.lastUpdated && <> at <b>{new Date(activity.lastUpdated).toLocaleString('en-GB')}</b></>}
-            </Text>
-          </Skeleton>
-        </Box>
+    <Paper p='sm' pr='lg' withBorder>
+      <Stack>
+        <Group justify='space-between'>
+          <Stack gap={4}>
+            <Skeleton visible={loading}>
+              <Text>{activity?.name || 'Long Activity Name Here'}</Text>
+            </Skeleton>
+            <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+              <Skeleton circle visible={loading} mr='xs' width={26} height={26} miw={26} mih={26}>
+                <Avatar size='sm' radius='lg'>
+                  {activity?.activityOwnerName ? getInitials(activity.activityOwnerName) : <IconUser />}
+                </Avatar>
+              </Skeleton>
+              <Skeleton visible={loading} style={{ flexGrow: 1 }}>
+                <Text size='sm' c='dimmed'>
+                  {activity?.activityOwnerName || 'Owner Name'}
+                </Text>
+              </Skeleton>
+            </Box>
+            <Stack gap={4} mt='xs'>
+              <Skeleton visible={loading} style={{ flexGrow: 1 }}>
+                <Text size='sm' c='dimmed'>
+                  Created: <b>{new Date(activity?.lastUpdated || '').toLocaleString('en-GB')}</b>
+                </Text>
+              </Skeleton>
+              <Skeleton visible={loading} style={{ flexGrow: 1 }}>
+                <Text size='sm' c='dimmed'>
+                  Last updated: <b>{new Date(activity?.lastUpdated || '').toLocaleString('en-GB')}</b>
+                </Text>
+              </Skeleton>
+            </Stack>
+          </Stack>
+          <ActivityImage activity={activity} />
+        </Group>
+        <Divider />
+        <Group gap='xs'>
+          {onLine && (
+            <Skeleton visible={loading} w={132.84}>
+              <Button
+                data-testid='view-record'
+                variant='light'
+                size='sm'
+                leftSection={<IconEye size='1rem' />}
+                onClick={
+                  activity &&
+                  (() => {
+                    // drawer.close();
+                    frame.open(
+                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/index/${activity.projectActivityId
+                      }?projectId=${activity.projectId}&activityId=${activity.activityId}`,
+                      `View Record - ${activity.name}`,
+                    );
+                  })}
+              >
+                View record
+              </Button>
+            </Skeleton>
+          )}
+          {onLine && (activity?.showCrud || activity?.userCanModerate) && (
+            <Skeleton visible={loading}>
+              <Button
+                data-testid='edit-record'
+                variant='light'
+                size='sm'
+                leftSection={<IconPencil size='1rem' />}
+                onClick={
+                  activity &&
+                  (() => {
+                    const editUrl =
+                      `${import.meta.env.VITE_API_BIOCOLLECT}` +
+                      `/pwa/bioActivity/edit/${activity.projectActivityId}` +
+                      `?activityId=${activity.activityId}`;
+                    frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
+                  })}
+              >
+                Edit record
+              </Button>
+            </Skeleton>
+          )}
+        </Group>
       </Stack>
-      <Group gap='xs'>
-        {onLine && (
-          <Skeleton visible={loading} width={28} miw={28}>
-            <ActionIcon
-              data-testid='view-record'
-              variant='light'
-              color='gray'
-              onClick={
-                activity &&
-                (() => {
-                  // drawer.close();
-                  frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/index/${activity.projectActivityId
-                    }?projectId=${activity.projectId}&activityId=${activity.activityId}`,
-                    `View Record - ${activity.name}`,
-                  );
-                })
-              }
-            >
-              <IconEye size='1rem' />
-            </ActionIcon>
-          </Skeleton>
-        )}
-        {onLine && (activity?.showCrud || activity?.userCanModerate) && (
-          <Skeleton visible={loading} width={28} miw={28}>
-            <ActionIcon
-              data-testid='edit-record'
-              aria-label='Edit record'
-              variant='light'
-              color='gray'
-              onClick={() => {
-                // drawer.close();
-                const editUrl =
-                  `${import.meta.env.VITE_API_BIOCOLLECT}` +
-                  `/pwa/bioActivity/edit/${activity.projectActivityId}` +
-                  `?activityId=${activity.activityId}`;
-                frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
-              }}
-            >
-              <IconPencil size='1rem' />
-            </ActionIcon>
-          </Skeleton>
-        )}
-      </Group>
-    </Group>
+    </Paper>
   );
 }
