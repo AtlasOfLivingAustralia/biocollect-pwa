@@ -91,12 +91,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
         <Divider />
         <Group gap='xs'>
           {onLine && (
-            <Skeleton visible={loading} w={132.84}>
+            <Skeleton visible={loading} w={90}>
               <Button
                 data-testid='view-record'
                 variant='light'
                 size='sm'
                 leftSection={<IconEye size='1rem' />}
+                fullWidth
                 onClick={
                   activity &&
                   (() => {
@@ -108,17 +109,18 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                     );
                   })}
               >
-                View record
+                View
               </Button>
             </Skeleton>
           )}
           {onLine && (activity?.showCrud || activity?.userCanModerate) && (
-            <Skeleton visible={loading}>
+            <Skeleton visible={loading} w={90}>
               <Button
                 data-testid='edit-record'
                 variant='light'
                 size='sm'
                 leftSection={<IconPencil size='1rem' />}
+                fullWidth
                 onClick={
                   activity &&
                   (() => {
@@ -129,7 +131,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                     frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
                   })}
               >
-                Edit record
+                Edit
               </Button>
             </Skeleton>
           )}
