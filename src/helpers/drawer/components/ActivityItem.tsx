@@ -34,6 +34,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           <Skeleton visible={loading} style={{ flexGrow: 1 }}>
             <Text size='sm' c='dimmed'>
               {activity?.activityOwnerName || 'Owner Name'}
+              {activity?.lastUpdated && <> at <b>{new Date(activity.lastUpdated).toLocaleString('en-GB')}</b></>}
             </Text>
           </Skeleton>
         </Box>
@@ -48,10 +49,9 @@ export function ActivityItem({ activity }: ActivityItemProps) {
               onClick={
                 activity &&
                 (() => {
-                  drawer.close();
+                  // drawer.close();
                   frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/index/${
-                      activity.projectActivityId
+                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/index/${activity.projectActivityId
                     }?projectId=${activity.projectId}&activityId=${activity.activityId}`,
                     `View Record - ${activity.name}`,
                   );
@@ -70,7 +70,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
               variant='light'
               color='gray'
               onClick={() => {
-                drawer.close();
+                // drawer.close();
                 const editUrl =
                   `${import.meta.env.VITE_API_BIOCOLLECT}` +
                   `/pwa/bioActivity/edit/${activity.projectActivityId}` +
