@@ -205,11 +205,8 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                 if (search) {
                   return items.length > 0 ? (
                     <>
-                      {items.map((activity, index) => (
-                        <Fragment key={activity.activityId}>
-                          <ActivityItem activity={activity} />
-                          {index + 1 < items.length && <Divider />}
-                        </Fragment>
+                      {items.map((activity) => (
+                        <ActivityItem key={activity.activityId} activity={activity} />
                       ))}
 
                       {hasMore && (
@@ -234,7 +231,6 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                 return [0, 1, 2, 3, 4, 5, 6].map((num) => (
                   <Fragment key={num}>
                     <ActivityItem />
-                    {num !== 6 && <Divider />}
                   </Fragment>
                 ));
               })()}

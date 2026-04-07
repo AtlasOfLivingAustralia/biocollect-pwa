@@ -128,6 +128,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                       `${import.meta.env.VITE_API_BIOCOLLECT}` +
                       `/pwa/bioActivity/edit/${activity.projectActivityId}` +
                       `?activityId=${activity.activityId}`;
+                    console.log(activity, editUrl);
                     frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
                   })}
               >
