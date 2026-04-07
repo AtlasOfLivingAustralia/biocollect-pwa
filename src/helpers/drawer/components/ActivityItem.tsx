@@ -1,8 +1,10 @@
-import { Avatar, Box, Button, Center, Divider, Group, Image, Paper, Skeleton, Stack, Text } from '@mantine/core';
-import { IconEye, IconPencil, IconPhoto, IconUser } from '@tabler/icons-react';
-import { useContext, useState } from 'react';
+import { Avatar, Box, Button, Center, Divider, Flex, Group, Image, Paper, Skeleton, Stack, Text } from '@mantine/core';
+import { IconEye, IconPencil, IconPhoto, IconTrash, IconUser } from '@tabler/icons-react';
+import { useCallback, useContext, useState } from 'react';
 import { FrameContext } from '#/helpers/frame';
 import { getInitials, useOnLine } from '#/helpers/funcs';
+import { biocollect } from '#/helpers/api';
+
 // Helpers
 import type { BioCollectBioActivity } from '#/types';
 
@@ -17,6 +19,8 @@ function ActivityImage({ activity }: { activity?: BioCollectBioActivity }) {
     return (
       <Box
         style={{ borderRadius: 'var(--mantine-radius-lg)' }}
+        miw={IMAGE_SIZE}
+        mih={IMAGE_SIZE}
         w={IMAGE_SIZE}
         h={IMAGE_SIZE}
         bg="light-dark(var(--mantine-color-gray-2),var(--mantine-color-dark-4))"
@@ -46,17 +50,35 @@ function ActivityImage({ activity }: { activity?: BioCollectBioActivity }) {
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
+  onDelete?: () => void;
 }
 
-export function ActivityItem({ activity }: ActivityItemProps) {
+export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
+  const [deleting, setDeleting] = useState<boolean>(false);
   const frame = useContext(FrameContext);
   const loading = !activity;
   const onLine = useOnLine();
 
+  const handleDelete = useCallback(async () => {
+    if (activity && !deleting) {
+      try {
+        setDeleting(true);
+        await biocollect.deleteActivity(activity.activityId);
+
+        if (onDelete) {
+          onDelete();
+        }
+      } catch (error) {
+        console.error('Failed to delete activity!', error);
+        setDeleting(false);
+      }
+    }
+  }, [deleting, activity]);
+
   return (
     <Paper p='sm' pr='lg' withBorder>
       <Stack>
-        <Group justify='space-between'>
+        <Flex justify='space-between'>
           <Stack gap={4}>
             <Skeleton visible={loading}>
               <Text>{activity?.name || 'Long Activity Name Here'}</Text>
@@ -87,12 +109,13 @@ export function ActivityItem({ activity }: ActivityItemProps) {
             </Stack>
           </Stack>
           <ActivityImage activity={activity} />
-        </Group>
+        </Flex>
         <Divider />
         <Group gap='xs'>
           {onLine && (
             <Skeleton visible={loading} w={90}>
               <Button
+                disabled={deleting}
                 data-testid='view-record'
                 variant='light'
                 size='sm'
@@ -116,6 +139,7 @@ export function ActivityItem({ activity }: ActivityItemProps) {
           {onLine && (activity?.showCrud || activity?.userCanModerate) && (
             <Skeleton visible={loading} w={90}>
               <Button
+                disabled={deleting}
                 data-testid='edit-record'
                 variant='light'
                 size='sm'
@@ -128,11 +152,26 @@ export function ActivityItem({ activity }: ActivityItemProps) {
                       `${import.meta.env.VITE_API_BIOCOLLECT}` +
                       `/pwa/bioActivity/edit/${activity.projectActivityId}` +
                       `?activityId=${activity.activityId}`;
-                    console.log(activity, editUrl);
                     frame.open(editUrl, `Edit Record - ${activity.name ?? activity.activityId}`);
                   })}
               >
                 Edit
+              </Button>
+            </Skeleton>
+          )}
+          {onLine && (activity?.showCrud || activity?.userCanModerate) && (
+            <Skeleton visible={loading} w={100}>
+              <Button
+                loading={deleting}
+                data-testid='delete-record'
+                color='red'
+                variant='light'
+                size='sm'
+                leftSection={<IconTrash size='1rem' />}
+                fullWidth
+                onClick={handleDelete}
+              >
+                Delete
               </Button>
             </Skeleton>
           )}

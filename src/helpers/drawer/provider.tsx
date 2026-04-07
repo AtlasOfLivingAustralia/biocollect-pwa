@@ -206,7 +206,11 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                   return items.length > 0 ? (
                     <>
                       {items.map((activity) => (
-                        <ActivityItem key={activity.activityId} activity={activity} />
+                        <ActivityItem
+                          key={activity.activityId}
+                          activity={activity}
+                          onDelete={() => setItems(items.filter(({ activityId }) => activityId !== activity.activityId))}
+                        />
                       ))}
 
                       {hasMore && (

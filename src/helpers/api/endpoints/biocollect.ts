@@ -203,4 +203,12 @@ export default (db: BioCollectDexie) => ({
       return db.hubs.toArray();
     }
   },
+
+  deleteActivity: async (activityId: string): Promise<void> => {
+    if (navigator.onLine) {
+      await axios.delete(
+        `${import.meta.env.VITE_API_BIOCOLLECT}/ws/bioactivity/delete/${activityId}`,
+      );
+    }
+  },
 });
