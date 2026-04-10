@@ -16,6 +16,7 @@ import {
 import { dexie } from '../api/dexie';
 import { userManager } from '../auth';
 import FrameContext, { type FrameCallbacks } from './context';
+import { modals } from '@mantine/modals';
 
 interface FrameEvent {
   event: 'download-complete' | 'download-removed' | 'surveys-removed';
@@ -94,8 +95,24 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         fullScreen={mobile}
         opened={opened}
         onClose={() => {
-          close();
-          setTimeout(() => setSrc(null), 500);
+          modals.openConfirmModal({
+            centered: true,
+            title: (
+              <Text size='lg' ff='heading'>
+                Are you sure you want to close this dialog?
+              </Text>
+            ),
+            children: <Text>Any unsaved data will be lost</Text>,
+            labels: {
+              confirm: 'Close',
+              cancel: 'Cancel',
+            },
+            onConfirm: () => {
+              close();
+              setTimeout(() => setSrc(null), 500);
+            },
+            zIndex: 2000,
+          });
         }}
         title={
           <Text size='lg' ff='heading' lineClamp={1}>
