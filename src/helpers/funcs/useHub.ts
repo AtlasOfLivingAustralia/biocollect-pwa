@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
 const KEY = 'current-hub';
-const DEFAULT_HUB = import.meta.env.VITE_API_BIOCOLLECT_HUB || 'acsa';
+export const DEFAULT_HUB = import.meta.env.VITE_API_BIOCOLLECT_HUB || 'acsa';
 
 export const getHubId = () => localStorage.getItem(KEY) || DEFAULT_HUB;
 

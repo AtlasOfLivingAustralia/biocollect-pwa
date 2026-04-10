@@ -1,4 +1,4 @@
-import { useHubId } from "#/helpers/funcs/useHub";
+import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
 import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
 import { useEffect, useMemo, useState } from "react";
@@ -43,6 +43,12 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
   const [hubs, setHubs] = useState<BioCollectHub[] | null>(null);
   const [hubId, setHubId] = useHubId();
   const hub: BioCollectHub | null = hubs?.find(({ url }) => url === hubId) || null;
+
+  useEffect(() => {
+    if (hubs && !hub) {
+      setHubId(DEFAULT_HUB);
+    }
+  }, [hub, hubs, hubId]);
 
   const actions = useMemo(() => Object.values(hubs || []).map(({ id, url, name, description, logo }) => ({
     id,

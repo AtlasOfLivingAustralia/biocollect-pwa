@@ -18,6 +18,7 @@ import {
   Fragment,
   type PropsWithChildren,
   type ReactElement,
+  useCallback,
   useContext,
   useEffect,
   useState,
@@ -120,6 +121,10 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
     setHasMore(true);
   }
 
+  const handleDelete = useCallback((activityIdToDelete: string) => {
+    setItems((prev) => prev.filter(({ activityId }) => activityId !== activityIdToDelete))
+  }, [setItems]);
+
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
       <Drawer.Root
@@ -209,7 +214,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                         <ActivityItem
                           key={activity.activityId}
                           activity={activity}
-                          onDelete={() => setItems(items.filter(({ activityId }) => activityId !== activity.activityId))}
+                          onDelete={handleDelete}
                         />
                       ))}
 

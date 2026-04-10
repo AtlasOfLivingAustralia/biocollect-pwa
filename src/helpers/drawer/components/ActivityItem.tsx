@@ -4,6 +4,7 @@ import { useCallback, useContext, useState } from 'react';
 import { FrameContext } from '#/helpers/frame';
 import { getInitials, useOnLine } from '#/helpers/funcs';
 import { biocollect } from '#/helpers/api';
+import { modals } from '@mantine/modals';
 
 // Helpers
 import type { BioCollectBioActivity } from '#/types';
@@ -50,7 +51,7 @@ function ActivityImage({ activity }: { activity?: BioCollectBioActivity }) {
 
 interface ActivityItemProps {
   activity?: BioCollectBioActivity;
-  onDelete?: () => void;
+  onDelete?: (activityIdToDelete: string) => void;
 }
 
 export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
@@ -61,17 +62,32 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
 
   const handleDelete = useCallback(async () => {
     if (activity && !deleting) {
-      try {
-        setDeleting(true);
-        await biocollect.deleteActivity(activity.activityId);
-
-        if (onDelete) {
-          onDelete();
+      modals.openConfirmModal({
+        title: 'Confirm deletion',
+        centered: true,
+        children: (
+          <Text>
+            Are you sure you want to delete this activity?
+          </Text>
+        ),
+        labels: {
+          confirm: 'Confirm',
+          cancel: 'Cancel',
+        },
+        onConfirm: async () => {
+          try {
+            setDeleting(true);
+            await biocollect.deleteActivity(activity.activityId);
+    
+            if (onDelete) {
+              onDelete(activity.activityId);
+            }
+          } catch (error) {
+            console.error('Failed to delete activity!', error);
+            setDeleting(false);
+          }
         }
-      } catch (error) {
-        console.error('Failed to delete activity!', error);
-        setDeleting(false);
-      }
+      })
     }
   }, [deleting, activity]);
 
