@@ -2,6 +2,7 @@ import { createContext } from 'react';
 
 export interface FrameCallbacks {
   confirm?: () => void;
+  close?: () => void;
 }
 
 interface FrameContext {

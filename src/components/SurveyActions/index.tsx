@@ -26,7 +26,6 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
           <ActionIcon
             id={survey && `${survey.projectActivityId}ViewRecord`}
             variant='light'
-            disabled={!onLine}
             onClick={
               survey &&
               (() => {
@@ -50,13 +49,13 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
           <ActionIcon
             id={survey && `${survey.projectActivityId}MyRecords`}
             variant='light'
-            disabled={!onLine}
             onClick={
               survey &&
               (() => {
                 drawer.open(
                   'myrecords',
                   {
+                    projectActivityId: survey.projectActivityId,
                     fq: [
                       `projectId:${survey.projectId}`,
                       `projectActivityNameFacet:${survey.name}`,
@@ -81,7 +80,8 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
               survey &&
               (() => {
                 frame.open(
-                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
+                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
+                    survey.projectActivityId
                   }`,
                   `Add Record - ${survey.name}`,
                 );

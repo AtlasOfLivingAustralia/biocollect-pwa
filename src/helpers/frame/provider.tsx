@@ -25,9 +25,9 @@ interface FrameEvent {
 const FrameProvider = (props: PropsWithChildren): ReactElement => {
   const [title, setTitle] = useState<string | undefined>();
   const [src, setSrc] = useState<string | null>();
-  const [canConfirm, setCanConfirm] = useState<boolean>(false);
-  const [callbacks, setCallbacks] = useState<FrameCallbacks>();
-  const [opened, { open: openFrame, close }] = useDisclosure(false);
+  const [canConfirm, setCanConfirm] = useState<boolean | null>(null);
+  const [opened, { open: openFrame, close: closeFrame }] = useDisclosure(false);
+  const callbacks = useRef<FrameCallbacks>(null);
 
   // Refs & theming
   const frameRef = useRef<HTMLIFrameElement>(null);
@@ -78,42 +78,56 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
   }, []);
 
   // Callback function to open the records drawer
-  const open = useCallback((newSrc: string, title: string, callbacks?: FrameCallbacks) => {
+  const open = useCallback((newSrc: string, newTitle: string, newCallbacks?: FrameCallbacks) => {
     setSrc(newSrc);
-    setTitle(title);
+    setTitle(newTitle);
 
-    // Update confirmation state
-    setCallbacks(callbacks);
-    setCanConfirm(false);
+    // Update callbacks/confirmation state
+    if (newCallbacks) {
+      callbacks.current = newCallbacks;
+      if (newCallbacks.confirm) {
+        setCanConfirm(false);
+      }
+    }
 
     openFrame();
   }, []);
+
+  const close = () => {
+    modals.openConfirmModal({
+      centered: true,
+      title: (
+        <Text size='lg' ff='heading'>
+          Are you sure you want to close this dialog?
+        </Text>
+      ),
+      children: <Text>Any unsaved data will be lost</Text>,
+      labels: {
+        confirm: 'Close',
+        cancel: 'Cancel',
+      },
+      onConfirm: () => {
+        // Trigger the close callback
+        if (callbacks?.current?.close) {
+          callbacks.current.close();
+        }
+
+        setSrc(null);
+        setCanConfirm(null);
+        callbacks.current = null;
+
+        closeFrame();
+      },
+      zIndex: 2000,
+    });
+  };
 
   return (
     <FrameContext.Provider value={{ open, close }}>
       <Modal
         fullScreen={mobile}
         opened={opened}
-        onClose={() => {
-          modals.openConfirmModal({
-            centered: true,
-            title: (
-              <Text size='lg' ff='heading'>
-                Are you sure you want to close this dialog?
-              </Text>
-            ),
-            children: <Text>Any unsaved data will be lost</Text>,
-            labels: {
-              confirm: 'Close',
-              cancel: 'Cancel',
-            },
-            onConfirm: () => {
-              close();
-              setTimeout(() => setSrc(null), 500);
-            },
-            zIndex: 2000,
-          });
-        }}
+        onClose={close}
         title={
           <Text size='lg' ff='heading' lineClamp={1}>
             {title || 'BioCollect'}
@@ -137,9 +151,13 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
               height={`calc(100vh - ${mobile ? 125 : 275}px)`}
               onLoad={postToken}
             />
-            {callbacks?.confirm && (
+            {canConfirm !== null && (
               <Group mt='sm' justify='center' gap='xs'>
-                <Button id='confirmDownloadModal' onClick={callbacks.confirm} loading={!canConfirm}>
+                <Button
+                  id='confirmDownloadModal'
+                  onClick={callbacks.current?.confirm}
+                  loading={!canConfirm}
+                >
                   Confirm Download
                 </Button>
                 <Button onClick={close} color='gray'>

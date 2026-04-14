@@ -1,10 +1,17 @@
-import { Skeleton } from '@mantine/core';
+import { Box, Loader, LoadingOverlay, Stack, Text } from '@mantine/core';
 import { forwardRef, useState } from 'react';
 
 type IFrameProps = Omit<
   React.DetailedHTMLProps<React.IframeHTMLAttributes<HTMLIFrameElement>, HTMLIFrameElement>,
   'style'
 >;
+
+const LoaderContent = (
+  <Stack justify='center' align='center'>
+    <Loader />
+    <Text fw='bold' size='sm' ta='center'>Loading PWA</Text>
+  </Stack>
+)
 
 export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(({ onLoad, ...props }, ref) => {
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -13,7 +20,8 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(({ onLoad, ...pr
   const height = props.height || 'calc(100vh - 275px)';
 
   return (
-    <Skeleton visible={!loaded} width={width} height={height} radius={0}>
+    <Box w={width} h={height}>
+      <LoadingOverlay visible={!loaded} loaderProps={{ children: LoaderContent }} />
       {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: We still need to hook into onLoad */}
       <iframe
         {...props}
@@ -28,6 +36,6 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(({ onLoad, ...pr
           if (onLoad) onLoad(event);
         }}
       ></iframe>
-    </Skeleton>
+    </Box>
   );
 });

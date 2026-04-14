@@ -1,67 +1,38 @@
-import {
-  ActionIcon,
-  Button,
-  Center,
-  Divider,
-  Drawer,
-  Group,
-  Loader,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
-import { shallowEqual, useDebouncedValue, useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { IconExternalLink, IconFiles, IconSearch, IconX } from '@tabler/icons-react';
-import {
-  Fragment,
-  type PropsWithChildren,
-  type ReactElement,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import { biocollect } from '#/helpers/api';
+import { Drawer, Group, Stack, Tabs, Text, Title, useMantineTheme } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { type PropsWithChildren, type ReactElement, useState } from 'react';
 
 // Helpers
-import { FrameContext } from '#/helpers/frame';
-import type {
-  BioCollectBioActivity,
-  BioCollectBioActivitySearch,
-  BioCollectBioActivityView,
-  FilterQueries,
-} from '#/types';
-import { ActivityItem } from './components/ActivityItem';
+import type { BioCollectBioActivityView, FilterQueries } from '#/types';
 
 // Local components
 import RecordsDrawerContext from './context';
+import { PublishedRecords } from './components/PublishedRecords';
+import { usePWA } from '../pwa';
+import { UnpublishedRecords } from './components/UnpublishedRecords';
+import type { OfflineProjectActivities } from '../pwa/context';
+import { useOnLine } from '../funcs';
 
 const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
+  const PAGE_SIZE = 20;
+
   const [recordsFor, setRecordsFor] = useState<string | null>(null);
   const [view, setView] = useState<BioCollectBioActivityView | null>(null);
   const [filters, setFilters] = useState<FilterQueries>({});
+  const [activeTab, setActiveTab] = useState<'published' | 'unpublished'>('published');
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
-  const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(null);
+
+  const [unpublished, setUnpublished] = useState<OfflineProjectActivities | null>(null);
+  const [unpublishedError, setUnpublishedError] = useState<string | null>(null);
+  const [publishedRefreshKey, setPublishedRefreshKey] = useState(0);
 
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const frame = useContext(FrameContext);
-
-  // search state hooks
-  const [searchInput, setSearchInput] = useState('');
-  const [debouncedSearchTerm] = useDebouncedValue(searchInput, 300);
-
-  // paging/loading more hooks
-  const PAGE_SIZE = 20;
-  const [page, setPage] = useState(0);
-  const [items, setItems] = useState<BioCollectBioActivity[]>([]);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const pwa = usePWA();
+  const isOnline = useOnLine();
 
   // Callback function to open the records drawer
-  const open = (
+  const open = async (
     newView: BioCollectBioActivityView,
     newFilters?: FilterQueries,
     newRecordsFor?: string,
@@ -70,69 +41,32 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
     if (newFilters) setFilters(newFilters);
     if (newRecordsFor) setRecordsFor(newRecordsFor);
 
-    // reset paging when the inputs change
-    setPage(0);
-    setItems([]);
-    setHasMore(true);
-
-    // reset the search input state
-    setSearchInput('');
-
-    // Equality check to reset UI state to loading
-    if (view !== newView || !shallowEqual(filters, newFilters || {})) setSearch(null);
+    if (newFilters?.projectActivityId) {
+      try {
+        const fetched = await pwa.getOfflineProjectActivityActivities(
+          newFilters.projectActivityId as string,
+          PAGE_SIZE,
+          0,
+        );
+        setUnpublished(fetched);
+        setUnpublishedError(null);
+      } catch (error) {
+        setUnpublished({ activities: [], total: 0 });
+        setUnpublishedError(
+          error instanceof Error ? error.message : 'Failed to load unpublished records.',
+        );
+      }
+    } else {
+      setUnpublished({ activities: [], total: 0 });
+      setUnpublishedError(null);
+    }
 
     openDrawer();
   };
 
-  // load next page
-  const loadMore = () => {
-    if (!loadingMore && hasMore) setPage((p) => p + 1);
-  };
-
-  useEffect(() => {
-    async function getActivities() {
-      if (!view) return;
-
-      setLoadingMore(true);
-
-      const pagedFilters: FilterQueries = {
-        ...(filters || {}),
-        ...(debouncedSearchTerm ? { searchTerm: debouncedSearchTerm } : {}),
-        offset: String(page * PAGE_SIZE),
-        max: String(PAGE_SIZE),
-        sort: 'dateCreatedSort',
-      };
-
-      const resp = await biocollect.searchActivities(view, pagedFilters);
-
-      setSearch(resp);
-      setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
-      setHasMore(resp.activities.length === PAGE_SIZE);
-      setLoadingMore(false);
-    }
-
-    getActivities();
-  }, [view, filters, debouncedSearchTerm, page]);
-
-  function clearSearch() {
-    setSearchInput('');
-    setPage(0);
-    setItems([]);
-    setHasMore(true);
-  }
-
-  const handleDelete = useCallback((activityIdToDelete: string) => {
-    setItems((prev) => prev.filter(({ activityId }) => activityId !== activityIdToDelete))
-  }, [setItems]);
-
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
-      <Drawer.Root
-        opened={opened}
-        onClose={close}
-        position={mobile ? 'bottom' : 'right'}
-        keepMounted
-      >
+      <Drawer.Root opened={opened} onClose={close} position={mobile ? 'bottom' : 'right'}>
         <Drawer.Overlay
           blur={3}
           opacity={0.55}
@@ -141,7 +75,6 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
         <Drawer.Content>
           <Drawer.Header>
             <Group gap='md'>
-              <IconFiles />
               <Stack gap={0}>
                 <Title order={3}>Records</Title>
                 {recordsFor && (
@@ -154,96 +87,37 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
             <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body mt='lg'>
-            <Stack pb='sm'>
-              {filters.projectActivityId && (
-                <Button
-                  id={`${filters.projectActivityId}UnpublishedRecords`}
-                  leftSection={<IconExternalLink size='1rem' />}
-                  mb='xs'
-                  variant='light'
-                  onClick={() => {
-                    close();
-                    frame.open(
-                      `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList?projectActivityId=${filters.projectActivityId
-                      }`,
-                      'Unpublished Records',
-                    );
-                  }}
-                >
-                  View unpublished records
-                </Button>
-              )}
-              <Text size='sm' tt='uppercase' c='dimmed' fw='bold'>
-                Published
-              </Text>
-              <TextInput
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.currentTarget.value)}
-                placeholder='Search activities…'
-                leftSection={<IconSearch size={16} />}
-                rightSection={
-                  (() => {
-                    if (loadingMore) {
-                      return <Loader size='xs' />
-                    } else if (searchInput) {
-                      return (
-                        <ActionIcon
-                          aria-label='Clear search'
-                          onClick={clearSearch}
-                          onMouseDown={(e) => e.preventDefault()}
-                          variant='subtle'
-                        >
-                          <IconX size={16} />
-                        </ActionIcon>
-                      );
+            <Tabs
+              defaultValue={
+                !isOnline || (unpublished?.total || 0) > 0 ? 'unpublished' : 'published'
+              }
+              variant='pills'
+            >
+              <Tabs.List grow mb='sm'>
+                <Tabs.Tab value='unpublished'>Unpublished</Tabs.Tab>
+                <Tabs.Tab value='published' disabled={!isOnline}>
+                  Published
+                </Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel value='unpublished'>
+                <UnpublishedRecords
+                  initialActivities={unpublished}
+                  initialError={unpublishedError}
+                  view={view}
+                  filters={filters}
+                  onActivitiesChange={(activities) => {
+                    setUnpublished(activities);
+                    if (activities.total === 0 && activeTab === 'unpublished') {
+                      setActiveTab('published');
                     }
-                    return null;
-                  })()
-                }
-                rightSectionWidth={36}
-                w='100%'
-                mb='sm'
-                aria-label='Search published activities'
-              />
-
-              {(() => {
-                if (search) {
-                  return items.length > 0 ? (
-                    <>
-                      {items.map((activity) => (
-                        <ActivityItem
-                          key={activity.activityId}
-                          activity={activity}
-                          onDelete={handleDelete}
-                        />
-                      ))}
-
-                      {hasMore && (
-                        <Button
-                          mt='md'
-                          onClick={loadMore}
-                          fullWidth
-                          loading={loadingMore}
-                          variant='light'
-                        >
-                          Load more
-                        </Button>
-                      )}
-                    </>
-                  ) : (
-                    <Center h='100%'>
-                      <Text c='dimmed'>No records found</Text>
-                    </Center>
-                  );
-                }
-
-                return [0, 1, 2, 3, 4, 5, 6].map((num) => (
-                  <Fragment key={num}>
-                    <ActivityItem />
-                  </Fragment>
-                ));
-              })()}
-            </Stack>
+                  }}
+                  onPublishedMutation={() => setPublishedRefreshKey((current) => current + 1)}
+                />
+              </Tabs.Panel>
+              <Tabs.Panel value='published'>
+                <PublishedRecords key={publishedRefreshKey} view={view} filters={filters} />
+              </Tabs.Panel>
+            </Tabs>
           </Drawer.Body>
         </Drawer.Content>
       </Drawer.Root>

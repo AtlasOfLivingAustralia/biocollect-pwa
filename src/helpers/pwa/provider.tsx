@@ -1,14 +1,13 @@
-import {
-  type PropsWithChildren,
-  type ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { type PropsWithChildren, type ReactElement, useEffect, useRef, useState } from 'react';
 
 // Contexts
 import { dexie } from '../api/dexie';
-import PWAContext, { type StorageSummaryStats } from './context';
+import { userManager } from '../auth';
+import PWAContext, {
+  type OfflineActivityMutationResult,
+  type OfflineProjectActivities,
+  type StorageSummaryStats,
+} from './context';
 
 interface StorageSummaryEvent {
   event: string;
@@ -20,11 +19,45 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   const [clearingStorage, setClearingStorage] = useState<boolean>(false);
   const ref = useRef<HTMLIFrameElement>(null);
 
-  const send = (event: string, data?: unknown) => {
+  const send = (event: string, payload?: unknown) => {
     if (ref.current?.contentWindow) {
-      ref.current.contentWindow.postMessage({ event, data }, '*');
+      ref.current.contentWindow.postMessage({ event, payload }, import.meta.env.VITE_API_BIOCOLLECT);
     }
   };
+
+  function waitForEvent<T>(eventName: string, eventPayload: unknown, timeout = 2000): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const frameWindow = ref.current?.contentWindow;
+      const eventHandler = (message: MessageEvent) => {
+        if (frameWindow && message.source !== frameWindow) {
+          return;
+        }
+
+        const { data } = message;
+        if (data?.event !== eventName) {
+          return;
+        }
+
+        clearTimeout(eventTimeout);
+        window.removeEventListener('message', eventHandler);
+
+        if (data?.payload?.error) {
+          reject(new Error(data.payload.error));
+          return;
+        }
+
+        resolve(data.payload);
+      };
+
+      const eventTimeout = setTimeout(() => {
+        window.removeEventListener('message', eventHandler);
+        reject(new Error(`${timeout}ms timeout exceeded when waiting for '${eventName}' event!`));
+      }, timeout);
+
+      window.addEventListener('message', eventHandler);
+      send(eventName, eventPayload);
+    });
+  }
 
   useEffect(() => {
     // Define a message handler to listen for download events
@@ -51,9 +84,62 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     dexie.cached.clear();
   };
 
+  const getOfflineProjectActivityActivities = async (
+    projectActivityId: string,
+    max = 10,
+    offset = 0,
+  ) => {
+    return await waitForEvent<OfflineProjectActivities>('offline-project-activity-activities', {
+      projectActivityId,
+      max,
+      offset,
+    }, 10000);
+  };
+
+  const uploadOfflineActivity = async (projectActivityId: string, activityId: string) => {
+    const user = await userManager.getUser();
+    return await waitForEvent<OfflineActivityMutationResult>(
+      'offline-upload-activity',
+      { projectActivityId, activityId, token: user?.access_token },
+      30000,
+    );
+  };
+
+  const uploadAllOfflineActivities = async (projectActivityId: string) => {
+    const user = await userManager.getUser();
+    return await waitForEvent<OfflineActivityMutationResult>(
+      'offline-upload-all-activities',
+      { projectActivityId, token: user?.access_token },
+      120000,
+    );
+  };
+
+  const deleteOfflineActivity = async (projectActivityId: string, activityId: string) => {
+    return await waitForEvent<OfflineActivityMutationResult>(
+      'offline-delete-activity',
+      { projectActivityId, activityId },
+      30000,
+    );
+  };
+
   return (
-    <PWAContext.Provider value={{ storageStats, clearingStorage, clearStorage }}>
-      <iframe ref={ref} title="PWA Sync" src={`${import.meta.env.VITE_API_BIOCOLLECT}/pwa/sync`} style={{ display: 'none' }} />
+    <PWAContext.Provider
+      value={{
+        storageStats,
+        clearingStorage,
+        clearStorage,
+        getOfflineProjectActivityActivities,
+        uploadOfflineActivity,
+        uploadAllOfflineActivities,
+        deleteOfflineActivity,
+      }}
+    >
+      <iframe
+        ref={ref}
+        title='PWA Sync'
+        src={`${import.meta.env.VITE_API_BIOCOLLECT}/pwa/sync`}
+        style={{ display: 'none' }}
+      />
       {children}
     </PWAContext.Provider>
   );
