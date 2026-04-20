@@ -25,7 +25,11 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
   const handleDelete = useCallback(async () => {
     if (activity && !deleting) {
       modals.openConfirmModal({
-        title: 'Confirm deletion',
+        title: (
+          <Text size='lg' ff='heading'>
+            Confirm deletion
+          </Text>
+        ),
         centered: true,
         children: <Text>Are you sure you want to delete this activity?</Text>,
         labels: {

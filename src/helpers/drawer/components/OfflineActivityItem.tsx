@@ -66,7 +66,11 @@ export function OfflineActivityItem({
     }
 
     modals.openConfirmModal({
-      title: 'Delete unpublished record',
+      title: (
+        <Text size='lg' ff='heading'>
+          Confirm deletion
+        </Text>
+      ),
       centered: true,
       children: <Text>Are you sure you want to delete this unpublished record?</Text>,
       labels: {

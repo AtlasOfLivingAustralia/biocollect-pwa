@@ -1,7 +1,7 @@
 import { Frame } from '#/components';
 import { isFrame } from '#/helpers/funcs';
-import { Button, Group, Modal, Text, useMantineTheme } from '@mantine/core';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { Box, Button, Group, Modal, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { jwtDecode } from 'jwt-decode';
 import {
   type PropsWithChildren,
@@ -31,8 +31,6 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
 
   // Refs & theming
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const theme = useMantineTheme();
-  const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
 
   useEffect(() => {
     if (!isFrame()) {
@@ -132,7 +130,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
   return (
     <FrameContext.Provider value={{ open, close }}>
       <Modal
-        fullScreen={mobile}
+        fullScreen
         opened={opened}
         onClose={close}
         title={
@@ -140,26 +138,36 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
             {title || 'BioCollect'}
           </Text>
         }
-        size={1100}
-        overlayProps={{
-          color: 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-6))',
-          opacity: 0.55,
-          blur: 3,
-        }}
         zIndex={1000}
-        styles={{ body: { paddingLeft: 0, paddingRight: 0 } }}
+        styles={{
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100dvh',
+          },
+          body: {
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            paddingLeft: 0,
+            paddingRight: 0,
+          },
+        }}
+        radius={0}
       >
         {src && (
-          <>
-            <Frame
-              ref={frameRef}
-              src={src}
-              allow='geolocation;'
-              height={`calc(100vh - ${mobile ? 125 : 275}px)`}
-              onLoad={postToken}
-            />
+          <Box
+            style={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              minHeight: 0,
+            }}
+          >
+            <Frame ref={frameRef} src={src} allow='geolocation;' onLoad={postToken} />
             {canConfirm !== null && (
-              <Group mt='sm' justify='center' gap='xs'>
+              <Group mt='sm' justify='center' gap='xs' px='md' pb='md' style={{ flexShrink: 0 }}>
                 <Button
                   id='confirmDownloadModal'
                   onClick={callbacks.current?.confirm}
@@ -172,7 +180,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
                 </Button>
               </Group>
             )}
-          </>
+          </Box>
         )}
       </Modal>
       {props.children}
