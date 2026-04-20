@@ -93,33 +93,40 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
     openFrame();
   }, []);
 
+  const handleClose = useCallback(() => {
+    // Trigger the close callback
+    if (callbacks?.current?.close) {
+      callbacks.current.close();
+    }
+
+    setSrc(null);
+    setCanConfirm(null);
+    callbacks.current = null;
+
+    closeFrame();
+  }, []);
+
   const close = () => {
-    modals.openConfirmModal({
-      centered: true,
-      title: (
-        <Text size='lg' ff='heading'>
-          Are you sure you want to close this dialog?
-        </Text>
-      ),
-      children: <Text>Any unsaved data will be lost</Text>,
-      labels: {
-        confirm: 'Close',
-        cancel: 'Cancel',
-      },
-      onConfirm: () => {
-        // Trigger the close callback
-        if (callbacks?.current?.close) {
-          callbacks.current.close();
-        }
-
-        setSrc(null);
-        setCanConfirm(null);
-        callbacks.current = null;
-
-        closeFrame();
-      },
-      zIndex: 2000,
-    });
+    // Show confirmation dialog for edit / add dialogs
+    if (title?.startsWith('Edit') || title?.startsWith('Add')) {
+      modals.openConfirmModal({
+        centered: true,
+        title: (
+          <Text size='lg' ff='heading'>
+            Are you sure you want to close this dialog?
+          </Text>
+        ),
+        children: <Text>Any unsaved data will be lost</Text>,
+        labels: {
+          confirm: 'Close',
+          cancel: 'Cancel',
+        },
+        onConfirm: handleClose,
+        zIndex: 2000,
+      });
+    } else {
+      handleClose();
+    }
   };
 
   return (
