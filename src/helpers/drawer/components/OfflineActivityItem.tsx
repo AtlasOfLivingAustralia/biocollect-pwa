@@ -101,7 +101,7 @@ export function OfflineActivityItem({
             onClick={() => {
               frame.open(
                 `${import.meta.env.VITE_API_BIOCOLLECT}${activity.transients.viewActivityUrl}`,
-                `View Record - ${activity.name}`,
+                'View Record',
               );
             }}
           >
@@ -117,7 +117,7 @@ export function OfflineActivityItem({
             onClick={() => {
               frame.open(
                 `${import.meta.env.VITE_API_BIOCOLLECT}${activity.transients.editActivityUrl}`,
-                `Edit Record - ${activity.name}`,
+                'Edit Record',
                 {
                   close: onRefresh,
                 },

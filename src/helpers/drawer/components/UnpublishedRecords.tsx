@@ -1,5 +1,5 @@
-import { Alert, Button, Center, Loader, Stack, Text } from '@mantine/core';
-import { useCallback, useEffect, useState } from 'react';
+import { Alert, Button, Center, Loader, LoadingOverlay, Stack, Text } from '@mantine/core';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
 import { usePWA } from '#/helpers/pwa';
@@ -34,6 +34,11 @@ export function UnpublishedRecords({
   const [loadingMore, setLoadingMore] = useState(false);
   const [uploadingAll, setUploadingAll] = useState(false);
   const [error, setError] = useState<string | null>(initialError || null);
+
+  const canUploadAll = useMemo(
+    () => items.filter((item) => !item.isInvalidDraft).length > 0,
+    [items],
+  );
 
   const syncActivities = useCallback(
     (activities: OfflineProjectActivities) => {
@@ -220,7 +225,7 @@ export function UnpublishedRecords({
       <Button
         onClick={handleUploadAllClick}
         loading={uploadingAll}
-        disabled={!onLine}
+        disabled={!onLine || !canUploadAll}
         variant='light'
         leftSection={<IconWorldUpload size='1rem' />}
       >

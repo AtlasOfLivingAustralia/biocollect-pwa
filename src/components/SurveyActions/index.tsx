@@ -82,8 +82,18 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                 frame.open(
                   `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
                     survey.projectActivityId
-                  }`,
+                  }?unpublished=true`,
                   `Add Record - ${survey.name}`,
+                  {
+                    close: () =>
+                      drawer.open('myrecords', {
+                        projectActivityId: survey.projectActivityId,
+                        fq: [
+                          `projectId:${survey.projectId}`,
+                          `projectActivityNameFacet:${survey.name}`,
+                        ],
+                      }),
+                  },
                 );
               })
             }
