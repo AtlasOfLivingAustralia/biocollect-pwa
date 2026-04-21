@@ -18,10 +18,20 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   const [storageStats, setStorageStats] = useState<StorageSummaryStats | null>(null);
   const [clearingStorage, setClearingStorage] = useState<boolean>(false);
   const ref = useRef<HTMLIFrameElement>(null);
-
-  const send = (event: string, payload?: unknown) => {
+  // biome-ignore lint/suspicious/noExplicitAny: Accept any data
+  const send = async (event: string, payload?: any) => {
+    const user = await userManager.getUser();
     if (ref.current?.contentWindow) {
-      ref.current.contentWindow.postMessage({ event, payload }, import.meta.env.VITE_API_BIOCOLLECT);
+      ref.current.contentWindow.postMessage(
+        {
+          event,
+          payload: {
+            ...(payload || {}),
+            jwt: user?.access_token,
+          },
+        },
+        import.meta.env.VITE_API_BIOCOLLECT,
+      );
     }
   };
 
@@ -89,27 +99,29 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     max = 10,
     offset = 0,
   ) => {
-    return await waitForEvent<OfflineProjectActivities>('offline-project-activity-activities', {
-      projectActivityId,
-      max,
-      offset,
-    }, 10000);
+    return await waitForEvent<OfflineProjectActivities>(
+      'offline-project-activity-activities',
+      {
+        projectActivityId,
+        max,
+        offset,
+      },
+      10000,
+    );
   };
 
   const uploadOfflineActivity = async (projectActivityId: string, activityId: string) => {
-    const user = await userManager.getUser();
     return await waitForEvent<OfflineActivityMutationResult>(
       'offline-upload-activity',
-      { projectActivityId, activityId, token: user?.access_token },
+      { projectActivityId, activityId },
       30000,
     );
   };
 
   const uploadAllOfflineActivities = async (projectActivityId: string) => {
-    const user = await userManager.getUser();
     return await waitForEvent<OfflineActivityMutationResult>(
       'offline-upload-all-activities',
-      { projectActivityId, token: user?.access_token },
+      { projectActivityId },
       120000,
     );
   };

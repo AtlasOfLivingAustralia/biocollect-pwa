@@ -19,7 +19,6 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
   const [recordsFor, setRecordsFor] = useState<string | null>(null);
   const [view, setView] = useState<BioCollectBioActivityView | null>(null);
   const [filters, setFilters] = useState<FilterQueries>({});
-  const [activeTab, setActiveTab] = useState<'published' | 'unpublished'>('published');
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
 
   const [unpublished, setUnpublished] = useState<OfflineProjectActivities | null>(null);
@@ -105,17 +104,15 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                   initialError={unpublishedError}
                   view={view}
                   filters={filters}
-                  onActivitiesChange={(activities) => {
-                    setUnpublished(activities);
-                    if (activities.total === 0 && activeTab === 'unpublished') {
-                      setActiveTab('published');
-                    }
-                  }}
                   onPublishedMutation={() => setPublishedRefreshKey((current) => current + 1)}
                 />
               </Tabs.Panel>
               <Tabs.Panel value='published'>
-                <PublishedRecords key={publishedRefreshKey} view={view} filters={filters} />
+                <PublishedRecords
+                  publishedRefreshKey={publishedRefreshKey}
+                  view={view}
+                  filters={filters}
+                />
               </Tabs.Panel>
             </Tabs>
           </Drawer.Body>

@@ -1,4 +1,4 @@
-import { Alert, Button, Center, Loader, LoadingOverlay, Stack, Text } from '@mantine/core';
+import { Alert, Button, Center, Group, Loader, Stack, Text } from '@mantine/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
@@ -7,12 +7,11 @@ import type { OfflineProjectActivities } from '#/helpers/pwa/context';
 
 import type { RecordsProps } from './PublishedRecords';
 import { OfflineActivityItem } from './OfflineActivityItem';
-import { IconWorldUpload } from '@tabler/icons-react';
+import { IconRefresh, IconWorldUpload } from '@tabler/icons-react';
 
 interface UnpublishedRecordsProps extends RecordsProps {
   initialError?: string | null;
   initialActivities: OfflineProjectActivities | null;
-  onActivitiesChange?: (activities: OfflineProjectActivities) => void;
   onPublishedMutation?: () => void;
 }
 
@@ -22,7 +21,6 @@ export function UnpublishedRecords({
   initialActivities,
   initialError,
   filters,
-  onActivitiesChange,
   onPublishedMutation,
 }: UnpublishedRecordsProps) {
   const pwa = usePWA();
@@ -40,14 +38,10 @@ export function UnpublishedRecords({
     [items],
   );
 
-  const syncActivities = useCallback(
-    (activities: OfflineProjectActivities) => {
-      setItems(activities.activities);
-      setTotal(activities.total);
-      onActivitiesChange?.(activities);
-    },
-    [onActivitiesChange],
-  );
+  const syncActivities = useCallback((activities: OfflineProjectActivities) => {
+    setItems(activities.activities);
+    setTotal(activities.total);
+  }, []);
 
   const refresh = useCallback(async () => {
     if (!filters.projectActivityId) {
@@ -88,18 +82,6 @@ export function UnpublishedRecords({
     }
   }, [filters.projectActivityId, initialActivities, refresh]);
 
-  function handleRefreshClick() {
-    refresh().catch(() => undefined);
-  }
-
-  function handleUploadAllClick() {
-    handleUploadAll().catch(() => undefined);
-  }
-
-  function handleLoadMoreClick() {
-    loadMore().catch(() => undefined);
-  }
-
   async function loadMore() {
     if (!filters.projectActivityId || loadingMore || items.length >= total) {
       return;
@@ -139,11 +121,11 @@ export function UnpublishedRecords({
     setError(null);
     await pwa.deleteOfflineActivity(filters.projectActivityId as string, activityId);
 
-    const next = {
-      activities: items.filter((activity) => activity.activityId !== activityId),
-      total: Math.max(total - 1, 0),
-    };
-    syncActivities(next);
+    setItems((previousItems) =>
+      previousItems.filter((activity) => activity.activityId !== activityId),
+    );
+    setTotal((previousTotal) => Math.max(previousTotal - 1, 0));
+
     onPublishedMutation?.();
   }
 
@@ -194,43 +176,38 @@ export function UnpublishedRecords({
     );
   }
 
-  if (items.length === 0) {
-    return (
-      <Stack pb='sm'>
-        {error && (
-          <Alert color='red' title='Unpublished records unavailable'>
-            {error}
-          </Alert>
-        )}
-        <Center h='100%' py='xl'>
-          <Text c='dimmed'>No unpublished records found</Text>
-        </Center>
-        {filters.projectActivityId && (
-          <Button variant='subtle' onClick={handleRefreshClick}>
-            Refresh unpublished records
-          </Button>
-        )}
-      </Stack>
-    );
-  }
-
   return (
     <Stack pb='sm'>
+      <Group>
+        <Button
+          onClick={handleUploadAll}
+          loading={uploadingAll}
+          disabled={!onLine || !canUploadAll}
+          variant='light'
+          leftSection={<IconWorldUpload size='1rem' />}
+          style={{ flexGrow: 1 }}
+        >
+          Upload all
+        </Button>
+        <Button
+          loading={loading || loadingMore}
+          variant='light'
+          leftSection={<IconRefresh size='1rem' />}
+          onClick={refresh}
+        >
+          Refresh
+        </Button>
+      </Group>
       {error && (
         <Alert color='red' title='Unpublished records unavailable'>
           {error}
         </Alert>
       )}
-
-      <Button
-        onClick={handleUploadAllClick}
-        loading={uploadingAll}
-        disabled={!onLine || !canUploadAll}
-        variant='light'
-        leftSection={<IconWorldUpload size='1rem' />}
-      >
-        Upload all
-      </Button>
+      {!error && items.length === 0 && (
+        <Center h='100%' py='xl'>
+          <Text c='dimmed'>No unpublished records found</Text>
+        </Center>
+      )}
 
       {items.map((activity) => (
         <OfflineActivityItem
@@ -238,18 +215,12 @@ export function UnpublishedRecords({
           activity={activity}
           onDelete={handleDelete}
           onUpload={handleUpload}
-          onRefresh={handleRefreshClick}
+          onRefresh={refresh}
         />
       ))}
 
       {items.length < total && (
-        <Button
-          mt='md'
-          onClick={handleLoadMoreClick}
-          fullWidth
-          loading={loadingMore}
-          variant='light'
-        >
+        <Button mt='md' onClick={loadMore} fullWidth loading={loadingMore} variant='light'>
           Load more
         </Button>
       )}

@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Center, Loader, Stack, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Center, Group, Loader, Stack, Text, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconSearch, IconX } from '@tabler/icons-react';
+import { IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
 import {
   Fragment,
   type PropsWithChildren,
@@ -25,10 +25,15 @@ export interface RecordsProps {
   filters: FilterQueries;
 }
 
+interface PublishedRecordsProps extends RecordsProps {
+  publishedRefreshKey: number;
+}
+
 export const PublishedRecords = ({
   view,
   filters,
-}: PropsWithChildren<RecordsProps>): ReactElement => {
+  publishedRefreshKey,
+}: PropsWithChildren<PublishedRecordsProps>): ReactElement => {
   const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(null);
 
   // search state hooks
@@ -37,10 +42,18 @@ export const PublishedRecords = ({
 
   // paging/loading more hooks
   const PAGE_SIZE = 20;
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const [items, setItems] = useState<BioCollectBioActivity[]>([]);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [refreshSwitch, setRefreshSwitch] = useState<boolean>(false);
+
+  const refresh = useCallback(() => {
+    setSearch(null);
+    setItems([]);
+    setPage(0);
+    setRefreshSwitch((prevSwitch) => !prevSwitch);
+  }, []);
 
   // load next page
   const loadMore = () => {
@@ -70,7 +83,7 @@ export const PublishedRecords = ({
     }
 
     getActivities();
-  }, [view, filters, debouncedSearchTerm, page]);
+  }, [view, filters, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
 
   function clearSearch() {
     setSearchInput('');
@@ -88,32 +101,43 @@ export const PublishedRecords = ({
 
   return (
     <Stack pb='sm'>
-      <TextInput
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.currentTarget.value)}
-        placeholder='Search activities…'
-        leftSection={<IconSearch size={16} />}
-        rightSection={(() => {
-          if (loadingMore) {
-            return <Loader size='xs' />;
-          } else if (searchInput) {
-            return (
-              <ActionIcon
-                aria-label='Clear search'
-                onClick={clearSearch}
-                onMouseDown={(e) => e.preventDefault()}
-                variant='subtle'
-              >
-                <IconX size={16} />
-              </ActionIcon>
-            );
-          }
-          return null;
-        })()}
-        rightSectionWidth={36}
-        w='100%'
-        aria-label='Search published activities'
-      />
+      <Group>
+        <TextInput
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.currentTarget.value)}
+          placeholder='Search activities…'
+          leftSection={<IconSearch size={16} />}
+          rightSection={(() => {
+            if (loadingMore) {
+              return <Loader size='xs' />;
+            } else if (searchInput) {
+              return (
+                <ActionIcon
+                  aria-label='Clear search'
+                  onClick={clearSearch}
+                  onMouseDown={(e) => e.preventDefault()}
+                  variant='subtle'
+                >
+                  <IconX size={16} />
+                </ActionIcon>
+              );
+            }
+            return null;
+          })()}
+          rightSectionWidth={36}
+          aria-label='Search published activities'
+          disabled={loadingMore || !search}
+          style={{ flexGrow: 1 }}
+        />
+        <Button
+          loading={loadingMore}
+          variant='light'
+          leftSection={<IconRefresh size='1rem' />}
+          onClick={refresh}
+        >
+          Refresh
+        </Button>
+      </Group>
 
       {(() => {
         if (search) {
