@@ -1,9 +1,9 @@
-import { Alert, Button, Center, Group, Loader, Stack, Text } from '@mantine/core';
+import { Alert, Button, Center, Group, Progress, Stack, Text } from '@mantine/core';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
 import { usePWA } from '#/helpers/pwa';
-import type { OfflineProjectActivities } from '#/helpers/pwa/context';
+import type { OfflineProjectActivities, OfflineUploadAllProgress } from '#/helpers/pwa/context';
 
 import type { RecordsProps } from './PublishedRecords';
 import { OfflineActivityItem } from './OfflineActivityItem';
@@ -31,12 +31,19 @@ export function UnpublishedRecords({
   const [loading, setLoading] = useState(!initialActivities && !!filters.projectActivityId);
   const [loadingMore, setLoadingMore] = useState(false);
   const [uploadingAll, setUploadingAll] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<OfflineUploadAllProgress | null>(null);
   const [error, setError] = useState<string | null>(initialError || null);
 
   const canUploadAll = useMemo(
     () => items.filter((item) => !item.isInvalidDraft).length > 0,
     [items],
   );
+  const bulkUploadingActivityId =
+    uploadProgress?.phase === 'uploading' ? uploadProgress.currentActivityId : undefined;
+  const uploadProgressValue =
+    uploadProgress && uploadProgress.total > 0
+      ? Math.round((uploadProgress.processed / uploadProgress.total) * 100)
+      : 0;
 
   const syncActivities = useCallback((activities: OfflineProjectActivities) => {
     setItems(activities.activities);
@@ -151,10 +158,19 @@ export function UnpublishedRecords({
     }
 
     setUploadingAll(true);
+    setUploadProgress({
+      currentActivityId: undefined,
+      failed: 0,
+      phase: 'preparing',
+      processed: 0,
+      skipped: items.filter((item) => item.isInvalidDraft).length,
+      total: items.filter((item) => !item.isInvalidDraft).length,
+      uploaded: 0,
+    });
     setError(null);
 
     try {
-      await pwa.uploadAllOfflineActivities(filters.projectActivityId as string);
+      await pwa.uploadAllOfflineActivities(filters.projectActivityId as string, setUploadProgress);
       await refresh();
       onPublishedMutation?.();
     } catch (uploadError) {
@@ -164,6 +180,7 @@ export function UnpublishedRecords({
           : 'Failed to upload unpublished records.',
       );
     } finally {
+      setUploadProgress(null);
       setUploadingAll(false);
     }
   }
@@ -195,6 +212,28 @@ export function UnpublishedRecords({
           {error}
         </Alert>
       )}
+      {uploadProgress && (
+        <Alert color='blue' title='Uploading unpublished records'>
+          <Stack gap='xs'>
+            <Group justify='space-between' gap='xs'>
+              <Text size='sm'>
+                {uploadProgress.phase === 'refreshing'
+                  ? 'Refreshing unpublished records after upload...'
+                  : `${uploadProgress.processed} of ${uploadProgress.total} uploadable records processed`}
+              </Text>
+              <Text size='sm' c='dimmed'>
+                Uploaded {uploadProgress.uploaded}
+                {uploadProgress.failed > 0 ? ` | Failed ${uploadProgress.failed}` : ''}
+                {uploadProgress.skipped > 0 ? ` | Skipped ${uploadProgress.skipped}` : ''}
+              </Text>
+            </Group>
+            <Progress
+              value={uploadProgress.phase === 'refreshing' ? 100 : uploadProgressValue}
+              animated
+            />
+          </Stack>
+        </Alert>
+      )}
       {!error && items.length === 0 && (
         <Center h='100%' py='xl'>
           <Text c='dimmed'>No unpublished records found</Text>
@@ -206,6 +245,8 @@ export function UnpublishedRecords({
           <OfflineActivityItem
             key={activity.activityId}
             activity={activity}
+            bulkUploading={uploadingAll}
+            bulkUploadingActivityId={bulkUploadingActivityId}
             onDelete={handleDelete}
             onUpload={handleUpload}
             onRefresh={refresh}

@@ -18,6 +18,8 @@ import { RecordCard } from './RecordCard';
 
 interface OfflineActivityItemProps {
   activity?: BioCollectOfflineActivitySummary;
+  bulkUploading?: boolean;
+  bulkUploadingActivityId?: string;
   onDelete?: (activityId: string) => Promise<void>;
   onUpload?: (activityId: string) => Promise<void>;
   onRefresh?: () => void;
@@ -25,6 +27,8 @@ interface OfflineActivityItemProps {
 
 export function OfflineActivityItem({
   activity,
+  bulkUploading = false,
+  bulkUploadingActivityId,
   onDelete,
   onUpload,
   onRefresh,
@@ -47,9 +51,18 @@ export function OfflineActivityItem({
   const surveyDate = activity?.surveyDate
     ? new Date(activity.surveyDate).toLocaleString('en-GB')
     : 'Not recorded';
+  const isBulkUploadingCurrentActivity =
+    !!activity && bulkUploading && activity.activityId === bulkUploadingActivityId;
 
   async function handleUpload() {
-    if (!activity || activity.isInvalidDraft || uploading || !onLine || !onUpload) {
+    if (
+      !activity ||
+      activity.isInvalidDraft ||
+      uploading ||
+      bulkUploading ||
+      !onLine ||
+      !onUpload
+    ) {
       return;
     }
 
@@ -62,7 +75,7 @@ export function OfflineActivityItem({
   }
 
   function handleDelete() {
-    if (!activity || deleting || !onLine || !onDelete) {
+    if (!activity || deleting || bulkUploading || !onLine || !onDelete) {
       return;
     }
 
@@ -98,7 +111,7 @@ export function OfflineActivityItem({
         <>
           <Skeleton visible={loading} w={85}>
             <Button
-              disabled={deleting || uploading || loading}
+              disabled={deleting || uploading || bulkUploading || loading}
               data-testid='view-unpublished-record'
               variant='light'
               color='gray'
@@ -120,7 +133,7 @@ export function OfflineActivityItem({
           </Skeleton>
           <Skeleton visible={loading} w={85}>
             <Button
-              disabled={deleting || uploading || loading}
+              disabled={deleting || uploading || bulkUploading || loading}
               data-testid='edit-unpublished-record'
               variant='light'
               color='gray'
@@ -146,8 +159,8 @@ export function OfflineActivityItem({
           {!activity?.isInvalidDraft && (
             <Skeleton visible={loading} w={90}>
               <Button
-                loading={uploading}
-                disabled={!onLine || deleting || loading}
+                loading={uploading || isBulkUploadingCurrentActivity}
+                disabled={!onLine || deleting || bulkUploading || loading}
                 data-testid='upload-unpublished-record'
                 variant='light'
                 size='xs'
@@ -162,7 +175,7 @@ export function OfflineActivityItem({
           <Skeleton visible={loading} w={85}>
             <Button
               loading={deleting}
-              disabled={!onLine || uploading || loading}
+              disabled={!onLine || uploading || bulkUploading || loading}
               data-testid='delete-unpublished-record'
               color='red'
               variant='light'
@@ -206,6 +219,11 @@ export function OfflineActivityItem({
             <b>Incomplete</b> - Please finish editing it before uploading.
           </Text>
         </Flex>
+      )}
+      {isBulkUploadingCurrentActivity && (
+        <Text size='xs' c='blue' mt='xs'>
+          Uploading this record now...
+        </Text>
       )}
     </RecordCard>
   );

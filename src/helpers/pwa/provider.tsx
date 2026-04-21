@@ -6,12 +6,20 @@ import { userManager } from '../auth';
 import PWAContext, {
   type OfflineActivityMutationResult,
   type OfflineProjectActivities,
+  type OfflineUploadAllProgress,
+  type OfflineUploadAllResult,
   type StorageSummaryStats,
 } from './context';
 
 interface StorageSummaryEvent {
   event: string;
   data: StorageSummaryStats;
+}
+
+interface WaitForEventOptions<TProgress> {
+  onProgress?: (progress: TProgress) => void;
+  progressEventName?: string;
+  timeout?: number;
 }
 
 const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
@@ -35,21 +43,46 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     }
   };
 
-  function waitForEvent<T>(eventName: string, eventPayload: unknown, timeout = 2000): Promise<T> {
+  function waitForEvent<T, TProgress = never>(
+    eventName: string,
+    eventPayload: unknown,
+    options?: WaitForEventOptions<TProgress>,
+  ): Promise<T> {
     return new Promise((resolve, reject) => {
       const frameWindow = ref.current?.contentWindow;
+      const timeout = options?.timeout ?? 2000;
+      let eventTimeout: ReturnType<typeof setTimeout>;
+
+      const clearListeners = () => {
+        clearTimeout(eventTimeout);
+        window.removeEventListener('message', eventHandler);
+      };
+
+      const resetTimeout = () => {
+        clearTimeout(eventTimeout);
+        eventTimeout = setTimeout(() => {
+          window.removeEventListener('message', eventHandler);
+          reject(new Error(`${timeout}ms timeout exceeded when waiting for '${eventName}' event!`));
+        }, timeout);
+      };
+
       const eventHandler = (message: MessageEvent) => {
         if (frameWindow && message.source !== frameWindow) {
           return;
         }
 
         const { data } = message;
+        if (options?.progressEventName && data?.event === options.progressEventName) {
+          options.onProgress?.(data.payload as TProgress);
+          resetTimeout();
+          return;
+        }
+
         if (data?.event !== eventName) {
           return;
         }
 
-        clearTimeout(eventTimeout);
-        window.removeEventListener('message', eventHandler);
+        clearListeners();
 
         if (data?.payload?.error) {
           reject(new Error(data.payload.error));
@@ -59,12 +92,8 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
         resolve(data.payload);
       };
 
-      const eventTimeout = setTimeout(() => {
-        window.removeEventListener('message', eventHandler);
-        reject(new Error(`${timeout}ms timeout exceeded when waiting for '${eventName}' event!`));
-      }, timeout);
-
       window.addEventListener('message', eventHandler);
+      resetTimeout();
       send(eventName, eventPayload);
     });
   }
@@ -106,7 +135,7 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
         max,
         offset,
       },
-      10000,
+      { timeout: 10000 },
     );
   };
 
@@ -114,15 +143,22 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     return await waitForEvent<OfflineActivityMutationResult>(
       'offline-upload-activity',
       { projectActivityId, activityId },
-      30000,
+      { timeout: 30000 },
     );
   };
 
-  const uploadAllOfflineActivities = async (projectActivityId: string) => {
-    return await waitForEvent<OfflineActivityMutationResult>(
+  const uploadAllOfflineActivities = async (
+    projectActivityId: string,
+    onProgress?: (progress: OfflineUploadAllProgress) => void,
+  ) => {
+    return await waitForEvent<OfflineUploadAllResult, OfflineUploadAllProgress>(
       'offline-upload-all-activities',
       { projectActivityId },
-      120000,
+      {
+        onProgress,
+        progressEventName: 'offline-upload-all-activities-progress',
+        timeout: 120000,
+      },
     );
   };
 
@@ -130,7 +166,7 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     return await waitForEvent<OfflineActivityMutationResult>(
       'offline-delete-activity',
       { projectActivityId, activityId },
-      30000,
+      { timeout: 30000 },
     );
   };
 
