@@ -13,6 +13,16 @@ import { UnpublishedRecords } from './components/UnpublishedRecords';
 import type { OfflineProjectActivities } from '../pwa/context';
 import { useOnLine } from '../funcs';
 
+const viewToHeader: { [key: string]: string } = {
+  myrecords: 'My Records',
+  project: 'Project',
+  projectrecords: 'Project Records',
+  myprojectrecords: 'My Records',
+  userprojectactivityrecords: 'My Records',
+  allrecords: 'Records',
+  projectactivityrecords: 'Project Records',
+};
+
 const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
   const PAGE_SIZE = 20;
 
@@ -75,7 +85,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
           <Drawer.Header>
             <Group gap='md'>
               <Stack gap={0}>
-                <Title order={3}>Records</Title>
+                <Title order={3}>{viewToHeader[view || ''] || 'Records'}</Title>
                 {recordsFor && (
                   <Text size='sm' c='dimmed'>
                     For {recordsFor}

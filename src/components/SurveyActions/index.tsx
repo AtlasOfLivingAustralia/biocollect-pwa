@@ -35,7 +35,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                     projectId: survey.projectId,
                     projectActivityId: survey.projectActivityId,
                   },
-                  `${survey.name} Survey`,
+                  survey.name,
                 );
               })
             }
@@ -61,7 +61,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                       `projectActivityNameFacet:${survey.name}`,
                     ],
                   },
-                  `${survey.name} My Records`,
+                  survey.name,
                 );
               })
             }
@@ -86,13 +86,17 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                   `Add Record - ${survey.name}`,
                   {
                     close: () =>
-                      drawer.open('myrecords', {
-                        projectActivityId: survey.projectActivityId,
-                        fq: [
-                          `projectId:${survey.projectId}`,
-                          `projectActivityNameFacet:${survey.name}`,
-                        ],
-                      }),
+                      drawer.open(
+                        'myrecords',
+                        {
+                          projectActivityId: survey.projectActivityId,
+                          fq: [
+                            `projectId:${survey.projectId}`,
+                            `projectActivityNameFacet:${survey.name}`,
+                          ],
+                        },
+                        survey.name,
+                      ),
                   },
                 );
               })
