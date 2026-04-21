@@ -1,4 +1,4 @@
-import { Drawer, Group, Stack, Tabs, Text, Title, useMantineTheme } from '@mantine/core';
+import { Drawer, Group, Paper, Stack, Tabs, Text, Title, useMantineTheme } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { type PropsWithChildren, type ReactElement, useState } from 'react';
 
@@ -92,12 +92,14 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
               }
               variant='pills'
             >
-              <Tabs.List grow mb='sm'>
-                <Tabs.Tab value='unpublished'>Unpublished</Tabs.Tab>
-                <Tabs.Tab value='published' disabled={!isOnline}>
-                  Published
-                </Tabs.Tab>
-              </Tabs.List>
+              <Paper withBorder mb='sm' p={4} radius='xl' shadow='md'>
+                <Tabs.List grow>
+                  <Tabs.Tab value='unpublished'>Unpublished</Tabs.Tab>
+                  <Tabs.Tab value='published' disabled={!isOnline}>
+                    Published
+                  </Tabs.Tab>
+                </Tabs.List>
+              </Paper>
               <Tabs.Panel value='unpublished'>
                 <UnpublishedRecords
                   initialActivities={unpublished}

@@ -1,5 +1,5 @@
 import { Alert, Button, Center, Group, Loader, Stack, Text } from '@mantine/core';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
 import { usePWA } from '#/helpers/pwa';
@@ -168,14 +168,6 @@ export function UnpublishedRecords({
     }
   }
 
-  if (loading) {
-    return (
-      <Center h='100%' py='xl'>
-        <Loader size='sm' />
-      </Center>
-    );
-  }
-
   return (
     <Stack pb='sm'>
       <Group>
@@ -209,15 +201,23 @@ export function UnpublishedRecords({
         </Center>
       )}
 
-      {items.map((activity) => (
-        <OfflineActivityItem
-          key={activity.activityId}
-          activity={activity}
-          onDelete={handleDelete}
-          onUpload={handleUpload}
-          onRefresh={refresh}
-        />
-      ))}
+      {!loading &&
+        items.map((activity) => (
+          <OfflineActivityItem
+            key={activity.activityId}
+            activity={activity}
+            onDelete={handleDelete}
+            onUpload={handleUpload}
+            onRefresh={refresh}
+          />
+        ))}
+
+      {loading &&
+        [0, 1, 2, 3, 4, 5, 6].map((num) => (
+          <Fragment key={num}>
+            <OfflineActivityItem />
+          </Fragment>
+        ))}
 
       {items.length < total && (
         <Button mt='md' onClick={loadMore} fullWidth loading={loadingMore} variant='light'>
