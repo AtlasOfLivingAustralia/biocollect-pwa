@@ -44,6 +44,8 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
           setCanConfirm(false);
         } else if (data.event === 'surveys-removed') {
           dexie.cached.clear();
+        } else if (data.event === 'close-frame') {
+          handleClose();
         }
       };
 

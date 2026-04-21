@@ -158,7 +158,7 @@ export const PublishedRecords = ({
               )}
             </>
           ) : (
-            <Center h='100%'>
+            <Center h='100%' py='xl'>
               <Text c='dimmed'>No published records found</Text>
             </Center>
           );

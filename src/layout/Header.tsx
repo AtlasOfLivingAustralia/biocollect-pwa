@@ -79,11 +79,13 @@ export function Header() {
 
                   // Use the given name from the profile field, otherwise fallback to the JWT
                   const given_name =
-                    user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name;
+                    user?.profile.given_name ||
+                    (decoded as { given_name: string } | null)?.given_name;
 
                   // Use the family name from the profile field, otherwise fallback to the JWT
                   const family_name =
-                    user?.profile.family_name || (decoded as { family_name: string } | null)?.family_name;
+                    user?.profile.family_name ||
+                    (decoded as { family_name: string } | null)?.family_name;
 
                   // If the user has a first & last name
                   return given_name && family_name ? (
@@ -98,7 +100,7 @@ export function Header() {
               <Menu.Item component={Link} to='/' leftSection={<IconSearch size='1rem' />}>
                 Search projects
               </Menu.Item>
-              <Menu.Item
+              {/* <Menu.Item
                 onClick={() =>
                   frame.open(
                     `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
@@ -108,7 +110,7 @@ export function Header() {
                 leftSection={<IconFileUpload size='1rem' />}
               >
                 Unpublished records
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item
                 onClick={() =>
                   frame.open(
@@ -130,7 +132,11 @@ export function Header() {
                 </>
               )}
               <Menu.Divider />
-              <Menu.Item closeMenuOnClick={false} leftSection={isDark ? <IconMoon size='1rem' /> : <IconSun size='1rem' />} onClick={toggleColorScheme}>
+              <Menu.Item
+                closeMenuOnClick={false}
+                leftSection={isDark ? <IconMoon size='1rem' /> : <IconSun size='1rem' />}
+                onClick={toggleColorScheme}
+              >
                 Toggle theme
               </Menu.Item>
               <Menu.Item
