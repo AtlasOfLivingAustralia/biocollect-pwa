@@ -95,7 +95,7 @@ function ProjectBody() {
           </ThemeIcon>
           <Title order={2}>Surveys</Title>
         </Group>
-        <Grid gutter='xl'>
+        <Grid gap='xl'>
           {surveys.length > 0 ? (
             surveys.map((survey) => (
               <Grid.Col key={survey.id} span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 4 }}>
@@ -117,7 +117,7 @@ function ProjectBody() {
         width='100%'
       />
       <Box py='xl' mb='xl' px={36}>
-        <Grid gutter='xl' pb='xl'>
+        <Grid gap='xl' pb='xl'>
           <Grid.Col span={{ xs: 12, sm: 12, md: 8, lg: 8, xl: 9 }}>
             <Accordion variant='contained'>
               {project.description && (

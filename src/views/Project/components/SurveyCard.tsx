@@ -16,7 +16,7 @@ export function SurveyCard({ survey }: SurveyCardProps) {
   const downloaded = Boolean(useLiveQuery(async () => await dexie.cached.get(survey?.id || '')));
 
   return (
-    <Card radius='lg' shadow='md' withBorder bg='light-dark(white, var(--mantine-color-dark-5)'>
+    <Card radius='xl' shadow='md' bg='light-dark(white, var(--mantine-color-dark-6)'>
       <Box
         style={{
           display: 'flex',
@@ -24,11 +24,11 @@ export function SurveyCard({ survey }: SurveyCardProps) {
           justifyContent: 'space-between',
         }}
       >
-        <Title order={5} mb={2}>
+        <Title order={5} mb={2} lineClamp={1}>
           {survey.name}
         </Title>
         {survey.status && (
-          <Badge miw={70} color='dark'>
+          <Badge miw={70} color='gray'>
             {survey.status}
           </Badge>
         )}
