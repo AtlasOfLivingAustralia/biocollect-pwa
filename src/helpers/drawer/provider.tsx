@@ -104,8 +104,10 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
             >
               <Paper withBorder mb='sm' p={4} radius='xl' shadow='md'>
                 <Tabs.List grow>
-                  <Tabs.Tab value='unpublished'>Unpublished</Tabs.Tab>
-                  <Tabs.Tab value='published' disabled={!isOnline}>
+                  <Tabs.Tab id='unpublishedTab' value='unpublished'>
+                    Unpublished
+                  </Tabs.Tab>
+                  <Tabs.Tab id='publishedTab' value='published' disabled={!isOnline}>
                     Published
                   </Tabs.Tab>
                 </Tabs.List>

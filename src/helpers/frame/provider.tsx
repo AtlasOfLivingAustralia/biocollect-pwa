@@ -19,7 +19,7 @@ import FrameContext, { type FrameCallbacks } from './context';
 import { modals } from '@mantine/modals';
 
 interface FrameEvent {
-  event: 'download-complete' | 'download-removed' | 'surveys-removed';
+  event: 'download-complete' | 'download-removed' | 'surveys-removed' | 'close-frame';
 }
 
 const FrameProvider = (props: PropsWithChildren): ReactElement => {
@@ -31,29 +31,6 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
 
   // Refs & theming
   const frameRef = useRef<HTMLIFrameElement>(null);
-
-  useEffect(() => {
-    if (!isFrame()) {
-      // Define a message handler to listen for download events
-      const messageHandler = (message: MessageEvent<FrameEvent>) => {
-        const { data } = message;
-
-        if (data.event === 'download-complete') {
-          setCanConfirm(true);
-        } else if (data.event === 'download-removed') {
-          setCanConfirm(false);
-        } else if (data.event === 'surveys-removed') {
-          dexie.cached.clear();
-        } else if (data.event === 'close-frame') {
-          handleClose();
-        }
-      };
-
-      // Subscribe & setup unmount callback
-      window.addEventListener('message', messageHandler);
-      return () => window.removeEventListener('message', messageHandler);
-    }
-  }, [callbacks]);
 
   // Callback function to pass user credentials when IFrame has loaded
   const postToken = useCallback(async () => {
@@ -72,8 +49,6 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         },
         import.meta.env.VITE_API_BIOCOLLECT,
       );
-
-      console.log('Credentials posted!');
     }
   }, []);
 
@@ -106,6 +81,31 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
     closeFrame();
   }, []);
 
+  useEffect(() => {
+    if (isFrame()) {
+      return undefined;
+    }
+
+    // Define a message handler to listen for download events
+    const messageHandler = (message: MessageEvent<FrameEvent>) => {
+      const { data } = message;
+
+      if (data.event === 'download-complete') {
+        setCanConfirm(true);
+      } else if (data.event === 'download-removed') {
+        setCanConfirm(false);
+      } else if (data.event === 'surveys-removed') {
+        dexie.cached.clear();
+      } else if (data.event === 'close-frame') {
+        handleClose();
+      }
+    };
+
+    // Subscribe & setup unmount callback
+    window.addEventListener('message', messageHandler);
+    return () => window.removeEventListener('message', messageHandler);
+  }, [handleClose]);
+
   const close = () => {
     // Show confirmation dialog for edit / add dialogs
     if (title?.startsWith('Edit') || title?.startsWith('Add')) {
@@ -120,6 +120,9 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
         labels: {
           confirm: 'Close',
           cancel: 'Cancel',
+        },
+        confirmProps: {
+          'data-testid': 'modal-confirm-close',
         },
         onConfirm: handleClose,
         zIndex: 2000,

@@ -53,9 +53,10 @@ export function RecordCard({
   children,
   imageAlt = 'Record image',
   imageUrl,
+  ...rest
 }: RecordCardProps): ReactElement {
   return (
-    <Paper p='sm' pr='lg' withBorder>
+    <Paper p='sm' pr='lg' withBorder {...rest}>
       <Stack>
         <Flex justify='space-between' gap='md'>
           <Stack gap={4} style={{ flex: 1, minWidth: 0 }}>

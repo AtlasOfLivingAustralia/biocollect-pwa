@@ -199,6 +199,7 @@ export function UnpublishedRecords({
           Upload all
         </Button>
         <Button
+          id='unpublishedRefresh'
           loading={loading || loadingMore}
           variant='light'
           leftSection={<IconRefresh size='1rem' />}
@@ -243,6 +244,7 @@ export function UnpublishedRecords({
       {!loading &&
         items.map((activity) => (
           <OfflineActivityItem
+            data-testid='record-unpublished'
             key={activity.activityId}
             activity={activity}
             bulkUploading={uploadingAll}

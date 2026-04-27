@@ -16,7 +16,7 @@ interface ActivityItemProps {
   onDelete?: (activityIdToDelete: string) => void;
 }
 
-export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
+export function ActivityItem({ activity, onDelete, ...rest }: ActivityItemProps) {
   const [deleting, setDeleting] = useState<boolean>(false);
   const frame = useContext(FrameContext);
   const loading = !activity;
@@ -63,7 +63,7 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
             <Skeleton visible={loading} w={90}>
               <Button
                 disabled={deleting}
-                data-testid='view-record'
+                data-testid='view-published-record'
                 variant='light'
                 size='xs'
                 leftSection={<IconEye size='1rem' />}
@@ -86,7 +86,7 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
             <Skeleton visible={loading} w={90}>
               <Button
                 disabled={deleting}
-                data-testid='edit-record'
+                data-testid='edit-published-record'
                 variant='light'
                 size='xs'
                 leftSection={<IconPencil size='1rem' />}
@@ -110,7 +110,7 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
             <Skeleton visible={loading} w={100}>
               <Button
                 loading={deleting}
-                data-testid='delete-record'
+                data-testid='delete-published-record'
                 color='red'
                 variant='light'
                 size='xs'
@@ -124,6 +124,7 @@ export function ActivityItem({ activity, onDelete }: ActivityItemProps) {
           )}
         </>
       }
+      {...rest}
     >
       <Skeleton visible={loading}>
         <Text>{activity?.name || 'Long Activity Name Here'}</Text>

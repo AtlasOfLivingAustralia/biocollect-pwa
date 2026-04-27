@@ -130,6 +130,7 @@ export const PublishedRecords = ({
           style={{ flexGrow: 1 }}
         />
         <Button
+          id='publishedRefresh'
           loading={loadingMore}
           variant='light'
           leftSection={<IconRefresh size='1rem' />}
@@ -145,6 +146,7 @@ export const PublishedRecords = ({
             <>
               {items.map((activity) => (
                 <ActivityItem
+                  data-testid='record-published'
                   key={activity.activityId}
                   activity={activity}
                   onDelete={handleDelete}

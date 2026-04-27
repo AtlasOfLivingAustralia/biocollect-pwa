@@ -33,6 +33,7 @@ export const Frame = forwardRef<HTMLIFrameElement, IFrameProps>(({ onLoad, ...pr
       {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: We still need to hook into onLoad */}
       <iframe
         {...props}
+        id='pwa-frame'
         ref={ref}
         style={{
           border: 'none',

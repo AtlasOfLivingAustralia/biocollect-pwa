@@ -22,34 +22,85 @@ interface WaitForEventOptions<TProgress> {
   timeout?: number;
 }
 
+type SyncEvent =
+  | 'clear-storage'
+  | 'offline-project-activity-activities'
+  | 'offline-upload-activity'
+  | 'offline-upload-all-activities'
+  | 'offline-delete-activity';
+
+type SyncPayload = Record<string, unknown>;
+
+interface SyncMessage<TPayload = unknown> {
+  event?: string;
+  requestId?: string;
+  payload?: TPayload & {
+    error?: string;
+  };
+}
+
+function createRequestId() {
+  return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
 const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   const [storageStats, setStorageStats] = useState<StorageSummaryStats | null>(null);
   const [clearingStorage, setClearingStorage] = useState<boolean>(false);
   const ref = useRef<HTMLIFrameElement>(null);
-  // biome-ignore lint/suspicious/noExplicitAny: Accept any data
-  const send = async (event: string, payload?: any) => {
+  const syncFrameLoaded = useRef<boolean>(false);
+
+  function waitForSyncFrame(timeout = 5000): Promise<Window> {
+    return new Promise((resolve, reject) => {
+      const loadedFrameWindow = ref.current?.contentWindow;
+      if (syncFrameLoaded.current && loadedFrameWindow) {
+        resolve(loadedFrameWindow);
+        return;
+      }
+
+      const started = Date.now();
+      const interval = setInterval(() => {
+        const frameWindow = ref.current?.contentWindow;
+        if (syncFrameLoaded.current && frameWindow) {
+          clearInterval(interval);
+          resolve(frameWindow);
+          return;
+        }
+
+        if (Date.now() - started >= timeout) {
+          clearInterval(interval);
+          reject(new Error('PWA sync frame did not load in time.'));
+        }
+      }, 50);
+    });
+  }
+
+  const send = async (event: SyncEvent, requestId: string, payload?: SyncPayload) => {
     const user = await userManager.getUser();
-    if (ref.current?.contentWindow) {
-      ref.current.contentWindow.postMessage(
-        {
-          event,
-          payload: {
-            ...(payload || {}),
-            jwt: user?.access_token,
-          },
+    const frameWindow = await waitForSyncFrame();
+
+    frameWindow.postMessage(
+      {
+        event,
+        requestId,
+        payload: {
+          ...(payload || {}),
+          jwt: user?.access_token,
         },
-        import.meta.env.VITE_API_BIOCOLLECT,
-      );
-    }
+      },
+      import.meta.env.VITE_API_BIOCOLLECT,
+    );
+
+    return frameWindow;
   };
 
   function waitForEvent<T, TProgress = never>(
-    eventName: string,
-    eventPayload: unknown,
+    eventName: SyncEvent,
+    eventPayload: SyncPayload,
     options?: WaitForEventOptions<TProgress>,
   ): Promise<T> {
     return new Promise((resolve, reject) => {
-      const frameWindow = ref.current?.contentWindow;
+      let frameWindow: Window | null = null;
+      const requestId = createRequestId();
       const timeout = options?.timeout ?? 2000;
       let eventTimeout: ReturnType<typeof setTimeout>;
 
@@ -66,12 +117,16 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
         }, timeout);
       };
 
-      const eventHandler = (message: MessageEvent) => {
-        if (frameWindow && message.source !== frameWindow) {
+      const eventHandler = (message: MessageEvent<SyncMessage>) => {
+        if (!frameWindow || message.source !== frameWindow) {
           return;
         }
 
         const { data } = message;
+        if (data?.requestId !== requestId) {
+          return;
+        }
+
         if (options?.progressEventName && data?.event === options.progressEventName) {
           options.onProgress?.(data.payload as TProgress);
           resetTimeout();
@@ -94,13 +149,24 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
 
       window.addEventListener('message', eventHandler);
       resetTimeout();
-      send(eventName, eventPayload);
+      send(eventName, requestId, eventPayload)
+        .then((targetWindow) => {
+          frameWindow = targetWindow;
+        })
+        .catch((error) => {
+          clearListeners();
+          reject(error);
+        });
     });
   }
 
   useEffect(() => {
     // Define a message handler to listen for download events
     const messageHandler = async (message: MessageEvent<StorageSummaryEvent>) => {
+      if (ref.current?.contentWindow && message.source !== ref.current.contentWindow) {
+        return;
+      }
+
       const { data } = message;
       if (data?.event === 'storage-stats') {
         setStorageStats(data.data);
@@ -116,7 +182,10 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   }, []);
 
   const clearStorage = () => {
-    send('clear-storage');
+    send('clear-storage', createRequestId()).catch((error) => {
+      console.error('Failed to clear PWA sync storage.', error);
+      setClearingStorage(false);
+    });
     setClearingStorage(true);
 
     // Clear the cached table in the DB
@@ -182,10 +251,14 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
         deleteOfflineActivity,
       }}
     >
+      {/** biome-ignore lint/a11y/noNoninteractiveElementInteractions: the hidden sync frame must report readiness before messages are sent */}
       <iframe
         ref={ref}
         title='PWA Sync'
         src={`${import.meta.env.VITE_API_BIOCOLLECT}/pwa/sync`}
+        onLoad={() => {
+          syncFrameLoaded.current = true;
+        }}
         style={{ display: 'none' }}
       />
       {children}

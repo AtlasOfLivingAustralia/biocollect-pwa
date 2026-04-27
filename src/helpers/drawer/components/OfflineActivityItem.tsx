@@ -32,6 +32,7 @@ export function OfflineActivityItem({
   onDelete,
   onUpload,
   onRefresh,
+  ...rest
 }: OfflineActivityItemProps) {
   const frame = useContext(FrameContext);
   const onLine = useOnLine();
@@ -189,6 +190,7 @@ export function OfflineActivityItem({
           </Skeleton>
         </>
       }
+      {...rest}
     >
       <Skeleton visible={loading} mb='xs'>
         <Flex align='center' gap='xs'>
@@ -211,7 +213,7 @@ export function OfflineActivityItem({
         </Text>
       </Skeleton>
       {activity?.isInvalidDraft && (
-        <Flex align='center' gap='xs'>
+        <Flex data-testid='unpublished-invalid-message' align='center' gap='xs'>
           <ThemeIcon color='orange' variant='light'>
             <IconPencilExclamation size='1rem' />
           </ThemeIcon>
