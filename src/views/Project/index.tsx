@@ -33,6 +33,7 @@ import { DownloadInstructions } from './components/DownloadInstructions';
 import { Header } from './components/Header';
 import { ScienceTypes } from './components/ScienceTypes';
 import { SurveyCard } from './components/SurveyCard';
+import { useUnpublished } from '#/helpers/pwa';
 
 type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 
@@ -58,6 +59,7 @@ function ProjectBody() {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))';
+  const { unpublishedMap } = useUnpublished();
 
   if (!project) {
     return (
@@ -99,7 +101,7 @@ function ProjectBody() {
           {surveys.length > 0 ? (
             surveys.map((survey) => (
               <Grid.Col key={survey.id} span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 4 }}>
-                <SurveyCard survey={survey} />
+                <SurveyCard survey={survey} unpublishedCount={unpublishedMap.projectActivity[survey.projectActivityId]} />
               </Grid.Col>
             ))
           ) : (

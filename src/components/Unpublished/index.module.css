@@ -1,0 +1,27 @@
+.badge {
+  padding-left: var(--mantine-spacing-sm);
+  padding-right: var(--mantine-spacing-sm);
+  padding-top: 4px;
+  padding-bottom: 4px;
+  background-color: var(--mantine-color-yellow-light);
+  border-radius: var(--mantine-radius-lg);
+  color: var(--mantine-color-yellow-light-color);
+  box-shadow: var(--mantine-shadow-lg);
+}
+
+.indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  top: var(--mantine-spacing-md);
+  left: var(--mantine-spacing-md);
+  padding-left: var(--mantine-spacing-sm);
+  padding-right: 22.5px;
+  margin-right: -15px;
+  background-color: var(--mantine-color-yellow-light);
+  border-top-left-radius: var(--mantine-radius-lg);
+  border-bottom-left-radius: var(--mantine-radius-lg);
+  color: var(--mantine-color-yellow-light-color);
+  box-shadow: var(--mantine-shadow-lg);
+}

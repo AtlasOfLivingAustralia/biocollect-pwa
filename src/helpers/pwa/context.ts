@@ -11,8 +11,15 @@ export interface StorageSummaryStats {
 interface PWAContext {
   storageStats: StorageSummaryStats | null;
   clearingStorage: boolean;
+  unpublished: OfflineProjectActivities | null;
+  unpublishedError: string | null;
+  unpublishedLoading: boolean;
+  unpublishedMap: OfflineProjectActivitiesMap;
   clearStorage: () => void;
+  getOfflineActivities: (max: number) => Promise<OfflineProjectActivities>;
+  getOfflineActivitiesMap: () => Promise<OfflineProjectActivitiesMap>;
   getOfflineProjectActivityActivities: (projectActivityId: string, max: number, offset: number) => Promise<OfflineProjectActivities>;
+  refreshUnpublished: () => Promise<OfflineProjectActivities>;
   uploadOfflineActivity: (projectActivityId: string, activityId: string) => Promise<OfflineActivityMutationResult>;
   uploadAllOfflineActivities: (
     projectActivityId: string,
@@ -24,6 +31,11 @@ interface PWAContext {
 export interface OfflineProjectActivities {
   activities: BioCollectOfflineActivitySummary[];
   total: number;
+}
+
+export interface OfflineProjectActivitiesMap {
+  project: { [projectId: string]: number };
+  projectActivity: { [projectActivityId: string]: number };
 }
 
 export interface OfflineActivityMutationResult {
@@ -52,12 +64,20 @@ export interface OfflineUploadAllResult {
 }
 
 const fallbackMethod = () => console.error('Called PWA sync method before it was ready!');
+const emptyUnpublishedMap = { project: {}, projectActivity: {} };
 
 export default createContext<PWAContext>({
   storageStats: null,
   clearingStorage: false,
+  unpublished: null,
+  unpublishedError: null,
+  unpublishedLoading: false,
+  unpublishedMap: emptyUnpublishedMap,
   clearStorage: fallbackMethod,
+  getOfflineActivities: () => Promise.resolve({ activities: [], total: 0 }),
+  getOfflineActivitiesMap: () => Promise.resolve(emptyUnpublishedMap),
   getOfflineProjectActivityActivities: () => Promise.resolve({ activities: [], total: 0 }),
+  refreshUnpublished: () => Promise.resolve({ activities: [], total: 0 }),
   uploadOfflineActivity: () => Promise.resolve({}),
   uploadAllOfflineActivities: () =>
     Promise.resolve({

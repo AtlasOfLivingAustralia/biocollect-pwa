@@ -157,22 +157,20 @@ export function OfflineActivityItem({
               Edit
             </Button>
           </Skeleton>
-          {!activity?.isInvalidDraft && (
-            <Skeleton visible={loading} w={90}>
-              <Button
-                loading={uploading || isBulkUploadingCurrentActivity}
-                disabled={!onLine || deleting || bulkUploading || loading}
-                data-testid='upload-unpublished-record'
-                variant='light'
-                size='xs'
-                leftSection={<IconUpload size='1rem' />}
-                fullWidth
-                onClick={handleUpload}
-              >
-                Upload
-              </Button>
-            </Skeleton>
-          )}
+          <Skeleton visible={loading} w={90}>
+            <Button
+              loading={uploading || isBulkUploadingCurrentActivity}
+              disabled={!onLine || deleting || bulkUploading || loading || activity.isInvalidDraft}
+              data-testid='upload-unpublished-record'
+              variant='light'
+              size='xs'
+              leftSection={<IconUpload size='1rem' />}
+              fullWidth
+              onClick={handleUpload}
+            >
+              Upload
+            </Button>
+          </Skeleton>
           <Skeleton visible={loading} w={85}>
             <Button
               loading={deleting}

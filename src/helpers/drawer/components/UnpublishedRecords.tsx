@@ -12,6 +12,7 @@ import { IconRefresh, IconWorldUpload } from '@tabler/icons-react';
 interface UnpublishedRecordsProps extends RecordsProps {
   initialError?: string | null;
   initialActivities: OfflineProjectActivities | null;
+  onRefresh?: (activities: OfflineProjectActivities) => void | Promise<void>;
   onPublishedMutation?: () => void;
 }
 
@@ -21,6 +22,7 @@ export function UnpublishedRecords({
   initialActivities,
   initialError,
   filters,
+  onRefresh,
   onPublishedMutation,
 }: UnpublishedRecordsProps) {
   const pwa = usePWA();
@@ -66,6 +68,11 @@ export function UnpublishedRecords({
         0,
       );
       syncActivities(fetched);
+      if (onRefresh) {
+        await onRefresh(fetched);
+      } else {
+        await pwa.refreshUnpublished();
+      }
     } catch (refreshError) {
       setError(
         refreshError instanceof Error
