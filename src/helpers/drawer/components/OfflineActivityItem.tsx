@@ -8,7 +8,7 @@ import {
   IconTrash,
   IconUpload,
 } from '@tabler/icons-react';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import { FrameContext } from '#/helpers/frame';
 import { useOnLine } from '#/helpers/funcs';
@@ -57,12 +57,12 @@ export function OfflineActivityItem({
 
   async function handleUpload() {
     if (
-      !activity ||
-      activity.isInvalidDraft ||
-      uploading ||
-      bulkUploading ||
-      !onLine ||
-      !onUpload
+      (!activity ||
+        activity.isInvalidDraft ||
+        uploading ||
+        bulkUploading ||
+        !onLine ||
+        !onUpload)
     ) {
       return;
     }
@@ -74,6 +74,12 @@ export function OfflineActivityItem({
       setUploading(false);
     }
   }
+
+  useEffect(() => {
+    if (activity?.uploadFlag && !uploading) {
+      handleUpload();
+    }
+  }, [activity, uploading]);
 
   function handleDelete() {
     if (!activity || deleting || bulkUploading || !onLine || !onDelete) {
@@ -210,7 +216,7 @@ export function OfflineActivityItem({
           Species: <b>{speciesText}</b>
         </Text>
       </Skeleton>
-      {activity?.isInvalidDraft && (
+      {activity?.isInvalidDraft && !uploading && (
         <Flex data-testid='unpublished-invalid-message' align='center' gap='xs'>
           <ThemeIcon color='orange' variant='light'>
             <IconPencilExclamation size='1rem' />

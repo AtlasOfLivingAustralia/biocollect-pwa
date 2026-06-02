@@ -18,7 +18,6 @@ interface PWAContext {
   clearStorage: () => void;
   getOfflineActivities: (max: number) => Promise<OfflineProjectActivities>;
   getOfflineActivitiesMap: () => Promise<OfflineProjectActivitiesMap>;
-  getOfflineProjectActivityActivities: (projectActivityId: string, max: number, offset: number) => Promise<OfflineProjectActivities>;
   refreshUnpublished: () => Promise<OfflineProjectActivities>;
   uploadOfflineActivity: (projectActivityId: string, activityId: string) => Promise<OfflineActivityMutationResult>;
   uploadAllOfflineActivities: (
@@ -76,7 +75,6 @@ export default createContext<PWAContext>({
   clearStorage: fallbackMethod,
   getOfflineActivities: () => Promise.resolve({ activities: [], total: 0 }),
   getOfflineActivitiesMap: () => Promise.resolve(emptyUnpublishedMap),
-  getOfflineProjectActivityActivities: () => Promise.resolve({ activities: [], total: 0 }),
   refreshUnpublished: () => Promise.resolve({ activities: [], total: 0 }),
   uploadOfflineActivity: () => Promise.resolve({}),
   uploadAllOfflineActivities: () =>

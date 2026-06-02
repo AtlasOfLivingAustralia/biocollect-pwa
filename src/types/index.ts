@@ -368,6 +368,7 @@ export interface BioCollectOfflineActivityOutput {
 export interface BioCollectOfflineActivitySummary {
   activityId: string;
   isInvalidDraft: boolean;
+  uploadFlag: boolean;
   name: string;
   projectActivityId: string;
   projectId: string;
@@ -378,7 +379,7 @@ export interface BioCollectOfflineActivitySummary {
   transients: {
     viewActivityUrl: string;
     editActivityUrl: string;
-  }
+  };
 }
 
 export interface BioCollectBioActivity {

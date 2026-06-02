@@ -47,7 +47,6 @@ interface WaitForEventOptions<TProgress> {
 type SyncEvent =
   | 'clear-storage'
   | 'offline-all-activities'
-  | 'offline-project-activity-activities'
   | 'offline-upload-activity'
   | 'offline-upload-all-activities'
   | 'offline-delete-activity';
@@ -261,22 +260,6 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     return createOfflineActivitiesMap(fetched.activities);
   }, [refreshUnpublished]);
 
-  const getOfflineProjectActivityActivities = useCallback(async (
-    projectActivityId: string,
-    max = 10,
-    offset = 0,
-  ) => {
-    return await waitForEvent<OfflineProjectActivities>(
-      'offline-project-activity-activities',
-      {
-        projectActivityId,
-        max,
-        offset,
-      },
-      { timeout: 10000 },
-    );
-  }, [waitForEvent]);
-
   const uploadOfflineActivity = useCallback(async (projectActivityId: string, activityId: string) => {
     const result = await waitForEvent<OfflineActivityMutationResult>(
       'offline-upload-activity',
@@ -326,7 +309,6 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
         clearStorage,
         getOfflineActivities,
         getOfflineActivitiesMap,
-        getOfflineProjectActivityActivities,
         refreshUnpublished,
         uploadOfflineActivity,
         uploadAllOfflineActivities,

@@ -28,11 +28,11 @@ export function UnpublishedWrapper({ children, count }: PropsWithChildren<{ coun
 
   return (
     <Flex className={classes.wrapper} align='center' gap='xs'>
-      {children}
-      <Divider orientation="vertical" />
-      <ThemeIcon color='yellow' variant="light">
+      <ThemeIcon size='sm' color='yellow' variant="light">
         <Text size='xs' fw="bold">{count}</Text>
       </ThemeIcon>
+      <Divider orientation="vertical" />
+      {children}
     </Flex>
   );
 }

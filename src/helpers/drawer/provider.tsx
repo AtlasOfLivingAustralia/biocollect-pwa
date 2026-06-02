@@ -18,9 +18,8 @@ import type { BioCollectBioActivityView, FilterQueries } from '#/types';
 // Local components
 import RecordsDrawerContext from './context';
 import { PublishedRecords } from './components/PublishedRecords';
-import { usePWA, useUnpublished } from '../pwa';
+import { useUnpublished } from '../pwa';
 import { UnpublishedRecords } from './components/UnpublishedRecords';
-import type { OfflineProjectActivities } from '../pwa/context';
 import { useOnLine } from '../funcs';
 import { IconDatabaseExclamation } from '@tabler/icons-react';
 
@@ -35,86 +34,54 @@ const viewToHeader: { [key: string]: string } = {
 };
 
 const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
-  const PAGE_SIZE = 20;
-
   const [recordsFor, setRecordsFor] = useState<string | null>(null);
   const [view, setView] = useState<BioCollectBioActivityView | null>(null);
   const [filters, setFilters] = useState<FilterQueries>({});
   const [opened, { open: openDrawer, close }] = useDisclosure(false);
 
-  const [unpublished, setUnpublished] = useState<OfflineProjectActivities | null>(null);
-  const [unpublishedError, setUnpublishedError] = useState<string | null>(null);
+  // Unpublished state helpers
+  const [initialUnpublished, setInitialUnpublished] = useState<boolean>(false);
+
   const [publishedRefreshKey, setPublishedRefreshKey] = useState(0);
 
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
-  const pwa = usePWA();
-  const { refresh: refreshAllUnpublished } = useUnpublished({ refreshOnMount: false });
+  const { refresh: refreshAllUnpublished, unpublishedMap } = useUnpublished({
+    refreshOnMount: false,
+  });
   const isOnline = useOnLine();
+
+  const projectActivityId = filters.projectActivityId as string | undefined;
+  const unpublishedCount = projectActivityId
+    ? unpublishedMap.projectActivity[projectActivityId] || 0
+    : 0;
+
 
   // Callback function to open the records drawer
   const open = async (
     newView: BioCollectBioActivityView,
     newFilters?: FilterQueries,
     newRecordsFor?: string,
+    showUnpublished?: boolean,
   ) => {
     if (newView) setView(newView);
     if (newFilters) setFilters(newFilters);
     if (newRecordsFor) setRecordsFor(newRecordsFor);
 
     if (newFilters?.projectActivityId) {
-      try {
-        const fetched = await pwa.getOfflineProjectActivityActivities(
-          newFilters.projectActivityId as string,
-          PAGE_SIZE,
-          0,
-        );
-        setUnpublished(fetched);
-        setUnpublishedError(null);
-        await refreshAllUnpublished();
-      } catch (error) {
-        setUnpublished({ activities: [], total: 0 });
-        setUnpublishedError(
-          error instanceof Error ? error.message : 'Failed to load unpublished records.',
-        );
-      }
-    } else {
-      setUnpublished({ activities: [], total: 0 });
-      setUnpublishedError(null);
+      const newUnpublishedCount = newFilters?.projectActivityId
+        ? unpublishedMap.projectActivity[newFilters?.projectActivityId as string] || 0
+        : 0;
+
+      setInitialUnpublished(showUnpublished || newUnpublishedCount > 0);
+      await refreshAllUnpublished();
     }
 
     openDrawer();
   };
 
-  const handleMutation = async () => {
+  const handleMutation = () => {
     setPublishedRefreshKey((current) => current + 1);
-
-    if (filters?.projectActivityId) {
-      try {
-        const fetched = await pwa.getOfflineProjectActivityActivities(
-          filters.projectActivityId as string,
-          PAGE_SIZE,
-          0,
-        );
-        setUnpublished(fetched);
-        setUnpublishedError(null);
-        await refreshAllUnpublished();
-      } catch (error) {
-        setUnpublished({ activities: [], total: 0 });
-        setUnpublishedError(
-          error instanceof Error ? error.message : 'Failed to load unpublished records.',
-        );
-      }
-    } else {
-      setUnpublished({ activities: [], total: 0 });
-      setUnpublishedError(null);
-    }
-  };
-
-  const handleUnpublishedRefresh = async (activities: OfflineProjectActivities) => {
-    setUnpublished(activities);
-    setUnpublishedError(null);
-    await refreshAllUnpublished();
   };
 
   return (
@@ -140,12 +107,12 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
             <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body mt='xs'>
-            {unpublished && unpublished.total > 0 && (
+            {unpublishedCount > 0 && (
               <Alert
                 mb='xs'
                 color='yellow'
                 icon={<IconDatabaseExclamation />}
-                title={`${unpublished.total} unpublished record${unpublished.total > 1 ? 's' : ''}`}
+                title={`${unpublishedCount} unpublished record${unpublishedCount > 1 ? 's' : ''}`}
                 p='xs'
               >
                 These are currently <b>saved only on your device</b>, please upload them when
@@ -153,9 +120,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
               </Alert>
             )}
             <Tabs
-              defaultValue={
-                !isOnline || (unpublished?.total || 0) > 0 ? 'unpublished' : 'published'
-              }
+              defaultValue={!isOnline || initialUnpublished ? 'unpublished' : 'published'}
               variant='pills'
             >
               <Paper withBorder mb='sm' p={4} radius='xl' shadow='md'>
@@ -172,14 +137,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                 </Tabs.List>
               </Paper>
               <Tabs.Panel value='unpublished'>
-                <UnpublishedRecords
-                  initialActivities={unpublished}
-                  initialError={unpublishedError}
-                  view={view}
-                  filters={filters}
-                  onRefresh={handleUnpublishedRefresh}
-                  onPublishedMutation={handleMutation}
-                />
+                <UnpublishedRecords view={view} filters={filters} onMutation={handleMutation} />
               </Tabs.Panel>
               <Tabs.Panel value='published'>
                 <PublishedRecords

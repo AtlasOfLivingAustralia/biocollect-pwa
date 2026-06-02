@@ -80,12 +80,11 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
               survey &&
               (() => {
                 frame.open(
-                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${
-                    survey.projectActivityId
+                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
                   }?unpublished=true`,
                   `Add Record - ${survey.name}`,
                   {
-                    close: () =>
+                    close: () => {
                       drawer.open(
                         'myrecords',
                         {
@@ -96,7 +95,9 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                           ],
                         },
                         survey.name,
-                      ),
+                        true
+                      )
+                    }
                   },
                 );
               })

@@ -1,40 +1,38 @@
 import { Alert, Button, Center, Group, Progress, Stack, Text } from '@mantine/core';
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
-import { usePWA } from '#/helpers/pwa';
-import type { OfflineProjectActivities, OfflineUploadAllProgress } from '#/helpers/pwa/context';
+import { usePWA, useUnpublished } from '#/helpers/pwa';
+import type { OfflineUploadAllProgress } from '#/helpers/pwa/context';
 
 import type { RecordsProps } from './PublishedRecords';
 import { OfflineActivityItem } from './OfflineActivityItem';
 import { IconRefresh, IconWorldUpload } from '@tabler/icons-react';
 
 interface UnpublishedRecordsProps extends RecordsProps {
-  initialError?: string | null;
-  initialActivities: OfflineProjectActivities | null;
-  onRefresh?: (activities: OfflineProjectActivities) => void | Promise<void>;
-  onPublishedMutation?: () => void;
+  onMutation?: () => void;
 }
 
-const PAGE_SIZE = 20;
-
-export function UnpublishedRecords({
-  initialActivities,
-  initialError,
-  filters,
-  onRefresh,
-  onPublishedMutation,
-}: UnpublishedRecordsProps) {
+export function UnpublishedRecords({ filters, onMutation }: UnpublishedRecordsProps) {
   const pwa = usePWA();
   const onLine = useOnLine();
+  const { unpublished, unpublishedError, unpublishedLoading, refresh } = useUnpublished({
+    refreshOnMount: false,
+  });
 
-  const [items, setItems] = useState(initialActivities?.activities || []);
-  const [total, setTotal] = useState(initialActivities?.total || 0);
-  const [loading, setLoading] = useState(!initialActivities && !!filters.projectActivityId);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [uploadingAll, setUploadingAll] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<OfflineUploadAllProgress | null>(null);
-  const [error, setError] = useState<string | null>(initialError || null);
+  const [error, setError] = useState<string | null>(null);
+
+  const projectActivityId = filters.projectActivityId as string | undefined;
+
+  const items = useMemo(
+    () =>
+      (unpublished?.activities || []).filter(
+        (activity) => activity.projectActivityId === projectActivityId,
+      ),
+    [unpublished, projectActivityId],
+  );
 
   const canUploadAll = useMemo(
     () => items.filter((item) => !item.isInvalidDraft).length > 0,
@@ -47,120 +45,30 @@ export function UnpublishedRecords({
       ? Math.round((uploadProgress.processed / uploadProgress.total) * 100)
       : 0;
 
-  const syncActivities = useCallback((activities: OfflineProjectActivities) => {
-    setItems(activities.activities);
-    setTotal(activities.total);
-  }, []);
-
-  const refresh = useCallback(async () => {
-    if (!filters.projectActivityId) {
-      syncActivities({ activities: [], total: 0 });
-      return;
-    }
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const fetched = await pwa.getOfflineProjectActivityActivities(
-        filters.projectActivityId as string,
-        PAGE_SIZE,
-        0,
-      );
-      syncActivities(fetched);
-      if (onRefresh) {
-        await onRefresh(fetched);
-      } else {
-        await pwa.refreshUnpublished();
-      }
-    } catch (refreshError) {
-      setError(
-        refreshError instanceof Error
-          ? refreshError.message
-          : 'Failed to load unpublished records.',
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, [filters.projectActivityId, pwa, syncActivities]);
-
-  useEffect(() => {
-    setError(initialError || null);
-    syncActivities(initialActivities || { activities: [], total: 0 });
-    setLoading(false);
-  }, [initialActivities, initialError, syncActivities]);
-
-  useEffect(() => {
-    if (!initialActivities && filters.projectActivityId) {
-      refresh().catch(() => undefined);
-    }
-  }, [filters.projectActivityId, initialActivities, refresh]);
-
-  async function loadMore() {
-    if (!filters.projectActivityId || loadingMore || items.length >= total) {
-      return;
-    }
-
-    setLoadingMore(true);
-    setError(null);
-
-    try {
-      const fetched = await pwa.getOfflineProjectActivityActivities(
-        filters.projectActivityId as string,
-        PAGE_SIZE,
-        items.length,
-      );
-
-      const next = {
-        activities: [...items, ...fetched.activities],
-        total: fetched.total,
-      };
-      syncActivities(next);
-    } catch (loadMoreError) {
-      setError(
-        loadMoreError instanceof Error
-          ? loadMoreError.message
-          : 'Failed to load more unpublished records.',
-      );
-    } finally {
-      setLoadingMore(false);
-    }
-  }
+  const displayedError = error || unpublishedError;
 
   async function handleDelete(activityId: string) {
-    if (!filters.projectActivityId) {
+    if (!projectActivityId) {
       return;
     }
 
     setError(null);
-    await pwa.deleteOfflineActivity(filters.projectActivityId as string, activityId);
-
-    setItems((previousItems) =>
-      previousItems.filter((activity) => activity.activityId !== activityId),
-    );
-    setTotal((previousTotal) => Math.max(previousTotal - 1, 0));
-
-    onPublishedMutation?.();
+    await pwa.deleteOfflineActivity(projectActivityId, activityId);
+    onMutation?.();
   }
 
   async function handleUpload(activityId: string) {
-    if (!filters.projectActivityId) {
+    if (!projectActivityId) {
       return;
     }
 
     setError(null);
-    await pwa.uploadOfflineActivity(filters.projectActivityId as string, activityId);
-
-    const next = {
-      activities: items.filter((activity) => activity.activityId !== activityId),
-      total: Math.max(total - 1, 0),
-    };
-    syncActivities(next);
-    onPublishedMutation?.();
+    await pwa.uploadOfflineActivity(projectActivityId, activityId);
+    onMutation?.();
   }
 
   async function handleUploadAll() {
-    if (!filters.projectActivityId || uploadingAll || !onLine) {
+    if (!projectActivityId || uploadingAll || !onLine) {
       return;
     }
 
@@ -177,9 +85,8 @@ export function UnpublishedRecords({
     setError(null);
 
     try {
-      await pwa.uploadAllOfflineActivities(filters.projectActivityId as string, setUploadProgress);
-      await refresh();
-      onPublishedMutation?.();
+      await pwa.uploadAllOfflineActivities(projectActivityId, setUploadProgress);
+      onMutation?.();
     } catch (uploadError) {
       setError(
         uploadError instanceof Error
@@ -207,17 +114,17 @@ export function UnpublishedRecords({
         </Button>
         <Button
           id='unpublishedRefresh'
-          loading={loading || loadingMore}
+          loading={unpublishedLoading}
           variant='light'
           leftSection={<IconRefresh size='1rem' />}
-          onClick={refresh}
+          onClick={() => refresh()}
         >
           Refresh
         </Button>
       </Group>
-      {error && (
+      {displayedError && (
         <Alert color='red' title='Unpublished records unavailable'>
-          {error}
+          {displayedError}
         </Alert>
       )}
       {uploadProgress && (
@@ -242,13 +149,13 @@ export function UnpublishedRecords({
           </Stack>
         </Alert>
       )}
-      {!error && items.length === 0 && (
+      {!displayedError && !unpublishedLoading && items.length === 0 && (
         <Center h='100%' py='xl'>
           <Text c='dimmed'>No unpublished records found</Text>
         </Center>
       )}
 
-      {!loading &&
+      {!unpublishedLoading &&
         items.map((activity) => (
           <OfflineActivityItem
             data-testid='record-unpublished'
@@ -262,18 +169,13 @@ export function UnpublishedRecords({
           />
         ))}
 
-      {loading &&
+      {unpublishedLoading &&
+        items.length === 0 &&
         [0, 1, 2, 3, 4, 5, 6].map((num) => (
           <Fragment key={num}>
             <OfflineActivityItem />
           </Fragment>
         ))}
-
-      {items.length < total && (
-        <Button mt='md' onClick={loadMore} fullWidth loading={loadingMore} variant='light'>
-          Load more
-        </Button>
-      )}
     </Stack>
   );
 }
