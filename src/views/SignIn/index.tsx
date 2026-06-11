@@ -8,26 +8,22 @@ import {
   Stack,
   Text,
   Title,
-  useComputedColorScheme,
 } from '@mantine/core';
 import { useAuth } from 'react-oidc-context';
 import classes from './index.module.css';
 
 // Logos
 import logoAla from '/assets/logo-ala-white.png';
-import logoDark from '/assets/logo-dark-64x64.png';
-import logoLight from '/assets/logo-light-64x64.png';
 import splash from '/assets/splash.jpg';
 
-import { InstallButton } from '#/layout/InstallButton';
+
+import { Logo } from '#/components/Logo';
+import { AssistButtons } from '#/layout/AssistButtons';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { HelpButton } from '#/layout/HelpButton';
-import { Logo } from '#/components/Logo';
 
 export function SignIn() {
   const auth = useAuth();
-  const isDark = useComputedColorScheme() === 'dark';
   const navigate = useNavigate();
 
   // Automatically navigate to the home once signed in
@@ -57,10 +53,7 @@ export function SignIn() {
               >
                 Sign in with ALA
               </Button>
-              <Group gap={4}>
-                <HelpButton />
-                <InstallButton />
-              </Group>
+              <AssistButtons />
             </Group>
           </Stack>
         </Paper>
@@ -87,10 +80,7 @@ export function SignIn() {
                 >
                   Sign in with ALA
                 </Button>
-                <Group gap={4}>
-                  <HelpButton />
-                  <InstallButton />
-                </Group>
+                <AssistButtons />
               </Stack>
             </Stack>
           </Paper>

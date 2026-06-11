@@ -107,8 +107,9 @@ export function InstallButton() {
     <>
       <Button
         onClick={onClick}
-        size='xs'
+        size='compact-xs'
         variant='subtle'
+        color='rust'
         leftSection={<IconDownload size='1rem' />}
       >
         Install

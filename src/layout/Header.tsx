@@ -37,8 +37,9 @@ import logoLight from '/assets/logo-light-32x32.png';
 
 // Install button
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
-import { InstallButton } from './InstallButton';
-import { HelpButton } from './HelpButton';
+import { InstallButton } from './AssistButtons/InstallButton';
+import { HelpButton } from './AssistButtons/HelpButton';
+import { AssistButtons } from './AssistButtons';
 
 export function Header() {
   const { toggleColorScheme } = useMantineColorScheme();
@@ -62,10 +63,7 @@ export function Header() {
           </ThemeIcon>
         </Group>
         <Group>
-          <Group gap={4}>
-            <HelpButton />
-            <InstallButton />
-          </Group>
+          <AssistButtons />
           <Menu position='bottom-end' disabled={!auth.isAuthenticated}>
             <Menu.Target>
               <Avatar
