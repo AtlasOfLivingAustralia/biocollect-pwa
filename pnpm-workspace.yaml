@@ -1,2 +1,4 @@
+minimumReleaseAgeExclude:
+  - '@types/node@25.9.3'
 onlyBuiltDependencies:
   - esbuild

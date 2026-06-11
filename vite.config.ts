@@ -98,7 +98,7 @@ export default defineConfig({
   assetsInclude: ['**/*.lottie'],
   envDir: './config',
   devtools: {
-    enabled: true,
+    enabled: false, // Enable for profiling
   },
   resolve: {
     tsconfigPaths: true,
