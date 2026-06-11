@@ -28,7 +28,7 @@ export function SignIn() {
 
   // Automatically navigate to the home once signed in
   useEffect(() => {
-    if (auth.isAuthenticated) navigate('/')
+    if (auth.isAuthenticated) navigate('/', { viewTransition: true })
   }, [auth.isAuthenticated]);
 
   return (

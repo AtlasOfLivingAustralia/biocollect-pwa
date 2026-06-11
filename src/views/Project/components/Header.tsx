@@ -50,10 +50,12 @@ export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
   const onLine = useOnLine();
+  const imageTransitionName = `project-image-${project.projectId}`;
+  const titleTransitionName = `project-title-${project.projectId}`;
 
   return mobile ? (
     <Box>
-      <Box style={{ position: 'relative' }}>
+      <Box style={{ position: 'relative', contain: 'layout', viewTransitionName: imageTransitionName }}>
         {(project.fullSizeImageUrl && !imageError) ? (
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image
@@ -82,7 +84,7 @@ export function Header({ project, mobile }: HeaderProps) {
           }}
           withBorder
         >
-          <Title order={2} lineClamp={3}>
+          <Title order={2} lineClamp={3} style={{ viewTransitionName: titleTransitionName, width: 'fit-content' }}>
             {project.name || 'The title / name of the project'}
           </Title>
           <Title order={4} c='dimmed' px='sm'>
@@ -123,7 +125,7 @@ export function Header({ project, mobile }: HeaderProps) {
       <Box px={36} pt='xl' pb='sm'>
         <Center>
           <Breadcrumbs mb='md'>
-            <Anchor component={Link} to='..' size='sm'>
+            <Anchor component={Link} to='..' viewTransition size='sm'>
               Search
             </Anchor>
             <Text c='dimmed' size='sm'>
@@ -162,14 +164,14 @@ export function Header({ project, mobile }: HeaderProps) {
         }}
       >
         <Breadcrumbs mb='md'>
-          <Anchor component={Link} to='..' size='sm'>
+          <Anchor component={Link} to='..' viewTransition size='sm'>
             Search
           </Anchor>
           <Text c='dimmed' size='sm'>
             {project.name}
           </Text>
         </Breadcrumbs>
-        <Title>{project.name}</Title>
+        <Title style={{ viewTransitionName: titleTransitionName, width: 'fit-content' }}>{project.name}</Title>
         <Flex align='flex-start' gap='sm' mt='xs'>
           <Title order={3} c='dimmed'>
             {project.organisationName}
@@ -213,7 +215,7 @@ export function Header({ project, mobile }: HeaderProps) {
           {project.links.length > 0 && <SocialLinks links={project.links} align='flex-start' />}
         </Group>
       </Box>
-      <Box style={{ position: 'relative', width: 514, height: 320 }}>
+      <Box style={{ position: 'relative', width: 514, height: 320, contain: 'layout', viewTransitionName: imageTransitionName }}>
         {(project.fullSizeImageUrl && !imageError) ? (
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image

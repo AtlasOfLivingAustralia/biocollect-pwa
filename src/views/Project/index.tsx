@@ -67,7 +67,7 @@ function ProjectBody() {
         <Stack align='center'>
           <Title>404</Title>
           <Text>The requested project could not be found</Text>
-          <Button mt='lg' leftSection={<IconArrowBack />} component={Link} to='/'>
+          <Button mt='lg' leftSection={<IconArrowBack />} component={Link} to='/' viewTransition>
             Go home
           </Button>
         </Stack>

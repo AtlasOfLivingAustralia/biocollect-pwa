@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useViewTransitionState } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
 import { UnpublishedBadge, UnpublishedWrapper } from '#/components/Unpublished';
@@ -74,6 +74,10 @@ export function ProjectItem({
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
   const unpublishedCount = unpublished?.project[project?.projectId || ''];
+  const href = project ? `/project/${project.projectId}` : '';
+  const isTransitioning = useViewTransitionState(href);
+  const imageTransitionName = isTransitioning && project ? `project-image-${project.projectId}` : 'none';
+  const titleTransitionName = isTransitioning && project ? `project-title-${project.projectId}` : 'none';
 
   return (
     <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
@@ -102,6 +106,8 @@ export function ProjectItem({
               height: 125,
               overflow: 'clip',
               borderTopLeftRadius: 'var(--mantine-radius-xl)',
+              contain: 'layout',
+              viewTransitionName: imageTransitionName,
             }}
           >
             {(project?.urlImage && !imageError) ? (
@@ -131,7 +137,13 @@ export function ProjectItem({
           <Stack pr='xl' pt='md' gap={0} align='flex-end' style={{ textAlign: 'right' }}>
             <Skeleton visible={loading}>
               <Stack gap={6} align='flex-end'>
-                <Text fw={700} ff='heading' size='xl' lineClamp={2}>
+                <Text
+                  fw={700}
+                  ff='heading'
+                  size='xl'
+                  lineClamp={2}
+                  style={{ viewTransitionName: titleTransitionName, width: 'fit-content' }}
+                >
                   {project?.name || 'Project Name'}
                 </Text>
               </Stack>

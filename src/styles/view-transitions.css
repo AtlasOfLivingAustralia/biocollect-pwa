@@ -1,0 +1,6 @@
+/* Root cross-fade for all route changes */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.25s;
+  animation-timing-function: ease-in-out;
+}

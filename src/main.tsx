@@ -18,6 +18,7 @@ import { handleSignIn } from './helpers/auth/handleSignIn';
 import '@mantine/core/styles.css';
 import '@mantine/nprogress/styles.css';
 import '@mantine/spotlight/styles.css';
+import '#/styles/view-transitions.css';
 
 function Main() {
   return (

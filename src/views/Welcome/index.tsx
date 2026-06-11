@@ -92,7 +92,7 @@ function WelcomeDetails() {
         id='getStarted'
         onClick={() => {
           localStorage.setItem('pwa-welcome', 'true');
-          navigate('/');
+          navigate('/', { viewTransition: true });
         }}
         rightSection={<IconArrowRight />}
         mt='md'

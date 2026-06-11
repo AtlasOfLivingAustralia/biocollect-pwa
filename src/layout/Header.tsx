@@ -52,7 +52,7 @@ export function Header() {
     <AppShell.Header className={classes.header} p='md'>
       <Group justify='space-between' px='sm'>
         <Group gap='sm'>
-          <Link to='/'>
+          <Link to='/' viewTransition>
             <Image width='auto' height={32} src={logo} />
           </Link>
           <ThemeIcon color={onLine ? 'green' : 'red'} radius='lg' variant='light'>
@@ -94,7 +94,7 @@ export function Header() {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item component={Link} to='/' leftSection={<IconSearch size='1rem' />}>
+              <Menu.Item component={Link} to='/' viewTransition leftSection={<IconSearch size='1rem' />}>
                 Search projects
               </Menu.Item>
               <Menu.Item
@@ -112,7 +112,7 @@ export function Header() {
                 <>
                   <Menu.Divider />
                   <Menu.Label>Development</Menu.Label>
-                  <Menu.Item component={Link} to='/debug' leftSection={<IconBug size='1rem' />}>
+                  <Menu.Item component={Link} to='/debug' viewTransition leftSection={<IconBug size='1rem' />}>
                     Debug info
                   </Menu.Item>
                 </>
