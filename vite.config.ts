@@ -1,7 +1,6 @@
-import { defineConfig, type PluginOption } from 'vite';
-import { visualizer } from 'rollup-plugin-visualizer';
-import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vite';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 
 // PWA Imports
 import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
@@ -90,14 +89,18 @@ const pwaOptions: Partial<VitePWAOptions> = {
 export default defineConfig({
   base: '/mobile-app',
   plugins: [
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
-    tsconfigPaths(),
-    visualizer() as PluginOption,
     VitePWA(pwaOptions),
   ],
+  assetsInclude: ['**/*.lottie'],
   envDir: './config',
+  devtools: {
+    enabled: true,
+  },
+  resolve: {
+    tsconfigPaths: true,
+  },
 });

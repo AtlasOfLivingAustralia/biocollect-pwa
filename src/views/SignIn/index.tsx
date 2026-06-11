@@ -23,6 +23,7 @@ import { InstallButton } from '#/layout/InstallButton';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { HelpButton } from '#/layout/HelpButton';
+import { Logo } from '#/components/Logo';
 
 export function SignIn() {
   const auth = useAuth();
@@ -42,7 +43,7 @@ export function SignIn() {
         <Paper className={classes.details} shadow='xl' radius='xl'>
           <Stack p='xl' justify='space-between' h="100%">
             <Stack gap={0}>
-              <Image mb='lg' w={50} h={50} src={isDark ? logoLight : logoDark} />
+              <Logo mb='lg' size={60} />
               <Text fz={28} ff='heading'>Welcome back</Text>
               <Text c='dimmed'>A world of data collection awaits</Text>
             </Stack>
@@ -68,7 +69,7 @@ export function SignIn() {
           <Image pos='relative' className={classes.feature} radius='xl' h="100%" src={splash} />
           <Paper className={classes.card} radius='xl' p='xl' shadow='xl'>
             <Stack h="100%" align='center' justify='center' gap='xs' pb='sm' miw={240}>
-              <Image w={64} h={64} src={isDark ? logoLight : logoDark} />
+              <Logo size={75} />
               <Stack gap={0} align='center' mb='sm'>
                 <Title order={2}>BioCollect</Title>
                 <Text size='sm' c='dimmed'>
