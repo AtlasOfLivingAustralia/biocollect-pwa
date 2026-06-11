@@ -12,12 +12,10 @@ import {
 } from '@mantine/core';
 import {
   IconBug,
-  IconFileUpload,
   IconLogout,
   IconMoon,
   IconPlugConnected,
   IconPlugOff,
-  IconQuestionMark,
   IconSearch,
   IconSettings,
   IconSun,
@@ -40,6 +38,7 @@ import logoLight from '/assets/logo-light-32x32.png';
 // Install button
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
 import { InstallButton } from './InstallButton';
+import { HelpButton } from './HelpButton';
 
 export function Header() {
   const { toggleColorScheme } = useMantineColorScheme();
@@ -63,7 +62,10 @@ export function Header() {
           </ThemeIcon>
         </Group>
         <Group>
-          <InstallButton />
+          <Group gap={4}>
+            <HelpButton />
+            <InstallButton />
+          </Group>
           <Menu position='bottom-end' disabled={!auth.isAuthenticated}>
             <Menu.Target>
               <Avatar
@@ -100,17 +102,6 @@ export function Header() {
               <Menu.Item component={Link} to='/' leftSection={<IconSearch size='1rem' />}>
                 Search projects
               </Menu.Item>
-              {/* <Menu.Item
-                onClick={() =>
-                  frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
-                    'Unpublished Records',
-                  )
-                }
-                leftSection={<IconFileUpload size='1rem' />}
-              >
-                Unpublished records
-              </Menu.Item> */}
               <Menu.Item
                 onClick={() =>
                   frame.open(
@@ -138,14 +129,6 @@ export function Header() {
                 onClick={toggleColorScheme}
               >
                 Toggle theme
-              </Menu.Item>
-              <Menu.Item
-                component='a'
-                href='https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/'
-                target='_blank'
-                leftSection={<IconQuestionMark size='1rem' />}
-              >
-                Help
               </Menu.Item>
               <Menu.Item
                 id='signOut'

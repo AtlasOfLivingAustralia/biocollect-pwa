@@ -19,9 +19,10 @@ import logoDark from '/assets/logo-dark-64x64.png';
 import logoLight from '/assets/logo-light-64x64.png';
 import splash from '/assets/splash.jpg';
 
+import { InstallButton } from '#/layout/InstallButton';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { InstallButton } from '#/layout/InstallButton';
+import { HelpButton } from '#/layout/HelpButton';
 
 export function SignIn() {
   const auth = useAuth();
@@ -55,7 +56,10 @@ export function SignIn() {
               >
                 Sign in with ALA
               </Button>
-              <InstallButton />
+              <Group gap={4}>
+                <HelpButton />
+                <InstallButton />
+              </Group>
             </Group>
           </Stack>
         </Paper>
@@ -71,7 +75,7 @@ export function SignIn() {
                   Citizen Science Projects
                 </Text>
               </Stack>
-              <Stack>
+              <Stack gap='lg'>
                 <Button
                   loading={auth.isLoading || auth.isAuthenticated}
                   mt='xl'
@@ -82,7 +86,10 @@ export function SignIn() {
                 >
                   Sign in with ALA
                 </Button>
-                <InstallButton />
+                <Group gap={4}>
+                  <HelpButton />
+                  <InstallButton />
+                </Group>
               </Stack>
             </Stack>
           </Paper>

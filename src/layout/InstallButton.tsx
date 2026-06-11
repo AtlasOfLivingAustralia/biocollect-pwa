@@ -109,9 +109,9 @@ export function InstallButton() {
         onClick={onClick}
         size='xs'
         variant='subtle'
-        leftSection={install ? <IconDownload size='1rem' /> : <IconInfoCircle size='1rem' />}
+        leftSection={<IconDownload size='1rem' />}
       >
-        {install ? 'Install' : 'Install Instructions'}
+        Install
       </Button>
       <Modal
         fullScreen={mobile}
