@@ -4,7 +4,7 @@ import { HelpButton } from "./HelpButton";
 
 export function AssistButtons() {
 	return (
-		<Group gap={6}>
+		<Group justify="center" align="center" gap={6}>
 			<HelpButton />
 			<InstallButton />
 		</Group>
