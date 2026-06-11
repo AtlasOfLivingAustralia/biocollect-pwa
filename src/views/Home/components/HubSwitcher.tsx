@@ -26,8 +26,8 @@ function HubLogo({ logo }: HubLogoProps) {
   return (
     <Skeleton visible={loading && !error} w={LOGO_SIZE} h={LOGO_SIZE} circle>
       <Image
-        width={LOGO_SIZE}
-        height={LOGO_SIZE}
+        miw={LOGO_SIZE}
+        mih={LOGO_SIZE}
         src={(logo && logo.length > 0 && !error) ? logo : logoAla}
         radius='xl'
         onLoad={() => setLoading(false)}

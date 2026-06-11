@@ -140,12 +140,13 @@ export function ProjectItem({
               <Button
                 id={project?.projectId}
                 component={Link}
+                viewTransition
                 to={`/project/${project?.projectId}`}
                 rightSection={<IconArrowUpRight size='0.8rem' />}
                 size='xs'
                 variant='outline'
               >
-                View Project
+                View project
               </Button>
             </Skeleton>
           </Stack>

@@ -82,7 +82,7 @@ function WelcomeDetails() {
           >
             <Group gap={6}>
               Press
-              <b>View Project</b>
+              <b>View project</b>
               to see more detailed project information
             </Group>
           </List.Item>

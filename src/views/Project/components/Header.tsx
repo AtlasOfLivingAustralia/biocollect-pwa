@@ -58,13 +58,13 @@ export function Header({ project, mobile }: HeaderProps) {
           <Skeleton visible={!imageLoaded} radius={0}>
             <Image
               src={project.fullSizeImageUrl}
-              height='23vh'
+              mih='23vh'
               onLoad={() => { setImageLoaded(true) }}
               onError={() => { setImageError(true) }}
             />
           </Skeleton>
         ) : (
-          <Background h='23vh' />
+          <Background mih='23vh' />
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
