@@ -32,13 +32,10 @@ import { getInitials, useOnLine } from '#/helpers/funcs';
 import classes from './Header.module.css';
 
 // BioCollect logos
-import logoDark from '/assets/logo-dark-32x32.png';
-import logoLight from '/assets/logo-light-32x32.png';
+import logo from '/icon/web/32x32.png';
 
 // Install button
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
-import { InstallButton } from './AssistButtons/InstallButton';
-import { HelpButton } from './AssistButtons/HelpButton';
 import { AssistButtons } from './AssistButtons';
 
 export function Header() {
@@ -54,9 +51,9 @@ export function Header() {
   return (
     <AppShell.Header className={classes.header} p='md'>
       <Group justify='space-between' px='sm'>
-        <Group>
+        <Group gap='sm'>
           <Link to='/'>
-            <Image width='auto' height={32} src={isDark ? logoLight : logoDark} />
+            <Image width='auto' height={32} src={logo} />
           </Link>
           <ThemeIcon color={onLine ? 'green' : 'red'} radius='lg' variant='light'>
             {onLine ? <IconPlugConnected size='1rem' /> : <IconPlugOff size='1rem' />}

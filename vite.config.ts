@@ -42,14 +42,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
       }),
     ],
   },
-  includeAssets: [
-    'index.css',
-    'icon/light/*.png',
-    'icon/dark/32x32.png',
-    'fonts/*.woff',
-    'fonts/*.woff2',
-    'assets/*.png',
-  ],
+  includeAssets: ['index.css', 'icon/*.png', 'fonts/*.woff', 'fonts/*.woff2', 'assets/*.png'],
   manifest: {
     name: 'BioCollect',
     short_name: 'BioCollect',
@@ -57,22 +50,22 @@ const pwaOptions: Partial<VitePWAOptions> = {
     background_color: '#212120',
     icons: [
       {
-        src: 'icon/light/192x192.png',
+        src: 'icon/192x192.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
-        src: 'icon/light/256x256.png',
+        src: 'icon/256x256.png',
         sizes: '256x256',
         type: 'image/png',
       },
       {
-        src: 'icon/light/384x384.png',
+        src: 'icon/384x384.png',
         sizes: '384x384',
         type: 'image/png',
       },
       {
-        src: 'icon/light/512x512.png',
+        src: 'icon/512x512.png',
         sizes: '512x512',
         type: 'image/png',
       },

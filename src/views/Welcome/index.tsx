@@ -10,7 +10,6 @@ import {
   Text,
   ThemeIcon,
   Title,
-  useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
@@ -18,17 +17,14 @@ import { IconArrowRight, IconEye, IconHandFinger, IconPlus, IconSearch } from '@
 import { useNavigate } from 'react-router';
 
 import { Background, DownloadChip } from '#/components';
-
-import logoDark from '/assets/logo-dark-64x64.png';
-import logoLight from '/assets/logo-light-64x64.png';
+import { Logo } from '#/components/Logo';
 
 function WelcomeDetails() {
   const navigate = useNavigate();
-  const isDark = useComputedColorScheme();
 
   return (
     <Stack align='center' miw={275} p='xl' style={{ textAlign: 'center' }}>
-      <Image w={64} h={64} src={isDark ? logoLight : logoDark} />
+      <Logo size={72} />
       <Title order={2}>Welcome to BioCollect</Title>
       <Stack align='center'>
         <Text size='sm' c='dimmed'>
