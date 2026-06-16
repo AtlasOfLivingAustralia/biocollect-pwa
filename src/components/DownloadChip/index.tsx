@@ -57,6 +57,9 @@ export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: Dow
           confirm: 'Confirm',
           cancel: 'Cancel',
         },
+        confirmProps: {
+          'data-testid': 'redownload-confirm',
+        },
         onConfirm: async () => {
           await dexie.cached.delete(survey.id);
           handleDownload();

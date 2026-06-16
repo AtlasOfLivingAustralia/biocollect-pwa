@@ -33,6 +33,7 @@ import { DownloadInstructions } from './components/DownloadInstructions';
 import { Header } from './components/Header';
 import { ScienceTypes } from './components/ScienceTypes';
 import { SurveyCard } from './components/SurveyCard';
+import { useUnpublished } from '#/helpers/pwa';
 
 type ProjectLoaderArr = [BioCollectProject, BioCollectSurvey[]];
 
@@ -58,6 +59,7 @@ function ProjectBody() {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const highlight = 'light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-8))';
+  const { unpublishedMap } = useUnpublished();
 
   if (!project) {
     return (
@@ -65,7 +67,7 @@ function ProjectBody() {
         <Stack align='center'>
           <Title>404</Title>
           <Text>The requested project could not be found</Text>
-          <Button mt='lg' leftSection={<IconArrowBack />} component={Link} to='/'>
+          <Button mt='lg' leftSection={<IconArrowBack />} component={Link} to='/' viewTransition>
             Go home
           </Button>
         </Stack>
@@ -95,11 +97,11 @@ function ProjectBody() {
           </ThemeIcon>
           <Title order={2}>Surveys</Title>
         </Group>
-        <Grid gutter='xl'>
+        <Grid gap='xl'>
           {surveys.length > 0 ? (
             surveys.map((survey) => (
               <Grid.Col key={survey.id} span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 4 }}>
-                <SurveyCard survey={survey} />
+                <SurveyCard survey={survey} unpublishedCount={unpublishedMap.projectActivity[survey.projectActivityId]} />
               </Grid.Col>
             ))
           ) : (
@@ -117,7 +119,7 @@ function ProjectBody() {
         width='100%'
       />
       <Box py='xl' mb='xl' px={36}>
-        <Grid gutter='xl' pb='xl'>
+        <Grid gap='xl' pb='xl'>
           <Grid.Col span={{ xs: 12, sm: 12, md: 8, lg: 8, xl: 9 }}>
             <Accordion variant='contained'>
               {project.description && (
