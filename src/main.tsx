@@ -6,7 +6,6 @@ import { AuthProvider } from 'react-oidc-context';
 import { RecordsDrawerProvider } from '#/helpers/drawer';
 import { FrameProvider } from '#/helpers/frame';
 import { PWAProvider } from '#/helpers/pwa';
-import { initializeFathom } from '#/helpers/fathom';
 import { theme } from '#/theme';
 
 import App from './App';
@@ -22,9 +21,6 @@ import '@mantine/spotlight/styles.css';
 import '#/styles/view-transitions.css';
 
 function Main() {
-  // Initialize Fathom Analytics
-  initializeFathom();
-
   return (
     <AuthProvider userManager={userManager} onSigninCallback={handleSignIn}>
       <MantineProvider theme={theme} defaultColorScheme='dark'>
