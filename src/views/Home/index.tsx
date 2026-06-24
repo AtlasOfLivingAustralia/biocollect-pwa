@@ -100,9 +100,6 @@ export function Home() {
   );
 
   const fetch = useCallback(async () => {
-    if (projectSearch !== null) {
-      setProjectSearch(null);
-    }
     if (error !== null) {
       setError(null);
     }
@@ -116,9 +113,8 @@ export function Home() {
         searchState.search,
         searchState.offline,
       );
-      if (areProjectsDifferent(projectSearch, data)) {
-        setProjectSearch(data);
-      }
+
+      setProjectSearch(data);
 
       // Update the last total ref
       lastTotal.current = data.total;
@@ -126,10 +122,11 @@ export function Home() {
       setError((error as AxiosError).message);
       console.error('Search error!', error);
     }
-  }, [searchState, projectSearch, page]);
+  }, [searchState, page]);
 
   // Effect hook to fetch project data
   useEffect(() => {
+    setProjectSearch(null);
     fetch();
   }, [searchState, hubSwitch, page]);
 
