@@ -374,7 +374,9 @@ export interface BioCollectOfflineActivitySummary {
   projectId: string;
   species: BioCollectOfflineSpecies[];
   surveyDate: string | null;
-  thumbnailUrl: string | null;
+  featureImage: {
+    thumbnailUrl: string;
+  } | null;
   type: string;
   transients: {
     viewActivityUrl: string;

@@ -23,7 +23,7 @@ interface FrameEvent {
 }
 
 const FrameProvider = (props: PropsWithChildren): ReactElement => {
-  const [title, setTitle] = useState<string | undefined>();
+  const [title, setTitle] = useState<string | null>(null);
   const [src, setSrc] = useState<string | null>();
   const [canConfirm, setCanConfirm] = useState<boolean | null>(null);
   const [opened, { open: openFrame, close: closeFrame }] = useDisclosure(false);
@@ -75,6 +75,7 @@ const FrameProvider = (props: PropsWithChildren): ReactElement => {
     }
 
     setSrc(null);
+    setTitle(null);
     setCanConfirm(null);
     callbacks.current = null;
 
