@@ -50,6 +50,16 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
   const lastSearch = useRef<string>(DEFAULTS.search);
 
   useEffect(() => {
+    if (lastSearch.current !== search) {
+      lastSearch.current = search;
+      setPage(1);
+
+      if (search.length > 0 && sort !== '_score') {
+        setSort('_score');
+        return;
+      }
+    }
+
     const update: SearchState = {
       max,
       sort,
@@ -62,11 +72,6 @@ export function SearchControls({ onUpdate, setPage }: SearchControlsProps) {
     if (isEqual(update, lastState.current)) return;
 
     onUpdate(update);
-
-    if (lastSearch.current !== search) {
-      lastSearch.current = search;
-      setPage(1);
-    }
 
     lastState.current = update;
   }, [max, sort, userPage, search, offline]);

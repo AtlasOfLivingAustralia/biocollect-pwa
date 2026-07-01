@@ -112,7 +112,7 @@ export function OfflineActivityItem({
 
   return (
     <RecordCard
-      imageUrl={activity?.thumbnailUrl}
+      imageUrl={activity?.featureImage?.thumbnailUrl}
       imageAlt={`${activity?.name || 'Record'} thumbnail`}
       actions={
         <>

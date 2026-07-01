@@ -1,6 +1,6 @@
-import { Avatar, Box, Button, Skeleton, Stack, Text } from '@mantine/core';
-import { IconEye, IconPencil, IconTrash, IconUser } from '@tabler/icons-react';
-import { useCallback, useContext, useState } from 'react';
+import { Avatar, Box, Button, Flex, Skeleton, Stack, Text, ThemeIcon, Tooltip } from '@mantine/core';
+import { IconEye, IconLock, IconPencil, IconTrash, IconUser } from '@tabler/icons-react';
+import { act, useCallback, useContext, useState } from 'react';
 import { FrameContext } from '#/helpers/frame';
 import { getInitials, useOnLine } from '#/helpers/funcs';
 import { biocollect } from '#/helpers/api';
@@ -127,7 +127,25 @@ export function ActivityItem({ activity, onDelete, ...rest }: ActivityItemProps)
       {...rest}
     >
       <Skeleton visible={loading}>
-        <Text>{activity?.name || 'Long Activity Name Here'}</Text>
+        <Flex>
+          <Text>
+            {activity?.embargoed && (
+              <Tooltip
+                withArrow
+                label={(
+                  <Stack gap={0} py={4}>
+                    <Text size='sm' fw='bold'>Embargoed</Text>
+                    <Text size='xs' maw={200}>Only members with appropriate permissions can access this record</Text>
+                  </Stack>
+                )}
+              >
+                <ThemeIcon mr='xs' size='sm' variant='light'>
+                  <IconLock size='0.8rem' />
+                </ThemeIcon>
+              </Tooltip>
+            )}
+            {activity?.name || 'Long Activity Name Here'}</Text>
+        </Flex>
       </Skeleton>
       <Box style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
         <Skeleton circle visible={loading} mr='xs' width={26} height={26} miw={26} mih={26}>
