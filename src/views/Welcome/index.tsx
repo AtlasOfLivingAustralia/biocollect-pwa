@@ -28,7 +28,7 @@ function WelcomeDetails() {
       <Title order={2}>Welcome to BioCollect</Title>
       <Stack align='center'>
         <Text size='sm' c='dimmed'>
-          Welcome to the web-based BioCollect mobile app.
+          Welcome to the web-based BioCollect mobile app
         </Text>
       </Stack>
       <Card px='sm' pt='xs' pb='lg' my='xl' style={{ textAlign: 'left' }} withBorder>

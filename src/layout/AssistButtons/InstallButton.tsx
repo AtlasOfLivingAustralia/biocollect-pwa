@@ -162,17 +162,22 @@ export function InstallButton() {
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel value='other'>
-            <Text>
-              Please use an alternative browser such as{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Google Chrome
-              </Anchor>
-              {' '}or{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Edge
-              </Anchor>{' '}
-              to install the BioCollect PWA.
-            </Text>
+            <Stack gap='sm'>
+              <Alert>
+                If you have already installed this application in Chrome, you will see <b>Open in app</b> in the right-hand side of your URL address bar.
+              </Alert>
+              <Text>
+                Please use an alternative browser such as{' '}
+                <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
+                  Google Chrome
+                </Anchor>
+                {' '}or{' '}
+                <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
+                  Edge
+                </Anchor>{' '}
+                to install the BioCollect PWA.
+              </Text>
+            </Stack>
           </Tabs.Panel>
         </Tabs>
       </Modal >
