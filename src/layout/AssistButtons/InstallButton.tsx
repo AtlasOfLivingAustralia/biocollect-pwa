@@ -38,10 +38,6 @@ export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
   const [canInstall, setCanInstall] = useState<boolean>(false);
   const [installing, setInstalling] = useState<boolean>(false);
-  const [installed, setInstalled] = useLocalStorage<boolean | null>({
-    key: 'pwa-installed',
-    defaultValue: false,
-  });
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const browser = detect();
@@ -55,12 +51,7 @@ export function InstallButton() {
   const onClick = async () => {
     if (canInstall) {
       setInstalling(true);
-      const success = await pwaInstallHandler.install();
-
-      if (success) {
-        setInstalled(true);
-      }
-
+      await pwaInstallHandler.install();
       setInstalling(false);
     } else {
       open();
@@ -68,7 +59,7 @@ export function InstallButton() {
   };
 
   // Don't render the install button if the PWA has been installed
-  if (installed || isPWAInstalled()) return null;
+  if (isPWAInstalled()) return null;
 
   return (
     <>
