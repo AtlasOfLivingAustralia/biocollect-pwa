@@ -1,6 +1,9 @@
 import {
+  Alert,
   Anchor,
   Button,
+  Code,
+  Flex,
   Group,
   Modal,
   Stack,
@@ -18,23 +21,24 @@ import {
   IconDotsFilled,
   IconDownload,
   IconHandClick,
-  IconInfoCircle,
   IconNewSection,
+  IconPlus,
+  IconPointer,
   IconShare2,
   IconSwipeDown,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
 import { useEffect, useState } from 'react';
+import { pwaInstallHandler } from 'pwa-install-handler'
 
 import { isPWAInstalled } from '#/helpers/funcs/isPWAInstalled';
-import type { BeforeInstallPromptEvent } from '#/globals';
+
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
-  const [install, setInstall] = useState<BeforeInstallPromptEvent | null>(
-    window.beforeInstallPromptEvent || null,
-  );
-  const [installed, setInstalled] = useLocalStorage<boolean>({
+  const [canInstall, setCanInstall] = useState<boolean>(false);
+  const [installing, setInstalling] = useState<boolean>(false);
+  const [installed, setInstalled] = useLocalStorage<boolean | null>({
     key: 'pwa-installed',
     defaultValue: false,
   });
@@ -43,61 +47,24 @@ export function InstallButton() {
   const browser = detect();
 
   useEffect(() => {
-    if (!install) {
-      window.addEventListener('beforeinstallprompt', (event) => {
-        event.preventDefault();
-        setInstall(event as unknown as BeforeInstallPromptEvent);
-      });
-    }
+    pwaInstallHandler.addListener((canInstallCallback) => {
+      setCanInstall(canInstallCallback);
+    });
   }, []);
 
   const onClick = async () => {
-    if (install) {
-      const { outcome } = await install.prompt();
-      if (outcome === 'accepted') setInstalled(true);
-      return;
-    }
+    if (canInstall) {
+      setInstalling(true);
+      const success = await pwaInstallHandler.install();
 
-    let url;
+      if (success) {
+        setInstalled(true);
+      }
 
-    if (!browser || ['ios', 'safari'].includes(browser.name)) {
+      setInstalling(false);
+    } else {
       open();
-      return;
     }
-
-    // Redirect to different support URL based on browsers
-    switch (browser?.name) {
-      case 'edge':
-      case 'edge-ios':
-      case 'edge-chromium':
-        url = 'https://learn.microsoft.com/en-us/microsoft-edge/progressive-web-apps-chromium/ux';
-        break;
-      case 'firefox':
-        url = 'https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps/Guides/Installing';
-        break;
-      case 'samsung':
-        url = 'https://developer.samsung.com/automation/progressive-web-app.html';
-        break;
-      case 'chrome':
-      case 'crios':
-      default:
-        if (browser.os === 'Android OS') {
-          url =
-            'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DAndroid&oco=1';
-        } else if (browser.os === 'iOS') {
-          url =
-            'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DiOS&oco=1';
-        } else {
-          url =
-            'https://support.google.com/chrome/answer/9658361?hl=en&co=GENIE.Platform%3DDesktop&oco=1';
-        }
-        break;
-    }
-
-    // Open a new tab with the support URL, otherwise show the instructions dialog
-    if (url) {
-      window.open(url, '_blank');
-    } else open();
   };
 
   // Don't render the install button if the PWA has been installed
@@ -106,13 +73,14 @@ export function InstallButton() {
   return (
     <>
       <Button
+        loading={installing}
         onClick={onClick}
         size='compact-xs'
         variant='subtle'
         color='rust'
         leftSection={<IconDownload size='1rem' />}
       >
-        Install
+        {canInstall ? 'Install' : 'Instructions'}
       </Button>
       <Modal
         fullScreen={mobile}
@@ -144,7 +112,11 @@ export function InstallButton() {
           </Tabs.List>
           <Tabs.Panel value='ios'>
             <Stack gap='sm'>
-              <Group gap='sm'>
+              <Alert>
+                On <b>iOS 16.3</b> and earlier, PWAs can only be installed with Safari.<br />
+                On <b>iOS 16.4</b> and later, PWAs can be installed with the Share menu in Safari, Chrome, Edge and Firefox.
+              </Alert>
+              <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconSwipeDown size='1rem' />
                 </ThemeIcon>
@@ -155,44 +127,48 @@ export function InstallButton() {
                   </ThemeIcon>&nbsp;
                   button
                 </Text>
-              </Group>
-              <Group gap='sm'>
+              </Flex>
+              <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconShare2 size='1rem' />
                 </ThemeIcon>
                 <Text>Tap <b>Share</b></Text>
-              </Group>
-              <Group gap='sm'>
+              </Flex>
+              <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconNewSection size='1rem' />
                 </ThemeIcon>
                 <Text>Swipe down, and tap <b>Add to Home Screen</b></Text>
-              </Group>
-              <Group gap='sm'>
+              </Flex>
+              <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconHandClick size='1rem' />
                 </ThemeIcon>
                 <Text>Tap <b>Add</b> in the top-right corner</Text>
-              </Group>
+              </Flex>
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel value='safari'>
-            <Text>
-              Progressive Web Applications (PWAs) cannot be installed using Safari. Please use an
-              alternative browser such as{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Google Chrome
-              </Anchor>
-              ,{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Edge
-              </Anchor>{' '}
-              or{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Firefox
-              </Anchor>
-              .
-            </Text>
+            <Stack gap='sm'>
+              <Alert>
+                PWAs can be installed in <b>macOS 14 Sonoma (Safari 17)</b> and later.
+              </Alert>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconPointer size='1rem' />
+                </ThemeIcon>
+                <Text>
+                  Click
+                </Text>
+                <Code>File &gt; Add to Dock</Code>
+              </Group>
+              <Group gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconPlus size='1rem' />
+                </ThemeIcon>
+                <Text>Click <b>Add</b></Text>
+              </Group>
+            </Stack>
           </Tabs.Panel>
           <Tabs.Panel value='other'>
             <Text>
@@ -200,19 +176,15 @@ export function InstallButton() {
               <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Google Chrome
               </Anchor>
-              ,{' '}
+              {' '}or{' '}
               <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
                 Edge
-              </Anchor>{' '}
-              or{' '}
-              <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                Firefox
               </Anchor>{' '}
               to install the BioCollect PWA.
             </Text>
           </Tabs.Panel>
         </Tabs>
-      </Modal>
+      </Modal >
     </>
   );
 }

@@ -19,7 +19,7 @@
   margin-right: calc(-2 * var(--mantine-radius-xl));
   padding-right: calc(2 * var(--mantine-radius-xl));
   
-  width: 500px;
+  width: 550px;
 }
 
 .feature {
