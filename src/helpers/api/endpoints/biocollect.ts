@@ -75,7 +75,11 @@ export default (db: BioCollectDexie) => ({
       params.append('fq', 'allParticipants:ALL');
 
       // Append user search
-      if (search && search.length > 0) params.append('q', search);
+      if (search && search.length > 0) {
+        const searchQuery = `*${search.toLocaleLowerCase()}*`;
+        params.append('q', searchQuery);
+        params.append('queryText', searchQuery);
+      }
 
       // Make the GET request
       const { data } = await axios.get<BioCollectProjectSearch>(

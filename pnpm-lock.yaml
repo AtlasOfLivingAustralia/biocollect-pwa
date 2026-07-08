@@ -53,6 +53,9 @@ importers:
       pretty-bytes:
         specifier: ^7.1.0
         version: 7.1.0
+      pwa-install-handler:
+        specifier: ^2.6.5
+        version: 2.6.5
       react:
         specifier: ^19.2.7
         version: 19.2.7
@@ -1927,6 +1930,9 @@ packages:
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
+
+  pwa-install-handler@2.6.5:
+    resolution: {integrity: sha512-Y6ZS5+NofSM0KOFFzcIIxJat7+wl2MCanGrUM8rWufRxHeQj41d4px9jaozk20wLzIv/64eBUTGaQL6XVvvLRw==}
 
   react-dom@19.2.7:
     resolution: {integrity: sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ==}
@@ -4242,6 +4248,8 @@ snapshots:
   proxy-from-env@2.1.0: {}
 
   punycode@2.3.1: {}
+
+  pwa-install-handler@2.6.5: {}
 
   react-dom@19.2.7(react@19.2.7):
     dependencies:
