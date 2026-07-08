@@ -71,10 +71,13 @@ export function ProjectItem({
 }: ProjectItemProps) {
   const loading = !project;
   const surveys = project?.projectActivities || [];
+
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
+
   const unpublishedCount = unpublished?.project[project?.projectId || ''];
   const href = project ? `/project/${project.projectId}` : '';
+
   const isTransitioning = useViewTransitionState(href);
   const imageTransitionName = isTransitioning && project ? `project-image-${project.projectId}` : 'none';
   const titleTransitionName = isTransitioning && project ? `project-title-${project.projectId}` : 'none';
