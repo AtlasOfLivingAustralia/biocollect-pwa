@@ -37,7 +37,7 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
   return (
     <Stack gap='xs'>
       <Skeleton visible={!survey}>
-        <Text size='xs'>{survey?.name || "Survey Name"}</Text>
+        <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
       </Skeleton>
       <Group justify='space-between'>
         <Box style={{ minWidth: 0 }}>

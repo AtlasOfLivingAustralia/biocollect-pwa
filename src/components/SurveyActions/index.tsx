@@ -22,7 +22,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
         <Button
           id={survey && `${survey.projectActivityId}ViewRecord`}
           variant='subtle'
-          px='sm'
+          px={6}
           leftSection={<IconEye size='1rem' />}
           size='xs'
           onClick={
@@ -33,7 +33,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
               );
             })
           }>
-          View records
+          Records
         </Button>
       </Skeleton>
       <Skeleton visible={!survey}>
@@ -42,6 +42,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
           variant='subtle'
           disabled={!onLine && !downloaded}
           leftSection={<IconPlus size='1rem' />}
+          px={6}
           size='xs'
           onClick={
             survey &&
@@ -62,7 +63,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
             })
           }
         >
-          Add record
+          Add
         </Button>
       </Skeleton>
     </Flex>
