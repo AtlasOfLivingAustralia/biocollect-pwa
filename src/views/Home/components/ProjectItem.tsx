@@ -4,6 +4,7 @@ import {
   Center,
   Chip,
   Divider,
+  Flex,
   Grid,
   Group,
   Image,
@@ -12,13 +13,14 @@ import {
   Skeleton,
   Stack,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Link, useViewTransitionState } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
-import { UnpublishedBadge, UnpublishedWrapper } from '#/components/Unpublished';
+import { UnpublishedBadge } from '#/components/Unpublished';
 import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
 import { useOnLine } from '#/helpers/funcs';
@@ -37,7 +39,14 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
   return (
     <Stack gap='xs'>
       <Skeleton visible={!survey}>
-        <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
+        <Flex h={18} gap='xs' align='center'>
+          {unpublishedCount > 0 && (
+            <ThemeIcon variant='light' color='yellow' size='xs'>
+              <Text fw='bold' size='xs'>{unpublishedCount}</Text>
+            </ThemeIcon>
+          )}
+          <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
+        </Flex>
       </Skeleton>
       <Group justify='space-between'>
         <Box style={{ minWidth: 0 }}>
@@ -53,9 +62,7 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
             )}
           </Skeleton>
         </Box>
-        <UnpublishedWrapper count={unpublishedCount}>
-          <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
-        </UnpublishedWrapper>
+        <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
       </Group>
     </Stack>
   );
