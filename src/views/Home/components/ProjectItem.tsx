@@ -191,7 +191,7 @@ export function ProjectItem({
             <>
               {surveys.length > 0 ? (
                 <ScrollArea h={85} type='auto'>
-                  <Stack px='md' py='sm' gap='md'>
+                  <Stack px='md' pt='sm' pb='md' gap='md'>
                     {surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
                       <ProjectItemSurvey
                         key={survey.id}
