@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Chip,
   Divider,
   Grid,
@@ -179,28 +180,37 @@ export function ProjectItem({
           <Divider
             mt='sm'
             labelPosition='center'
-            label={`${surveys.length} surveys`}
+            label={`${surveys.length} survey${surveys.length === 1 ? '' : 's'}`}
+            variant='dashed'
           />
-          <ScrollArea h={85} type='auto'>
-            <Stack px='md' py='sm' gap='md'>
-              {loading && <ProjectItemSurvey />}
-              {(!loading && surveys.length > 0) &&
-                surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
-                  <ProjectItemSurvey
-                    key={survey.id}
-                    survey={survey}
-                    downloaded={downloaded?.[survey.id]}
-                    unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
-                  />
-                ))
-              }
-              {(!loading && surveys.length === 0) && (
-                <Text ta='center' size='sm' c='dimmed' h={28.2}>
-                  No surveys available
-                </Text>
-              )}
+          {loading ? (
+            <Stack px='md' py='sm'>
+              <ProjectItemSurvey />
             </Stack>
-          </ScrollArea>
+          ) : (
+            <>
+              {surveys.length > 0 ? (
+                <ScrollArea h={85} type='auto'>
+                  <Stack px='md' py='sm' gap='md'>
+                    {surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
+                      <ProjectItemSurvey
+                        key={survey.id}
+                        survey={survey}
+                        downloaded={downloaded?.[survey.id]}
+                        unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
+                      />
+                    ))}
+                  </Stack>
+                </ScrollArea>
+              ) : (
+                <Center h={85}>
+                  <Text ta='center' size='sm' c='dimmed'>
+                    No surveys available
+                  </Text>
+                </Center>
+              )}
+            </>
+          )}
         </Stack>
       </Paper>
     </Grid.Col>

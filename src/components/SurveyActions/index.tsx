@@ -17,14 +17,15 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
   const frame = useContext(FrameContext);
 
   return (
-    <Flex gap={0} align='center' {...rest}>
-      <Skeleton visible={!survey}>
+    <Flex gap={4} align='center' {...rest}>
+      <Skeleton w={115} visible={!survey}>
         <Button
           id={survey && `${survey.projectActivityId}ViewRecord`}
           variant='subtle'
           px='sm'
           leftSection={<IconEye size='1rem' />}
           size='xs'
+          fullWidth
           onClick={
             survey &&
             (() => {
@@ -36,13 +37,14 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
           View records
         </Button>
       </Skeleton>
-      <Skeleton visible={!survey}>
+      <Skeleton w={115} visible={!survey}>
         <Button
           id={survey && `${survey.projectActivityId}AddRecord`}
           variant='subtle'
           disabled={!onLine && !downloaded}
           leftSection={<IconPlus size='1rem' />}
           size='xs'
+          fullWidth
           onClick={
             survey &&
             (() => {
