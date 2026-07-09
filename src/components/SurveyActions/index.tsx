@@ -1,5 +1,5 @@
-import { ActionIcon, Button, Flex, type FlexProps, Skeleton, Text, Tooltip } from '@mantine/core';
-import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
+import { Button, Flex, type FlexProps, Skeleton } from '@mantine/core';
+import { IconEye, IconPlus } from '@tabler/icons-react';
 import { useContext } from 'react';
 import { RecordsDrawerContext } from '#/helpers/drawer';
 import { FrameContext } from '#/helpers/frame';
@@ -18,14 +18,13 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
 
   return (
     <Flex gap={4} align='center' {...rest}>
-      <Skeleton w={115} visible={!survey}>
+      <Skeleton visible={!survey}>
         <Button
           id={survey && `${survey.projectActivityId}ViewRecord`}
           variant='subtle'
           px='sm'
           leftSection={<IconEye size='1rem' />}
           size='xs'
-          fullWidth
           onClick={
             survey &&
             (() => {
@@ -37,14 +36,13 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
           View records
         </Button>
       </Skeleton>
-      <Skeleton w={115} visible={!survey}>
+      <Skeleton visible={!survey}>
         <Button
           id={survey && `${survey.projectActivityId}AddRecord`}
           variant='subtle'
           disabled={!onLine && !downloaded}
           leftSection={<IconPlus size='1rem' />}
           size='xs'
-          fullWidth
           onClick={
             survey &&
             (() => {

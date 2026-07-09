@@ -55,6 +55,14 @@ export const PublishedRecords = ({
     setRefreshSwitch((prevSwitch) => !prevSwitch);
   }, []);
 
+  const handleViewChange = useCallback((value: string) => {
+    setView(value as BioCollectBioActivityView);
+    setSearch(null);
+    setItems([]);
+    setPage(0);
+    setHasMore(true);
+  }, []);
+
   // load next page
   const loadMore = () => {
     if (!loadingMore && hasMore) setPage((p) => p + 1);
@@ -66,15 +74,16 @@ export const PublishedRecords = ({
 
       setLoadingMore(true);
 
-      const filters = view === 'myrecords' ? {
-        projectActivityId: survey.projectActivityId,
+      const filters: FilterQueries = view === 'myrecords' ? {
         fq: [
           `projectId:${survey.projectId}`,
           `projectActivityNameFacet:${survey.name}`,
         ],
       } : {
         projectId: survey.projectId,
-        projectActivityId: survey.projectActivityId,
+        fq: [
+          `projectActivityNameFacet:${survey.name}`,
+        ],
       };
 
       const pagedFilters: FilterQueries = {
@@ -115,7 +124,11 @@ export const PublishedRecords = ({
       <Group>
         <TextInput
           value={searchInput}
-          onChange={(e) => setSearchInput(e.currentTarget.value)}
+          onChange={(e) => {
+            setSearchInput(e.currentTarget.value);
+            setPage(0);
+            setHasMore(true);
+          }}
           placeholder='Search activities…'
           leftSection={<IconSearch size={16} />}
           rightSection={(() => {
@@ -152,9 +165,9 @@ export const PublishedRecords = ({
       </Group>
       <SegmentedControl
         value={view}
-        onChange={setView}
+        onChange={handleViewChange}
         disabled={loadingMore}
-        data={[{ label: 'My Records', value: 'myrecords' }, { label: 'All records', value: 'projectactivityrecords' }]}
+        data={[{ label: 'My Records', value: 'myrecords' }, { label: 'All records', value: 'project' }]}
       />
       {(() => {
         if (search) {
