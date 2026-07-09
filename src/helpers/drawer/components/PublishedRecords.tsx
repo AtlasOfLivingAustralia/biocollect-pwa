@@ -1,4 +1,4 @@
-import { ActionIcon, Button, Center, Group, Loader, Stack, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Center, Group, Loader, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
 import { IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
 import {
@@ -16,13 +16,13 @@ import type {
   BioCollectBioActivity,
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
+  BioCollectSurvey,
   FilterQueries,
 } from '#/types';
 import { ActivityItem } from './ActivityItem';
 
 export interface RecordsProps {
-  view: BioCollectBioActivityView | null;
-  filters: FilterQueries;
+  survey: BioCollectSurvey;
 }
 
 interface PublishedRecordsProps extends RecordsProps {
@@ -30,8 +30,7 @@ interface PublishedRecordsProps extends RecordsProps {
 }
 
 export const PublishedRecords = ({
-  view,
-  filters,
+  survey,
   publishedRefreshKey,
 }: PropsWithChildren<PublishedRecordsProps>): ReactElement => {
   const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(null);
@@ -42,6 +41,7 @@ export const PublishedRecords = ({
 
   // paging/loading more hooks
   const PAGE_SIZE = 20;
+  const [view, setView] = useState<BioCollectBioActivityView>('myrecords');
   const [page, setPage] = useState<number>(0);
   const [items, setItems] = useState<BioCollectBioActivity[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -66,8 +66,19 @@ export const PublishedRecords = ({
 
       setLoadingMore(true);
 
+      const filters = view === 'myrecords' ? {
+        projectActivityId: survey.projectActivityId,
+        fq: [
+          `projectId:${survey.projectId}`,
+          `projectActivityNameFacet:${survey.name}`,
+        ],
+      } : {
+        projectId: survey.projectId,
+        projectActivityId: survey.projectActivityId,
+      };
+
       const pagedFilters: FilterQueries = {
-        ...(filters || {}),
+        ...filters,
         ...(debouncedSearchTerm ? { searchTerm: debouncedSearchTerm } : {}),
         offset: String(page * PAGE_SIZE),
         max: String(PAGE_SIZE),
@@ -83,7 +94,7 @@ export const PublishedRecords = ({
     }
 
     getActivities();
-  }, [view, filters, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
+  }, [view, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
 
   function clearSearch() {
     setSearchInput('');
@@ -100,7 +111,7 @@ export const PublishedRecords = ({
   );
 
   return (
-    <Stack pb='sm'>
+    <Stack gap='xs' pb='sm'>
       <Group>
         <TextInput
           value={searchInput}
@@ -139,7 +150,12 @@ export const PublishedRecords = ({
           Refresh
         </Button>
       </Group>
-
+      <SegmentedControl
+        value={view}
+        onChange={setView}
+        disabled={loadingMore}
+        data={[{ label: 'My Records', value: 'myrecords' }, { label: 'All records', value: 'projectactivityrecords' }]}
+      />
       {(() => {
         if (search) {
           return items.length > 0 ? (

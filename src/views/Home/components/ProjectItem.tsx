@@ -22,7 +22,6 @@ import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
 import { useOnLine } from '#/helpers/funcs';
 
-import classes from './ProjectItem.module.css';
 import type { OfflineProjectActivitiesMap } from '#/helpers/pwa/context';
 
 interface ProjectItemSurveyProps {
@@ -35,26 +34,29 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
   const onLine = useOnLine();
 
   return (
-    <Group justify='space-between'>
-      <Box style={{ minWidth: 0 }}>
-        <Skeleton visible={!survey} radius='lg'>
-          {!survey ? (
-            <Chip>Placeholder Chip</Chip>
-          ) : (
-            <DownloadChip
-              className={classes.download}
-              survey={survey}
-              label={survey.name}
-              onLine={onLine}
-              downloaded={downloaded}
-            />
-          )}
-        </Skeleton>
-      </Box>
-      <UnpublishedWrapper count={unpublishedCount}>
-        <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
-      </UnpublishedWrapper>
-    </Group>
+    <Stack gap='xs'>
+      <Skeleton visible={!survey}>
+        <Text size='xs'>{survey?.name || "Survey Name"}</Text>
+      </Skeleton>
+      <Group justify='space-between'>
+        <Box style={{ minWidth: 0 }}>
+          <Skeleton visible={!survey} radius='lg'>
+            {!survey ? (
+              <Chip>Placeholder Chip</Chip>
+            ) : (
+              <DownloadChip
+                survey={survey}
+                onLine={onLine}
+                downloaded={downloaded}
+              />
+            )}
+          </Skeleton>
+        </Box>
+        <UnpublishedWrapper count={unpublishedCount}>
+          <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
+        </UnpublishedWrapper>
+      </Group>
+    </Stack>
   );
 }
 
@@ -86,7 +88,7 @@ export function ProjectItem({
     <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
       <Paper
         pos='relative'
-        style={{ display: 'flex', flexDirection: 'column' }}
+        style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         shadow='xl'
         radius='xl'
         withBorder
@@ -175,19 +177,15 @@ export function ProjectItem({
         </Box>
         <Stack gap={0} mt='auto'>
           <Divider
+            mt='sm'
             labelPosition='center'
-            label={
-              <Skeleton visible={loading} w={42}>
-                Surveys
-              </Skeleton>
-            }
-            mb={6}
+            label={`${surveys.length} surveys`}
           />
-          <ScrollArea h={90} type='auto'>
-            <Stack px='md' mb='md' gap='sm'>
+          <ScrollArea h={85} type='auto'>
+            <Stack px='md' py='sm' gap='md'>
               {loading && <ProjectItemSurvey />}
               {(!loading && surveys.length > 0) &&
-                surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey) => (
+                surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
                   <ProjectItemSurvey
                     key={survey.id}
                     survey={survey}

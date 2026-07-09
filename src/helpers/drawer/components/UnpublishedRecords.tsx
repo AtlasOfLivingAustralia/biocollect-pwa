@@ -1,5 +1,5 @@
 import { Alert, Button, Center, Group, Progress, Stack, Text } from '@mantine/core';
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 
 import { useOnLine } from '#/helpers/funcs';
 import { usePWA, useUnpublished } from '#/helpers/pwa';
@@ -13,7 +13,7 @@ interface UnpublishedRecordsProps extends RecordsProps {
   onMutation?: () => void;
 }
 
-export function UnpublishedRecords({ filters, onMutation }: UnpublishedRecordsProps) {
+export function UnpublishedRecords({ survey, onMutation }: UnpublishedRecordsProps) {
   const pwa = usePWA();
   const onLine = useOnLine();
   const { unpublished, unpublishedError, unpublishedLoading, refresh } = useUnpublished({
@@ -24,7 +24,7 @@ export function UnpublishedRecords({ filters, onMutation }: UnpublishedRecordsPr
   const [uploadProgress, setUploadProgress] = useState<OfflineUploadAllProgress | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const projectActivityId = filters.projectActivityId as string | undefined;
+  const projectActivityId = survey.projectActivityId as string | undefined;
 
   const items = useMemo(
     () =>
