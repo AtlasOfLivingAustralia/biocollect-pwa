@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Center, Group, Loader, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Center, Flex, Group, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import { IconRefresh, IconSearch, IconUser, IconUsersGroup, IconX } from '@tabler/icons-react';
 import {
   Fragment,
   type PropsWithChildren,
@@ -131,26 +131,18 @@ export const PublishedRecords = ({
           }}
           placeholder='Search activities…'
           leftSection={<IconSearch size={16} />}
-          rightSection={(() => {
-            if (loadingMore) {
-              return <Loader size='xs' />;
-            } else if (searchInput) {
-              return (
-                <ActionIcon
-                  aria-label='Clear search'
-                  onClick={clearSearch}
-                  onMouseDown={(e) => e.preventDefault()}
-                  variant='subtle'
-                >
-                  <IconX size={16} />
-                </ActionIcon>
-              );
-            }
-            return null;
-          })()}
+          rightSection={searchInput.length > 0 && (<ActionIcon
+            aria-label='Clear search'
+            onClick={clearSearch}
+            onMouseDown={(e) => e.preventDefault()}
+            variant='subtle'
+          >
+            <IconX size={16} />
+          </ActionIcon>)
+          }
           rightSectionWidth={36}
           aria-label='Search published activities'
-          disabled={loadingMore || !search}
+          disabled={!search}
           style={{ flexGrow: 1 }}
         />
         <Button
@@ -167,7 +159,27 @@ export const PublishedRecords = ({
         value={view}
         onChange={handleViewChange}
         disabled={loadingMore}
-        data={[{ label: 'My Records', value: 'myrecords' }, { label: 'All records', value: 'project' }]}
+        radius='xl'
+        data={[
+          {
+            label: (
+              <Flex justify='center' align='center' gap='xs' p={4}>
+                <IconUser size='0.8rem' />
+                <Text fw='bold' size='sm'>My Records</Text>
+              </Flex>
+            ),
+            value: 'myrecords'
+          },
+          {
+            label: (
+              <Flex justify='center' align='center' gap='xs' p={4}>
+                <IconUsersGroup size='0.8rem' />
+                <Text fw='bold' size='sm'>All Records</Text>
+              </Flex>
+            ),
+            value: 'project'
+          }
+        ]}
       />
       {(() => {
         if (search) {
