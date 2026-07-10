@@ -163,7 +163,7 @@ export const PublishedRecords = ({
         data={[
           {
             label: (
-              <Flex justify='center' align='center' gap='xs' p={4}>
+              <Flex id='myRecords' justify='center' align='center' gap='xs' p={4}>
                 <IconUser size='0.8rem' />
                 <Text fw='bold' size='sm'>My Records</Text>
               </Flex>
@@ -172,7 +172,7 @@ export const PublishedRecords = ({
           },
           {
             label: (
-              <Flex justify='center' align='center' gap='xs' p={4}>
+              <Flex id='allRecords' justify='center' align='center' gap='xs' p={4}>
                 <IconUsersGroup size='0.8rem' />
                 <Text fw='bold' size='sm'>All Records</Text>
               </Flex>
