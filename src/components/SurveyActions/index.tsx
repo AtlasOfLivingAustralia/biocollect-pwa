@@ -1,5 +1,5 @@
-import { ActionIcon, Flex, type FlexProps, Skeleton, Text, Tooltip } from '@mantine/core';
-import { IconEye, IconPlus, IconUser } from '@tabler/icons-react';
+import { Button, Flex, type FlexProps, Skeleton } from '@mantine/core';
+import { IconEye, IconPlus } from '@tabler/icons-react';
 import { useContext } from 'react';
 import { RecordsDrawerContext } from '#/helpers/drawer';
 import { FrameContext } from '#/helpers/frame';
@@ -17,95 +17,54 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
   const frame = useContext(FrameContext);
 
   return (
-    <Flex gap={6} align='center' {...rest}>
-      <Text size='xs' c='dimmed'>
-        Records
-      </Text>
-      <Skeleton visible={!survey} w={28}>
-        <Tooltip label='All records' withArrow disabled={!survey} position='left'>
-          <ActionIcon
-            id={survey && `${survey.projectActivityId}ViewRecord`}
-            variant='light'
-            onClick={
-              survey &&
-              (() => {
-                drawer.open(
-                  'projectactivityrecords',
-                  {
-                    projectId: survey.projectId,
-                    projectActivityId: survey.projectActivityId,
-                  },
-                  survey.name,
-                );
-              })
-            }
-          >
-            <IconEye size='1rem' />
-          </ActionIcon>
-        </Tooltip>
+    <Flex gap={4} align='center' {...rest}>
+      <Skeleton visible={!survey}>
+        <Button
+          id={survey && `${survey.projectActivityId}ViewRecord`}
+          variant='subtle'
+          px={6}
+          leftSection={<IconEye size='1rem' />}
+          size='xs'
+          onClick={
+            survey &&
+            (() => {
+              drawer.open(
+                survey,
+              );
+            })
+          }>
+          Records
+        </Button>
       </Skeleton>
-      <Skeleton visible={!survey} w={28}>
-        <Tooltip label='My records' withArrow disabled={!survey} position='left'>
-          <ActionIcon
-            id={survey && `${survey.projectActivityId}MyRecords`}
-            variant='light'
-            onClick={
-              survey &&
-              (() => {
-                drawer.open(
-                  'myrecords',
-                  {
-                    projectActivityId: survey.projectActivityId,
-                    fq: [
-                      `projectId:${survey.projectId}`,
-                      `projectActivityNameFacet:${survey.name}`,
-                    ],
-                  },
-                  survey.name,
-                );
-              })
-            }
-          >
-            <IconUser size='1rem' />
-          </ActionIcon>
-        </Tooltip>
-      </Skeleton>
-      <Skeleton visible={!survey} w={28}>
-        <Tooltip label='Add a record' withArrow disabled={!survey} position='left'>
-          <ActionIcon
-            id={survey && `${survey.projectActivityId}AddRecord`}
-            variant='light'
-            disabled={!onLine && !downloaded}
-            onClick={
-              survey &&
-              (() => {
-                frame.open(
-                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
-                  }?unpublished=true`,
-                  `Add Record - ${survey.name}`,
-                  {
-                    close: () => {
-                      drawer.open(
-                        'myrecords',
-                        {
-                          projectActivityId: survey.projectActivityId,
-                          fq: [
-                            `projectId:${survey.projectId}`,
-                            `projectActivityNameFacet:${survey.name}`,
-                          ],
-                        },
-                        survey.name,
-                        true
-                      )
-                    }
-                  },
-                );
-              })
-            }
-          >
-            <IconPlus size='1rem' />
-          </ActionIcon>
-        </Tooltip>
+      <Skeleton visible={!survey}>
+        <Button
+          id={survey && `${survey.projectActivityId}AddRecord`}
+          variant='subtle'
+          disabled={!onLine && !downloaded}
+          leftSection={<IconPlus size='1rem' />}
+          px={6}
+          size='xs'
+          onClick={
+            survey &&
+            (() => {
+              frame.open(
+                `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
+                }?unpublished=true`,
+                `Add Record - ${survey.name}`,
+                {
+                  close: () => {
+                    drawer.open(
+                      survey,
+                      true
+                    )
+                  }
+                },
+              );
+            })
+          }
+        >
+          Add
+        </Button>
       </Skeleton>
     </Flex>
   );

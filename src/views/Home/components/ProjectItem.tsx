@@ -1,8 +1,10 @@
 import {
   Box,
   Button,
+  Center,
   Chip,
   Divider,
+  Flex,
   Grid,
   Group,
   Image,
@@ -11,18 +13,18 @@ import {
   Skeleton,
   Stack,
   Text,
+  ThemeIcon,
 } from '@mantine/core';
 import { IconArrowUpRight } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Link, useViewTransitionState } from 'react-router';
 
 import { Background, DownloadChip, SurveyActions } from '#/components';
-import { UnpublishedBadge, UnpublishedWrapper } from '#/components/Unpublished';
+import { UnpublishedBadge } from '#/components/Unpublished';
 import { Corner } from '#/components/Wave';
 import type { BioCollectProject, BioCollectSurvey } from '#/types';
 import { useOnLine } from '#/helpers/funcs';
 
-import classes from './ProjectItem.module.css';
 import type { OfflineProjectActivitiesMap } from '#/helpers/pwa/context';
 
 interface ProjectItemSurveyProps {
@@ -35,26 +37,34 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
   const onLine = useOnLine();
 
   return (
-    <Group justify='space-between'>
-      <Box style={{ minWidth: 0 }}>
-        <Skeleton visible={!survey} radius='lg'>
-          {!survey ? (
-            <Chip>Placeholder Chip</Chip>
-          ) : (
-            <DownloadChip
-              className={classes.download}
-              survey={survey}
-              label={survey.name}
-              onLine={onLine}
-              downloaded={downloaded}
-            />
+    <Stack gap='xs'>
+      <Skeleton visible={!survey}>
+        <Flex h={18} gap='xs' align='center'>
+          {unpublishedCount > 0 && (
+            <ThemeIcon variant='light' color='yellow' size='xs'>
+              <Text fw='bold' size='xs'>{unpublishedCount}</Text>
+            </ThemeIcon>
           )}
-        </Skeleton>
-      </Box>
-      <UnpublishedWrapper count={unpublishedCount}>
+          <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
+        </Flex>
+      </Skeleton>
+      <Group justify='space-between'>
+        <Box style={{ minWidth: 0 }}>
+          <Skeleton visible={!survey} radius='lg'>
+            {!survey ? (
+              <Chip>Placeholder Chip</Chip>
+            ) : (
+              <DownloadChip
+                survey={survey}
+                onLine={onLine}
+                downloaded={downloaded}
+              />
+            )}
+          </Skeleton>
+        </Box>
         <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
-      </UnpublishedWrapper>
-    </Group>
+      </Group>
+    </Stack>
   );
 }
 
@@ -71,10 +81,13 @@ export function ProjectItem({
 }: ProjectItemProps) {
   const loading = !project;
   const surveys = project?.projectActivities || [];
+
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
+
   const unpublishedCount = unpublished?.project[project?.projectId || ''];
   const href = project ? `/project/${project.projectId}` : '';
+
   const isTransitioning = useViewTransitionState(href);
   const imageTransitionName = isTransitioning && project ? `project-image-${project.projectId}` : 'none';
   const titleTransitionName = isTransitioning && project ? `project-title-${project.projectId}` : 'none';
@@ -83,7 +96,7 @@ export function ProjectItem({
     <Grid.Col span={{ xl: 4, lg: 6, md: 6, sm: 12, xs: 12 }}>
       <Paper
         pos='relative'
-        style={{ display: 'flex', flexDirection: 'column' }}
+        style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         shadow='xl'
         radius='xl'
         withBorder
@@ -172,34 +185,39 @@ export function ProjectItem({
         </Box>
         <Stack gap={0} mt='auto'>
           <Divider
+            mt='sm'
             labelPosition='center'
-            label={
-              <Skeleton visible={loading} w={42}>
-                Surveys
-              </Skeleton>
-            }
-            mb={6}
+            label={`${surveys.length} survey${surveys.length === 1 ? '' : 's'}`}
+            variant='dashed'
           />
-          <ScrollArea h={90} type='auto'>
-            <Stack px='md' mb='md' gap='sm'>
-              {loading && <ProjectItemSurvey />}
-              {(!loading && surveys.length > 0) &&
-                surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey) => (
-                  <ProjectItemSurvey
-                    key={survey.id}
-                    survey={survey}
-                    downloaded={downloaded?.[survey.id]}
-                    unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
-                  />
-                ))
-              }
-              {(!loading && surveys.length === 0) && (
-                <Text ta='center' size='sm' c='dimmed' h={28.2}>
-                  No surveys available
-                </Text>
-              )}
+          {loading ? (
+            <Stack px='md' py='sm'>
+              <ProjectItemSurvey />
             </Stack>
-          </ScrollArea>
+          ) : (
+            <>
+              {surveys.length > 0 ? (
+                <ScrollArea h={87} type='auto'>
+                  <Stack px='md' pt='sm' pb='md' gap='md'>
+                    {surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
+                      <ProjectItemSurvey
+                        key={survey.id}
+                        survey={survey}
+                        downloaded={downloaded?.[survey.id]}
+                        unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
+                      />
+                    ))}
+                  </Stack>
+                </ScrollArea>
+              ) : (
+                <Center h={85}>
+                  <Text ta='center' size='sm' c='dimmed'>
+                    No surveys available
+                  </Text>
+                </Center>
+              )}
+            </>
+          )}
         </Stack>
       </Paper>
     </Grid.Col>

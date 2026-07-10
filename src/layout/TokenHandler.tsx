@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { useCallback, useEffect } from 'react';
 import { useAuth } from 'react-oidc-context';
 
@@ -39,11 +37,6 @@ export function TokenHandler() {
       refreshHandler = setInterval(() => {
         tryTokenRefresh('interval hook');
       }, refreshInterval || 600000);
-
-      axios.defaults.headers.Authorization = `Bearer ${auth.user?.access_token}`;
-      axios.defaults.timeout = import.meta.env.VITE_API_TIMEOUT;
-    } else {
-      delete axios.defaults.headers.Authorization;
     }
 
     return () => {

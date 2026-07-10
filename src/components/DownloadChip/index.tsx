@@ -10,12 +10,11 @@ import { dexie } from '#/helpers/api/dexie';
 
 interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
   survey?: BioCollectSurvey;
-  label?: string;
   onLine?: boolean;
   downloaded?: boolean;
 }
 
-export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: DownloadChipProps) {
+export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
 
   // Handler for the download popup
@@ -88,7 +87,7 @@ export function DownloadChip({ survey, label, onLine, downloaded, ...rest }: Dow
       maw={250}
       {...rest}
     >
-      {label || (downloaded ? 'Downloaded' : 'Download')}
+      {downloaded ? 'Downloaded' : 'Download'}
     </Button>
   );
 }

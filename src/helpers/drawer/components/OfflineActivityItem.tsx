@@ -1,6 +1,7 @@
 import { Avatar, Badge, Button, Flex, Skeleton, Text, ThemeIcon } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import {
+  IconAlertTriangle,
   IconDeviceFloppy,
   IconEye,
   IconPencil,
@@ -8,13 +9,15 @@ import {
   IconTrash,
   IconUpload,
 } from '@tabler/icons-react';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 import { FrameContext } from '#/helpers/frame';
 import { useOnLine } from '#/helpers/funcs';
 import type { BioCollectOfflineActivitySummary } from '#/types';
 
 import { RecordCard } from './RecordCard';
+
+const MAX_UPLOAD_ATTEMPTS = 3;
 
 interface OfflineActivityItemProps {
   activity?: BioCollectOfflineActivitySummary;
@@ -40,6 +43,8 @@ export function OfflineActivityItem({
 
   const [deleting, setDeleting] = useState<boolean>(false);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [uploadError, setUploadError] = useState<boolean>(false);
+  const uploadAttempts = useRef<number>(0);
 
   const speciesText = useMemo(() => {
     const names = (activity?.species || [])
@@ -69,17 +74,28 @@ export function OfflineActivityItem({
 
     try {
       setUploading(true);
+      setUploadError(false);
       await onUpload(activity.activityId);
+    } catch {
+      if (uploadAttempts.current >= MAX_UPLOAD_ATTEMPTS) {
+        setUploadError(true);
+      }
     } finally {
       setUploading(false);
     }
   }
 
   useEffect(() => {
-    if (activity?.uploadFlag && !uploading) {
+    if (
+      activity?.uploadFlag &&
+      !uploading &&
+      !uploadError &&
+      uploadAttempts.current < MAX_UPLOAD_ATTEMPTS
+    ) {
+      uploadAttempts.current += 1;
       handleUpload();
     }
-  }, [activity, uploading]);
+  }, [activity, uploading, uploadError]);
 
   function handleDelete() {
     if (!activity || deleting || bulkUploading || !onLine || !onDelete) {
@@ -217,12 +233,22 @@ export function OfflineActivityItem({
         </Text>
       </Skeleton>
       {activity?.isInvalidDraft && !uploading && (
-        <Flex data-testid='unpublished-invalid-message' align='center' gap='xs'>
+        <Flex data-testid='unpublished-invalid-message' align='center' gap='xs' mt='xs'>
           <ThemeIcon color='orange' variant='light'>
             <IconPencilExclamation size='1rem' />
           </ThemeIcon>
-          <Text size='xs' c='orange' mt='xs'>
+          <Text size='xs' c='orange'>
             <b>Incomplete</b> - Please finish editing it before uploading.
+          </Text>
+        </Flex>
+      )}
+      {uploadError && !uploading && (
+        <Flex data-testid='unpublished-upload-error' align='center' gap='xs' mt='xs'>
+          <ThemeIcon color='red' variant='light'>
+            <IconAlertTriangle size='1rem' />
+          </ThemeIcon>
+          <Text size='xs' c='red' >
+            <b>Upload failed</b> - Tap Upload to try again.
           </Text>
         </Flex>
       )}

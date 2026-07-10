@@ -1,6 +1,6 @@
-import { ActionIcon, Button, Center, Group, Loader, Stack, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Button, Center, Flex, Group, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconRefresh, IconSearch, IconX } from '@tabler/icons-react';
+import { IconRefresh, IconSearch, IconUser, IconUsersGroup, IconX } from '@tabler/icons-react';
 import {
   Fragment,
   type PropsWithChildren,
@@ -16,13 +16,13 @@ import type {
   BioCollectBioActivity,
   BioCollectBioActivitySearch,
   BioCollectBioActivityView,
+  BioCollectSurvey,
   FilterQueries,
 } from '#/types';
 import { ActivityItem } from './ActivityItem';
 
 export interface RecordsProps {
-  view: BioCollectBioActivityView | null;
-  filters: FilterQueries;
+  survey: BioCollectSurvey;
 }
 
 interface PublishedRecordsProps extends RecordsProps {
@@ -30,8 +30,7 @@ interface PublishedRecordsProps extends RecordsProps {
 }
 
 export const PublishedRecords = ({
-  view,
-  filters,
+  survey,
   publishedRefreshKey,
 }: PropsWithChildren<PublishedRecordsProps>): ReactElement => {
   const [search, setSearch] = useState<BioCollectBioActivitySearch | null>(null);
@@ -42,6 +41,7 @@ export const PublishedRecords = ({
 
   // paging/loading more hooks
   const PAGE_SIZE = 20;
+  const [view, setView] = useState<BioCollectBioActivityView>('myrecords');
   const [page, setPage] = useState<number>(0);
   const [items, setItems] = useState<BioCollectBioActivity[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
@@ -55,6 +55,14 @@ export const PublishedRecords = ({
     setRefreshSwitch((prevSwitch) => !prevSwitch);
   }, []);
 
+  const handleViewChange = useCallback((value: string) => {
+    setView(value as BioCollectBioActivityView);
+    setSearch(null);
+    setItems([]);
+    setPage(0);
+    setHasMore(true);
+  }, []);
+
   // load next page
   const loadMore = () => {
     if (!loadingMore && hasMore) setPage((p) => p + 1);
@@ -66,8 +74,20 @@ export const PublishedRecords = ({
 
       setLoadingMore(true);
 
+      const filters: FilterQueries = view === 'myrecords' ? {
+        fq: [
+          `projectId:${survey.projectId}`,
+          `projectActivityNameFacet:${survey.name}`,
+        ],
+      } : {
+        projectId: survey.projectId,
+        fq: [
+          `projectActivityNameFacet:${survey.name}`,
+        ],
+      };
+
       const pagedFilters: FilterQueries = {
-        ...(filters || {}),
+        ...filters,
         ...(debouncedSearchTerm ? { searchTerm: debouncedSearchTerm } : {}),
         offset: String(page * PAGE_SIZE),
         max: String(PAGE_SIZE),
@@ -83,7 +103,7 @@ export const PublishedRecords = ({
     }
 
     getActivities();
-  }, [view, filters, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
+  }, [view, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
 
   function clearSearch() {
     setSearchInput('');
@@ -100,33 +120,29 @@ export const PublishedRecords = ({
   );
 
   return (
-    <Stack pb='sm'>
+    <Stack gap='xs' pb='sm'>
       <Group>
         <TextInput
           value={searchInput}
-          onChange={(e) => setSearchInput(e.currentTarget.value)}
+          onChange={(e) => {
+            setSearchInput(e.currentTarget.value);
+            setPage(0);
+            setHasMore(true);
+          }}
           placeholder='Search activities…'
           leftSection={<IconSearch size={16} />}
-          rightSection={(() => {
-            if (loadingMore) {
-              return <Loader size='xs' />;
-            } else if (searchInput) {
-              return (
-                <ActionIcon
-                  aria-label='Clear search'
-                  onClick={clearSearch}
-                  onMouseDown={(e) => e.preventDefault()}
-                  variant='subtle'
-                >
-                  <IconX size={16} />
-                </ActionIcon>
-              );
-            }
-            return null;
-          })()}
+          rightSection={searchInput.length > 0 && (<ActionIcon
+            aria-label='Clear search'
+            onClick={clearSearch}
+            onMouseDown={(e) => e.preventDefault()}
+            variant='subtle'
+          >
+            <IconX size={16} />
+          </ActionIcon>)
+          }
           rightSectionWidth={36}
           aria-label='Search published activities'
-          disabled={loadingMore || !search}
+          disabled={!search}
           style={{ flexGrow: 1 }}
         />
         <Button
@@ -139,7 +155,32 @@ export const PublishedRecords = ({
           Refresh
         </Button>
       </Group>
-
+      <SegmentedControl
+        value={view}
+        onChange={handleViewChange}
+        disabled={loadingMore}
+        radius='xl'
+        data={[
+          {
+            label: (
+              <Flex id='myRecords' justify='center' align='center' gap='xs' p={4}>
+                <IconUser size='0.8rem' />
+                <Text fw='bold' size='sm'>My Records</Text>
+              </Flex>
+            ),
+            value: 'myrecords'
+          },
+          {
+            label: (
+              <Flex id='allRecords' justify='center' align='center' gap='xs' p={4}>
+                <IconUsersGroup size='0.8rem' />
+                <Text fw='bold' size='sm'>All Records</Text>
+              </Flex>
+            ),
+            value: 'project'
+          }
+        ]}
+      />
       {(() => {
         if (search) {
           return items.length > 0 ? (
