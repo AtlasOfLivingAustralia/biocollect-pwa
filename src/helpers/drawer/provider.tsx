@@ -82,7 +82,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
                 )}
               </Stack>
             </Group>
-            <Drawer.CloseButton />
+            <Drawer.CloseButton id="recordsClose" />
           </Drawer.Header>
           <Drawer.Body mt='xs'>
             {unpublishedCount > 0 && (

@@ -26,7 +26,7 @@ export default function Routes() {
             const user = await userManager.getUser();
             if (user) {
               // If we haven't seen the welcome screen yet, show it
-              if (!localStorage.getItem('pwa-welcome')) return redirect('/welcome');
+              if (!localStorage.getItem('pwa-welcome') && import.meta.env.MODE !== 'functionaltest') return redirect('/welcome');
 
               // Otherwise, stay on the home route
               return null;

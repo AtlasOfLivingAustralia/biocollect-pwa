@@ -64,10 +64,11 @@ export function Header() {
           <Menu position='bottom-end' disabled={!auth.isAuthenticated}>
             <Menu.Target>
               <Avatar
-                component={UnstyledButton}
+                data-testid="user-menu-avatar"
                 radius='xl'
                 variant='filled'
                 opacity={auth.isAuthenticated ? 1 : 0.4}
+                style={{ cursor: 'pointer' }}
               >
                 {(() => {
                   const { user, isAuthenticated } = auth;
