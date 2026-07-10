@@ -64,7 +64,7 @@ const RecordsDrawerProvider = (props: PropsWithChildren): ReactElement => {
 
   return (
     <RecordsDrawerContext.Provider value={{ open, close }}>
-      <Drawer.Root opened={opened} onClose={close} position={mobile ? 'bottom' : 'right'}>
+      <Drawer.Root opened={opened} onClose={close} position={mobile ? 'bottom' : 'right'} size={mobile ? '100%' : 'md'}>
         <Drawer.Overlay
           blur={3}
           opacity={0.55}
