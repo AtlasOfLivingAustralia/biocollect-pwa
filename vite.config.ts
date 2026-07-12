@@ -1,7 +1,6 @@
-import { defineConfig, type PluginOption } from 'vite';
-import { visualizer } from 'rollup-plugin-visualizer';
-import react from '@vitejs/plugin-react';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vite';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
 
 // PWA Imports
 import { VitePWA, type VitePWAOptions } from 'vite-plugin-pwa';
@@ -43,14 +42,7 @@ const pwaOptions: Partial<VitePWAOptions> = {
       }),
     ],
   },
-  includeAssets: [
-    'index.css',
-    'icon/light/*.png',
-    'icon/dark/32x32.png',
-    'fonts/*.woff',
-    'fonts/*.woff2',
-    'assets/*.png',
-  ],
+  includeAssets: ['index.css', 'icon/*.png', 'fonts/*.woff', 'fonts/*.woff2', 'assets/*.png'],
   manifest: {
     name: 'BioCollect',
     short_name: 'BioCollect',
@@ -58,22 +50,22 @@ const pwaOptions: Partial<VitePWAOptions> = {
     background_color: '#212120',
     icons: [
       {
-        src: 'icon/light/192x192.png',
+        src: 'icon/192x192.png',
         sizes: '192x192',
         type: 'image/png',
       },
       {
-        src: 'icon/light/256x256.png',
+        src: 'icon/256x256.png',
         sizes: '256x256',
         type: 'image/png',
       },
       {
-        src: 'icon/light/384x384.png',
+        src: 'icon/384x384.png',
         sizes: '384x384',
         type: 'image/png',
       },
       {
-        src: 'icon/light/512x512.png',
+        src: 'icon/512x512.png',
         sizes: '512x512',
         type: 'image/png',
       },
@@ -90,14 +82,18 @@ const pwaOptions: Partial<VitePWAOptions> = {
 export default defineConfig({
   base: '/mobile-app',
   plugins: [
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
-    tsconfigPaths(),
-    visualizer() as PluginOption,
     VitePWA(pwaOptions),
   ],
+  assetsInclude: ['**/*.lottie'],
   envDir: './config',
+  devtools: {
+    enabled: false, // Enable for profiling
+  },
+  resolve: {
+    tsconfigPaths: true,
+  },
 });

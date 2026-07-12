@@ -12,12 +12,10 @@ import {
 } from '@mantine/core';
 import {
   IconBug,
-  IconFileUpload,
   IconLogout,
   IconMoon,
   IconPlugConnected,
   IconPlugOff,
-  IconQuestionMark,
   IconSearch,
   IconSettings,
   IconSun,
@@ -34,12 +32,11 @@ import { getInitials, useOnLine } from '#/helpers/funcs';
 import classes from './Header.module.css';
 
 // BioCollect logos
-import logoDark from '/assets/logo-dark-32x32.png';
-import logoLight from '/assets/logo-light-32x32.png';
+import logo from '/icon/web/32x32.png';
 
 // Install button
 import { handleSignOut } from '#/helpers/auth/handleSignOut';
-import { InstallButton } from './InstallButton';
+import { AssistButtons } from './AssistButtons';
 
 export function Header() {
   const { toggleColorScheme } = useMantineColorScheme();
@@ -54,23 +51,24 @@ export function Header() {
   return (
     <AppShell.Header className={classes.header} p='md'>
       <Group justify='space-between' px='sm'>
-        <Group>
-          <Link to='/'>
-            <Image width='auto' height={32} src={isDark ? logoLight : logoDark} />
+        <Group gap='sm'>
+          <Link to='/' viewTransition>
+            <Image width='auto' height={32} src={logo} />
           </Link>
           <ThemeIcon color={onLine ? 'green' : 'red'} radius='lg' variant='light'>
             {onLine ? <IconPlugConnected size='1rem' /> : <IconPlugOff size='1rem' />}
           </ThemeIcon>
         </Group>
         <Group>
-          <InstallButton />
+          <AssistButtons />
           <Menu position='bottom-end' disabled={!auth.isAuthenticated}>
             <Menu.Target>
               <Avatar
-                component={UnstyledButton}
+                data-testid="user-menu-avatar"
                 radius='xl'
                 variant='filled'
                 opacity={auth.isAuthenticated ? 1 : 0.4}
+                style={{ cursor: 'pointer' }}
               >
                 {(() => {
                   const { user, isAuthenticated } = auth;
@@ -79,11 +77,13 @@ export function Header() {
 
                   // Use the given name from the profile field, otherwise fallback to the JWT
                   const given_name =
-                    user?.profile.given_name || (decoded as { given_name: string } | null)?.given_name;
+                    user?.profile.given_name ||
+                    (decoded as { given_name: string } | null)?.given_name;
 
                   // Use the family name from the profile field, otherwise fallback to the JWT
                   const family_name =
-                    user?.profile.family_name || (decoded as { family_name: string } | null)?.family_name;
+                    user?.profile.family_name ||
+                    (decoded as { family_name: string } | null)?.family_name;
 
                   // If the user has a first & last name
                   return given_name && family_name ? (
@@ -95,19 +95,8 @@ export function Header() {
               </Avatar>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item component={Link} to='/' leftSection={<IconSearch size='1rem' />}>
+              <Menu.Item component={Link} to='/' viewTransition leftSection={<IconSearch size='1rem' />}>
                 Search projects
-              </Menu.Item>
-              <Menu.Item
-                onClick={() =>
-                  frame.open(
-                    `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/offlineList`,
-                    'Unpublished Records',
-                  )
-                }
-                leftSection={<IconFileUpload size='1rem' />}
-              >
-                Unpublished records
               </Menu.Item>
               <Menu.Item
                 onClick={() =>
@@ -124,22 +113,18 @@ export function Header() {
                 <>
                   <Menu.Divider />
                   <Menu.Label>Development</Menu.Label>
-                  <Menu.Item component={Link} to='/debug' leftSection={<IconBug size='1rem' />}>
+                  <Menu.Item component={Link} to='/debug' viewTransition leftSection={<IconBug size='1rem' />}>
                     Debug info
                   </Menu.Item>
                 </>
               )}
               <Menu.Divider />
-              <Menu.Item closeMenuOnClick={false} leftSection={isDark ? <IconMoon size='1rem' /> : <IconSun size='1rem' />} onClick={toggleColorScheme}>
-                Toggle theme
-              </Menu.Item>
               <Menu.Item
-                component='a'
-                href='https://support.ala.org.au/support/solutions/articles/6000276298-biocollect-pwa-app/'
-                target='_blank'
-                leftSection={<IconQuestionMark size='1rem' />}
+                closeMenuOnClick={false}
+                leftSection={isDark ? <IconMoon size='1rem' /> : <IconSun size='1rem' />}
+                onClick={toggleColorScheme}
               >
-                Help
+                Toggle theme
               </Menu.Item>
               <Menu.Item
                 id='signOut'

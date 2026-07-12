@@ -1,5 +1,5 @@
 import { AppShell } from '@mantine/core';
-import { Outlet } from 'react-router';
+import { Outlet, ScrollRestoration } from 'react-router';
 
 import { Header } from './Header';
 import { NavigationProgress } from './NavigationProgress';
@@ -10,6 +10,7 @@ export default function Layout() {
 
   return (
     <>
+      <ScrollRestoration />
       <NavigationProgress />
       <TokenHandler />
       <AppShell header={{ height: 70 }}>

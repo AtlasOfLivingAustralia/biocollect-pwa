@@ -1,48 +1,46 @@
 import {
-  ActionIcon,
   Button,
   Card,
   Group,
-  Image,
   List,
   Paper,
   Stack,
   Text,
   ThemeIcon,
   Title,
-  useComputedColorScheme,
   useMantineTheme,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconArrowRight, IconEye, IconHandFinger, IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconArrowRight, IconArrowUpRight, IconDownload, IconEye, IconHandFinger, IconPlus, IconSearch } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
 
-import { Background, DownloadChip } from '#/components';
+import { Background } from '#/components';
+import { Logo } from '#/components/Logo';
 
-import logoDark from '/assets/logo-dark-64x64.png';
-import logoLight from '/assets/logo-light-64x64.png';
+const LINE_HEIGHT = 1.65;
+const ICON_MARGIN = 4;
 
 function WelcomeDetails() {
   const navigate = useNavigate();
-  const isDark = useComputedColorScheme();
 
   return (
     <Stack align='center' miw={275} p='xl' style={{ textAlign: 'center' }}>
-      <Image w={64} h={64} src={isDark ? logoLight : logoDark} />
+      <Logo size={72} />
       <Title order={2}>Welcome to BioCollect</Title>
       <Stack align='center'>
         <Text size='sm' c='dimmed'>
-          This is an early beta version of the new web-based BioCollect mobile app.
+          Welcome to the web-based BioCollect mobile app
         </Text>
       </Stack>
-      <Card px='sm' pt='xs' pb='lg' my='xl' style={{ textAlign: 'left' }} withBorder>
+      <Card px='md' pt='xs' pb='lg' my='xl' style={{ textAlign: 'left' }} radius='xl' withBorder>
         <Text size='xs' fw='bold' c='dimmed' tt='uppercase' mb='sm' style={{ textAlign: 'center' }}>
           How to use
         </Text>
-        <List spacing='xs' size='sm' center>
+        <List pl={0} spacing='sm' size='sm' center>
           <List.Item
+            lh={LINE_HEIGHT}
             icon={
-              <ThemeIcon variant='light' size={24} radius='xl'>
+              <ThemeIcon variant='light' size={24} radius='xl' mr={ICON_MARGIN}>
                 <IconSearch size='0.9rem' />
               </ThemeIcon>
             }
@@ -50,60 +48,65 @@ function WelcomeDetails() {
             Search for projects of interest
           </List.Item>
           <List.Item
+            lh={LINE_HEIGHT}
             icon={
-              <ThemeIcon variant='light' size={24} radius='xl'>
+              <ThemeIcon variant='light' size={24} radius='xl' mr={ICON_MARGIN}>
                 <IconHandFinger size='0.9rem' />
               </ThemeIcon>
             }
           >
             Press
-            <DownloadChip onLine display='inline' mx={6} /> to save surveys for offline use
+            <Button size='xs' mx={6} display='inline-flex' variant='light' leftSection={<IconDownload size='1rem' />}>
+              Download
+            </Button>
+            to save surveys for offline use
           </List.Item>
           <List.Item
+            lh={LINE_HEIGHT}
             icon={
-              <ThemeIcon variant='light' size={24} radius='xl'>
+              <ThemeIcon variant='light' size={24} radius='xl' mr={ICON_MARGIN}>
                 <IconHandFinger size='0.9rem' />
               </ThemeIcon>
             }
           >
             The
-            <Group mx={6} gap={6} display='inline-flex'>
-              <ActionIcon display='inline-flex' variant='light'>
-                <IconEye size='1rem' />
-              </ActionIcon>
-              <ActionIcon display='inline-flex' variant='light'>
-                <IconPlus size='1rem' />
-              </ActionIcon>
-            </Group>
+            <Button ml={6} mr={3} size='xs' display='inline-flex' variant='light' leftSection={<IconEye size='1rem' />}>
+              Records
+            </Button>
+            <Button ml={3} mr={6} size='xs' display='inline-flex' variant='light' leftSection={<IconPlus size='1rem' />}>
+              Add
+            </Button>
             buttons let you view/add records
           </List.Item>
           <List.Item
+            lh={LINE_HEIGHT}
             icon={
-              <ThemeIcon variant='light' size={24} radius='xl'>
+              <ThemeIcon variant='light' size={24} radius='xl' mr={ICON_MARGIN}>
                 <IconEye size='0.8rem' />
               </ThemeIcon>
             }
           >
-            <Group gap={6}>
-              Press
-              <b>View Project</b>
-              to see more detailed project information
-            </Group>
+
+            Press
+            <Button size='xs' variant='outline' mx={6} rightSection={<IconArrowUpRight size="1rem" />}>
+              View project
+            </Button>
+            to see more detailed project information
           </List.Item>
         </List>
       </Card>
       <Button
         id='getStarted'
+        radius='xl'
         onClick={() => {
           localStorage.setItem('pwa-welcome', 'true');
-          navigate('/');
+          navigate('/', { viewTransition: true });
         }}
-        rightSection={<IconArrowRight />}
-        mt='md'
+        rightSection={<IconArrowRight size='1rem' />}
       >
         Get started
       </Button>
-    </Stack>
+    </Stack >
   );
 }
 
@@ -123,7 +126,7 @@ export function Welcome() {
         height: '100vh',
       }}
     >
-      <Paper radius='lg' p='md' shadow='lg'>
+      <Paper radius='xl' p='md' shadow='xl'>
         <WelcomeDetails />
       </Paper>
     </Background>

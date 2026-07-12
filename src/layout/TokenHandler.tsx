@@ -1,7 +1,5 @@
-import axios from 'axios';
-
-import { useCallback, useEffect } from "react";
-import { useAuth } from "react-oidc-context";
+import { useCallback, useEffect } from 'react';
+import { useAuth } from 'react-oidc-context';
 
 // Helpers
 import { handleRefresh, handleSignOut } from '#/helpers/auth';
@@ -11,7 +9,9 @@ export function TokenHandler() {
   const auth = useAuth();
   const onLine = useOnLine();
 
-  console.log(`[Auth] ${auth.isLoading ? 'loading' : 'loaded'} | ${auth.isAuthenticated ? 'authenticated' : 'unauthenticated'}`);
+  console.log(
+    `[Auth] ${auth.isLoading ? 'loading' : 'loaded'} | ${auth.isAuthenticated ? 'authenticated' : 'unauthenticated'}`,
+  );
 
   // Helper function to try and refresh the auth token
   const tryTokenRefresh = useCallback(async (from: string) => {
@@ -37,17 +37,12 @@ export function TokenHandler() {
       refreshHandler = setInterval(() => {
         tryTokenRefresh('interval hook');
       }, refreshInterval || 600000);
-
-      axios.defaults.headers.Authorization = `Bearer ${auth.user?.access_token}`;
-      axios.defaults.timeout = import.meta.env.VITE_API_TIMEOUT;
-    } else {
-      delete axios.defaults.headers.Authorization;
     }
 
     return () => {
       if (refreshHandler) clearInterval(refreshHandler);
-    }
-  }, [auth.isAuthenticated]);
+    };
+  }, [auth]);
 
   // Check to check & refresh the authentication (if needed)
   useEffect(() => {

@@ -21,7 +21,7 @@ import {
   Tooltip,
   Typography,
 } from '@mantine/core';
-import { IconExternalLink } from '@tabler/icons-react';
+import { IconArrowBack, IconExternalLink } from '@tabler/icons-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
 import { Background, TimeSpan } from '#/components';
@@ -46,25 +46,41 @@ const SpoilerControl = ({ hide }: SpoilerControlProps) => (
   <Center pt='lg'>{hide ? 'Hide' : 'Show more'}</Center>
 );
 
+const MOBILE_HEADER_IMAGE_HEIGHT = '24vh';
+const DESKTOP_HEADER_IMAGE_HEIGHT = 320;
+const DESKTOP_HEADER_IMAGE_WIDTH = 514;
+
 export function Header({ project, mobile }: HeaderProps) {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const [imageError, setImageError] = useState<boolean>(false);
   const onLine = useOnLine();
+  const imageTransitionName = `project-image-${project.projectId}`;
+  const titleTransitionName = `project-title-${project.projectId}`;
 
   return mobile ? (
     <Box>
-      <Box style={{ position: 'relative' }}>
+      <Box
+        style={{
+          position: 'relative',
+          height: MOBILE_HEADER_IMAGE_HEIGHT,
+          overflow: 'clip',
+          contain: 'layout',
+          viewTransitionName: imageTransitionName,
+        }}
+      >
         {(project.fullSizeImageUrl && !imageError) ? (
-          <Skeleton visible={!imageLoaded} radius={0}>
+          <Skeleton visible={!imageLoaded} radius={0} h='100%'>
             <Image
               src={project.fullSizeImageUrl}
-              height='23vh'
+              h='100%'
+              w='100%'
+              fit='cover'
               onLoad={() => { setImageLoaded(true) }}
               onError={() => { setImageError(true) }}
             />
           </Skeleton>
         ) : (
-          <Background h='23vh' />
+          <Background h='100%' />
         )}
         <Wave style={{ position: 'absolute', bottom: -2 }} />
       </Box>
@@ -72,20 +88,24 @@ export function Header({ project, mobile }: HeaderProps) {
         <Card
           shadow='xl'
           radius='xl'
-          p='lg'
+          pt='lg'
+          px='lg'
+          pb='sm'
           style={{
             width: 'calc(75vw)',
             maxWidth: 400,
             textAlign: 'center',
-            zIndex: 200,
-            backgroundColor: 'light-dark(rgba(255,255,255,0.4), rgba(45,45,45,0.4))',
-            backdropFilter: 'blur(12px)'
+            backgroundColor: 'light-dark(rgba(255,255,255,0.6), rgba(45,45,45,0.6))',
+            backdropFilter: 'blur(12px)',
           }}
+          ta='center'
           withBorder
         >
-          <Title order={2} lineClamp={3}>
-            {project.name || 'The title / name of the project'}
-          </Title>
+          <Center>
+            <Title order={2} lineClamp={3} style={{ viewTransitionName: titleTransitionName, width: 'fit-content' }}>
+              {project.name || 'The title / name of the project'}
+            </Title>
+          </Center>
           <Title order={4} c='dimmed' px='sm'>
             {project.organisationName}
           </Title>
@@ -118,20 +138,15 @@ export function Header({ project, mobile }: HeaderProps) {
               <SocialLinks links={project.links} justify='center' />
             </>
           )}
+          <Center mt='lg'>
+            <Button component={Link} to='..' leftSection={<IconArrowBack size="1rem" />} viewTransition variant='subtle' color='dimmed' size='sm'>
+              Back to home
+            </Button>
+          </Center>
         </Card>
         <TimeSpan start={project.startDate} end={project.endDate} style={{ flexGrow: 1 }} />
       </Stack>
       <Box px={36} pt='xl' pb='sm'>
-        <Center>
-          <Breadcrumbs mb='md'>
-            <Anchor component={Link} to='..' size='sm'>
-              Search
-            </Anchor>
-            <Text c='dimmed' size='sm'>
-              {project.name.substring(0, 38)}
-            </Text>
-          </Breadcrumbs>
-        </Center>
         {project.aim && (
           <Spoiler
             mt='md'
@@ -163,14 +178,14 @@ export function Header({ project, mobile }: HeaderProps) {
         }}
       >
         <Breadcrumbs mb='md'>
-          <Anchor component={Link} to='..' size='sm'>
+          <Anchor component={Link} to='..' viewTransition size='sm'>
             Search
           </Anchor>
           <Text c='dimmed' size='sm'>
             {project.name}
           </Text>
         </Breadcrumbs>
-        <Title>{project.name}</Title>
+        <Title style={{ viewTransitionName: titleTransitionName, width: 'fit-content' }}>{project.name}</Title>
         <Flex align='flex-start' gap='sm' mt='xs'>
           <Title order={3} c='dimmed'>
             {project.organisationName}
@@ -214,18 +229,29 @@ export function Header({ project, mobile }: HeaderProps) {
           {project.links.length > 0 && <SocialLinks links={project.links} align='flex-start' />}
         </Group>
       </Box>
-      <Box style={{ position: 'relative', width: 514, height: 320 }}>
+      <Box
+        style={{
+          position: 'relative',
+          width: DESKTOP_HEADER_IMAGE_WIDTH,
+          height: DESKTOP_HEADER_IMAGE_HEIGHT,
+          overflow: 'clip',
+          contain: 'layout',
+          viewTransitionName: imageTransitionName,
+        }}
+      >
         {(project.fullSizeImageUrl && !imageError) ? (
-          <Skeleton visible={!imageLoaded} radius={0}>
+          <Skeleton visible={!imageLoaded} radius={0} h='100%'>
             <Image
               src={project.fullSizeImageUrl}
-              height={320}
+              h='100%'
+              w='100%'
+              fit='cover'
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
             />
           </Skeleton>
         ) : (
-          <Background h={320} />
+          <Background h='100%' />
         )}
         <Corner style={{ position: 'absolute', bottom: 0 }} />
       </Box>

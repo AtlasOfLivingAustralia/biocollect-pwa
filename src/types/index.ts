@@ -347,6 +347,43 @@ export interface BioCollectRecord {
   eventDate: string;
 }
 
+export interface BioCollectOfflineSpecies {
+  commonName?: string | null;
+  guid?: string;
+  name: string;
+  outputSpeciesId?: string;
+  scientificName?: string | null;
+}
+
+export interface BioCollectOfflineActivityOutput {
+  _callbacks?: Record<string, unknown[]>;
+  data: Record<string, unknown>;
+  mapElementId?: string;
+  name: string;
+  outputId: string;
+  outputNotCompleted: boolean;
+  selectFromSitesOnly?: boolean;
+}
+
+export interface BioCollectOfflineActivitySummary {
+  activityId: string;
+  isInvalidDraft: boolean;
+  uploadFlag: boolean;
+  name: string;
+  projectActivityId: string;
+  projectId: string;
+  species: BioCollectOfflineSpecies[];
+  surveyDate: string | null;
+  featureImage: {
+    thumbnailUrl: string;
+  } | null;
+  type: string;
+  transients: {
+    viewActivityUrl: string;
+    editActivityUrl: string;
+  };
+}
+
 export interface BioCollectBioActivity {
   activityId: string;
   projectActivityId: string;
