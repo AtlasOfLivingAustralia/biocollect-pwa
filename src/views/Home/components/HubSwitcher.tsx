@@ -1,7 +1,7 @@
 import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
 import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import classes from './HubSwitcher.module.css';
 import type { BioCollectHub } from "#/types";
@@ -43,15 +43,34 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
   const [hubs, setHubs] = useState<BioCollectHub[] | null>(null);
   const [hubId, setHubId] = useHubId();
   const hub: BioCollectHub | null = hubs?.find(({ url }) => url === hubId) || null;
-  const didFallback = useRef(false);
+  const didDiscard = useRef(false);
+
+  const selectHub = useCallback(
+    (nextHubId: string) => {
+      if (!hubs?.some(({ url }) => url === nextHubId)) return false;
+
+      if (nextHubId !== hubId) {
+        setHubId(nextHubId);
+        onChange();
+      }
+
+      return true;
+    },
+    [hubs, hubId, setHubId, onChange],
+  );
 
   useEffect(() => {
-    if (didFallback.current || !hubs || hub || hubId === DEFAULT_HUB) return;
+    if (didDiscard.current || !hubs || hub) return;
 
-    didFallback.current = true;
-    setHubId(DEFAULT_HUB);
-    onChange();
-  }, [hub, hubs, hubId, onChange]);
+    didDiscard.current = true;
+
+    // Current hub is not in the retrieved list. Use the default when that
+    // hub was retrieved; otherwise drop the stored selection.
+    if (selectHub(DEFAULT_HUB)) return;
+
+    setHubId(null);
+    if (hubId !== DEFAULT_HUB) onChange();
+  }, [hub, hubs, hubId, selectHub, setHubId, onChange]);
 
   const actions = useMemo(() => Object.values(hubs || []).map(({ id, url, name, description, logo }) => ({
     id,
@@ -60,13 +79,9 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
     leftSection: <HubLogo logo={logo} />,
     rightSection: url === hubId ? <Badge variant='default'>Current hub</Badge> : undefined,
     onClick: () => {
-      // Only trigger the update if we're switching to a new hub
-      if (url !== hubId) {
-        setHubId(url);
-        onChange();
-      }
+      selectHub(url);
     }
-  })), [hub]);
+  })), [hubs, hubId, selectHub]);
 
   useEffect(() => {
     async function fetchHubs() {

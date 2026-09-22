@@ -21,18 +21,24 @@ export const DEFAULT_HUB = import.meta.env.VITE_API_BIOCOLLECT_HUB || 'acsa';
 
 export const getHubId = () => localStorage.getItem(KEY) || DEFAULT_HUB;
 
-export const useHubId = (): [string, (hubId: string) => void] => {
+export const useHubId = (): [string, (hubId: string | null) => void] => {
   const [hubId, setHubId] = useState<string>(getHubId());
 
-  // Update hub helpder
+  // Update hub helper. Pass null to discard the stored hub.
   const updateHubId = useCallback(
-    (newHubId: string) => {
+    (newHubId: string | null) => {
+      if (!newHubId) {
+        localStorage.removeItem(KEY);
+        if (hubId !== DEFAULT_HUB) setHubId(DEFAULT_HUB);
+        return;
+      }
+
       if (hubId !== newHubId) {
         localStorage.setItem(KEY, newHubId);
         setHubId(newHubId);
       }
     },
-    [hubId, setHubId],
+    [hubId],
   );
 
   return [hubId, updateHubId];
