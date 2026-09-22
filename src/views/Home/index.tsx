@@ -83,6 +83,10 @@ export function Home() {
   const [page, setPage] = useState<number>(1);
   const [searchState, setSearchState] = useState<SearchState>(DEFAULTS);
   const [hubSwitch, setHubSwitch] = useState<boolean>(false);
+  const handleHubChange = useCallback(() => {
+    setPage(1);
+    setHubSwitch((current) => !current);
+  }, []);
   const lastTotal = useRef<number>(null);
 
   // Watch for changes to the downloaded surveys
@@ -138,12 +142,7 @@ export function Home() {
             <Text c='dimmed'>G'day,</Text>
             <Title m={0}>{givenName}</Title>
           </Stack>
-          <HubSwitcher
-            onChange={() => {
-              setPage(1);
-              setHubSwitch(!hubSwitch);
-            }}
-          />
+          <HubSwitcher onChange={handleHubChange} />
         </Flex>
         <SearchControls onUpdate={setSearchState} setPage={setPage} />
       </div>

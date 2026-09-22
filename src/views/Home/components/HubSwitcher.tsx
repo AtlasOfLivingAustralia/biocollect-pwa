@@ -1,7 +1,7 @@
 import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
 import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import classes from './HubSwitcher.module.css';
 import type { BioCollectHub } from "#/types";
@@ -43,12 +43,15 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
   const [hubs, setHubs] = useState<BioCollectHub[] | null>(null);
   const [hubId, setHubId] = useHubId();
   const hub: BioCollectHub | null = hubs?.find(({ url }) => url === hubId) || null;
+  const didFallback = useRef(false);
 
   useEffect(() => {
-    if (hubs && !hub) {
-      setHubId(DEFAULT_HUB);
-    }
-  }, [hub, hubs, hubId]);
+    if (didFallback.current || !hubs || hub || hubId === DEFAULT_HUB) return;
+
+    didFallback.current = true;
+    setHubId(DEFAULT_HUB);
+    onChange();
+  }, [hub, hubs, hubId, onChange]);
 
   const actions = useMemo(() => Object.values(hubs || []).map(({ id, url, name, description, logo }) => ({
     id,
