@@ -40,16 +40,17 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
     <Paper radius={20} p={10} shadow='none' bg='light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))'>
       <Stack gap='xs'>
         <Skeleton visible={!survey}>
-          <Flex h={18} gap='xs' align='center'>
+          <Flex gap='xs' align='center'>
             {unpublishedCount > 0 && (
               <ThemeIcon variant='light' color='yellow' size='xs'>
                 <Text fw='bold' size='xs'>{unpublishedCount}</Text>
               </ThemeIcon>
             )}
-            <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
+            <Text size='sm' fw='bold' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
           </Flex>
         </Skeleton>
-        <Group justify='space-between'>
+        <Group justify='space-between' gap={0}>
+          <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
           <Box style={{ minWidth: 0 }}>
             <Skeleton visible={!survey} radius='lg'>
               {!survey ? (
@@ -63,7 +64,6 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
               )}
             </Skeleton>
           </Box>
-          <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
         </Group>
       </Stack>
     </Paper>
@@ -199,9 +199,9 @@ export function ProjectItem({
           ) : (
             <>
               {surveys.length > 0 ? (
-                <ScrollArea h={120} type='auto'>
-                  <Stack px='md' pb='md' gap='xs'>
-                    {surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey) => (
+                <ScrollArea h={130} type='auto'>
+                  <Stack px='md' pb='xl' gap='xs'>
+                    {surveys.sort((a, b) => a.name.localeCompare(b.name)).sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey) => (
                       <ProjectItemSurvey
                         key={survey.id}
                         survey={survey}
@@ -221,6 +221,19 @@ export function ProjectItem({
             </>
           )}
         </Stack>
+        <Box
+          aria-hidden
+          pos='absolute'
+          left={0}
+          right={0}
+          bottom={0}
+          h={40}
+          style={{
+            pointerEvents: 'none',
+            zIndex: 2,
+            background: 'linear-gradient(to top, var(--mantine-color-body), transparent)',
+          }}
+        />
       </Paper>
     </Grid.Col>
   );

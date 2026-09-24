@@ -17,54 +17,52 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
   const frame = useContext(FrameContext);
 
   return (
-    <Flex gap={4} align='center' {...rest}>
+    <Flex gap='md' align='center' {...rest}>
       <Skeleton visible={!survey}>
-        <Button
-          id={survey && `${survey.projectActivityId}ViewRecord`}
-          variant='subtle'
-          px={6}
-          leftSection={<IconEye size='1rem' />}
-          size='xs'
-          onClick={
-            survey &&
-            (() => {
-              drawer.open(
-                survey,
-              );
-            })
-          }>
-          Records
-        </Button>
-      </Skeleton>
-      <Skeleton visible={!survey}>
-        <Button
-          id={survey && `${survey.projectActivityId}AddRecord`}
-          variant='subtle'
-          disabled={!onLine && !downloaded}
-          leftSection={<IconPlus size='1rem' />}
-          px={6}
-          size='xs'
-          onClick={
-            survey &&
-            (() => {
-              frame.open(
-                `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
-                }?unpublished=true`,
-                `Add Record - ${survey.name}`,
-                {
-                  close: () => {
-                    drawer.open(
-                      survey,
-                      true
-                    )
-                  }
-                },
-              );
-            })
-          }
-        >
-          Add
-        </Button>
+        <Button.Group>
+          <Button
+            id={survey && `${survey.projectActivityId}ViewRecord`}
+            variant='default'
+            leftSection={<IconEye size='1rem' />}
+            size='xs'
+            onClick={
+              survey &&
+              (() => {
+                drawer.open(
+                  survey,
+                );
+              })
+            }>
+            Records
+          </Button>
+          <Button
+            id={survey && `${survey.projectActivityId}AddRecord`}
+            variant='default'
+            disabled={!onLine && !downloaded}
+            leftSection={<IconPlus size='1rem' />}
+            size='xs'
+            onClick={
+              survey &&
+              (() => {
+                frame.open(
+                  `${import.meta.env.VITE_API_BIOCOLLECT}/pwa/bioActivity/edit/${survey.projectActivityId
+                  }?unpublished=true`,
+                  `Add Record - ${survey.name}`,
+                  {
+                    close: () => {
+                      drawer.open(
+                        survey,
+                        true
+                      )
+                    }
+                  },
+                );
+              })
+            }
+          >
+            Add
+          </Button>
+        </Button.Group>
       </Skeleton>
     </Flex>
   );
