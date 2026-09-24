@@ -33,7 +33,7 @@ export function SurveyActions({ survey, onLine, downloaded, ...rest }: SurveyAct
                 );
               })
             }>
-            Records
+            View
           </Button>
           <Button
             id={survey && `${survey.projectActivityId}AddRecord`}
