@@ -172,12 +172,13 @@ export default (db: BioCollectDexie) => ({
         );
       }
 
-      // Perform the query
+      // Count before paging, as offset() and limit() modify the collection in place
+      const total = await query.count();
       const projects = await query.offset(offset).limit(max).toArray();
 
       return {
         facets: [],
-        total: await query.count(),
+        total,
         projects,
       };
     }
