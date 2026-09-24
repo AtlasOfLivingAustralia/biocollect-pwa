@@ -1,5 +1,5 @@
 import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
-import { Badge, Flex, Image, Skeleton, Stack, Text, ThemeIcon, UnstyledButton } from "@mantine/core";
+import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
