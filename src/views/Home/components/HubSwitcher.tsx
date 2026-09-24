@@ -1,5 +1,5 @@
 import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
-import { Badge, Flex, Image, Skeleton, Stack, Text, ThemeIcon, UnstyledButton } from "@mantine/core";
+import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -8,7 +8,7 @@ import type { BioCollectHub } from "#/types";
 import { biocollect } from "#/helpers/api";
 
 import logoAla from '/assets/logo-ala-background-light-trans.png';
-import { IconArrowsDiff, IconRefresh } from "@tabler/icons-react";
+import { IconRefresh } from "@tabler/icons-react";
 
 interface HubSwitcherProps {
   onChange: () => void;

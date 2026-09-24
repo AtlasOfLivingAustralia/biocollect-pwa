@@ -201,7 +201,13 @@ export function ProjectItem({
               {surveys.length > 0 ? (
                 <ScrollArea h={130} type='auto'>
                   <Stack px='md' pb='xl' gap='xs'>
-                    {surveys.sort((a, b) => a.name.localeCompare(b.name)).sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey) => (
+                    {[...surveys].sort((a, b) => {
+                      const aHasUnpublished = Boolean(unpublished?.projectActivity[a.projectActivityId]);
+                      const bHasUnpublished = Boolean(unpublished?.projectActivity[b.projectActivityId]);
+
+                      return Number(bHasUnpublished) - Number(aHasUnpublished)
+                        || a.name.localeCompare(b.name);
+                    }).map((survey) => (
                       <ProjectItemSurvey
                         key={survey.id}
                         survey={survey}
