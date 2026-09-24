@@ -8,7 +8,7 @@ import type { BioCollectHub } from "#/types";
 import { biocollect } from "#/helpers/api";
 
 import logoAla from '/assets/logo-ala-background-light-trans.png';
-import { IconArrowsDiff, IconRefresh } from "@tabler/icons-react";
+import { IconRefresh } from "@tabler/icons-react";
 
 interface HubSwitcherProps {
   onChange: () => void;
