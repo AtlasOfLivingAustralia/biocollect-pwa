@@ -37,34 +37,36 @@ function ProjectItemSurvey({ survey, downloaded, unpublishedCount = 0 }: Project
   const onLine = useOnLine();
 
   return (
-    <Stack gap='xs'>
-      <Skeleton visible={!survey}>
-        <Flex h={18} gap='xs' align='center'>
-          {unpublishedCount > 0 && (
-            <ThemeIcon variant='light' color='yellow' size='xs'>
-              <Text fw='bold' size='xs'>{unpublishedCount}</Text>
-            </ThemeIcon>
-          )}
-          <Text size='xs' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
-        </Flex>
-      </Skeleton>
-      <Group justify='space-between'>
-        <Box style={{ minWidth: 0 }}>
-          <Skeleton visible={!survey} radius='lg'>
-            {!survey ? (
-              <Chip>Placeholder Chip</Chip>
-            ) : (
-              <DownloadChip
-                survey={survey}
-                onLine={onLine}
-                downloaded={downloaded}
-              />
+    <Paper radius={20} p={10} shadow='none' bg='light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))'>
+      <Stack gap='xs'>
+        <Skeleton visible={!survey}>
+          <Flex gap='xs' align='center'>
+            {unpublishedCount > 0 && (
+              <ThemeIcon variant='light' color='yellow' size='xs'>
+                <Text fw='bold' size='xs'>{unpublishedCount}</Text>
+              </ThemeIcon>
             )}
-          </Skeleton>
-        </Box>
-        <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
-      </Group>
-    </Stack>
+            <Text size='sm' fw='bold' lineClamp={1}>{survey?.name || "Survey Name"}</Text>
+          </Flex>
+        </Skeleton>
+        <Group justify='space-between' gap={0}>
+          <SurveyActions survey={survey} onLine={onLine} downloaded={downloaded} />
+          <Box style={{ minWidth: 0 }}>
+            <Skeleton visible={!survey} radius='lg'>
+              {!survey ? (
+                <Chip>Placeholder Chip</Chip>
+              ) : (
+                <DownloadChip
+                  survey={survey}
+                  onLine={onLine}
+                  downloaded={downloaded}
+                />
+              )}
+            </Skeleton>
+          </Box>
+        </Group>
+      </Stack>
+    </Paper>
   );
 }
 
@@ -183,11 +185,11 @@ export function ProjectItem({
             </Text>
           </Skeleton>
         </Box>
-        <Stack gap={0} mt='auto'>
+        <Stack gap={0}>
           <Divider
-            mt='sm'
+            my='sm'
             labelPosition='center'
-            label={`${surveys.length} survey${surveys.length === 1 ? '' : 's'}`}
+            label={<b>{surveys.length} survey{surveys.length === 1 ? '' : 's'}</b>}
             variant='dashed'
           />
           {loading ? (
@@ -197,9 +199,15 @@ export function ProjectItem({
           ) : (
             <>
               {surveys.length > 0 ? (
-                <ScrollArea h={87} type='auto'>
-                  <Stack px='md' pt='sm' pb='md' gap='md'>
-                    {surveys.sort((survey) => unpublished?.projectActivity[survey.projectActivityId] ? -1 : 1).map((survey, index) => (
+                <ScrollArea h={130} type='auto'>
+                  <Stack px='md' pb='xl' gap='xs'>
+                    {[...surveys].sort((a, b) => {
+                      const aHasUnpublished = Boolean(unpublished?.projectActivity[a.projectActivityId]);
+                      const bHasUnpublished = Boolean(unpublished?.projectActivity[b.projectActivityId]);
+
+                      return Number(bHasUnpublished) - Number(aHasUnpublished)
+                        || a.name.localeCompare(b.name);
+                    }).map((survey) => (
                       <ProjectItemSurvey
                         key={survey.id}
                         survey={survey}
@@ -219,6 +227,19 @@ export function ProjectItem({
             </>
           )}
         </Stack>
+        <Box
+          aria-hidden
+          pos='absolute'
+          left={0}
+          right={0}
+          bottom={0}
+          h={40}
+          style={{
+            pointerEvents: 'none',
+            zIndex: 2,
+            background: 'linear-gradient(to top, var(--mantine-color-body), transparent)',
+          }}
+        />
       </Paper>
     </Grid.Col>
   );

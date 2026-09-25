@@ -99,7 +99,7 @@ function ProjectBody() {
         </Group>
         <Grid gap='xl'>
           {surveys.length > 0 ? (
-            surveys.map((survey) => (
+            surveys.sort((a, b) => a.name.localeCompare(b.name)).map((survey) => (
               <Grid.Col key={survey.id} span={{ xs: 12, sm: 12, md: 6, lg: 4, xl: 4 }}>
                 <SurveyCard survey={survey} unpublishedCount={unpublishedMap.projectActivity[survey.projectActivityId]} />
               </Grid.Col>

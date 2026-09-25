@@ -8,6 +8,7 @@ import type { BioCollectHub } from "#/types";
 import { biocollect } from "#/helpers/api";
 
 import logoAla from '/assets/logo-ala-background-light-trans.png';
+import { IconRefresh } from "@tabler/icons-react";
 
 interface HubSwitcherProps {
   onChange: () => void;
@@ -98,12 +99,17 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
       <UnstyledButton disabled={!hubs} className={classes.root} onClick={spotlight.open}>
         <Flex align='center' gap='md'>
           <HubLogo logo={hub?.logo} />
-          <Stack className={classes.details} gap={4} py={4}>
+          <Stack className={classes.details} gap={0} py={4}>
             <Skeleton visible={!hub}>
-              <Text size='lg' fw='bold' ff='heading'>{hub?.name || "Hub name"}</Text>
+              <Text size='xl' fw='bold' ff='heading'>{hub?.name || "Hub name"}</Text>
             </Skeleton>
             <Skeleton visible={!hub}>
-              <Text c='dimmed' size='xs'>Switch hub</Text>
+              <Flex align='center' gap='xs'>
+                <Flex className={classes.icon}>
+                  <IconRefresh size='1rem' />
+                </Flex>
+                <Text c='dimmed' size='sm'>Switch hub</Text>
+              </Flex>
             </Skeleton>
           </Stack>
         </Flex>

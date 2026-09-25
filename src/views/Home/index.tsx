@@ -211,7 +211,7 @@ export function Home() {
           <Pagination
             mb='md'
             value={page}
-            total={Math.floor(lastTotal.current / searchState.max)}
+            total={Math.ceil(lastTotal.current / searchState.max)}
             onChange={setPage}
           />
         </Center>
