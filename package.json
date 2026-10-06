@@ -22,7 +22,7 @@
     "@mantine/nprogress": "^9.4.1",
     "@mantine/spotlight": "^9.4.1",
     "@tabler/icons-react": "^3.44.0",
-    "axios": "^1.18.1",
+    "axios": "^1.20.0",
     "detect-browser": "^5.3.0",
     "dexie": "^4.4.4",
     "dexie-react-hooks": "^4.4.0",
