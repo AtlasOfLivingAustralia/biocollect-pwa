@@ -71,6 +71,7 @@ export const claimCache = (userId: string) => {
     })().catch((error) => {
       claimedBy = undefined;
       console.error('[Cache] Failed to claim the cache', error);
+      throw error;
     });
   }
 
