@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import babel from '@rolldown/plugin-babel';
 
@@ -33,11 +33,14 @@ const getCache = ({
   },
 });
 
-const pwaOptions: Partial<VitePWAOptions> = {
+const escapeRegExp = (input: string) => input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const getPwaOptions = (apiOrigin: string): Partial<VitePWAOptions> => ({
   workbox: {
     runtimeCaching: [
       getCache({
-        urlPattern: /^https:\/\/biocollect(-dev|-test|-)*.ala.org.au\/document/,
+        // Documents are served by the API host, which differs per environment
+        urlPattern: new RegExp(`^${escapeRegExp(apiOrigin)}/document`),
         cacheName: 'biocollect-documents',
       }),
     ],
@@ -76,17 +79,17 @@ const pwaOptions: Partial<VitePWAOptions> = {
   devOptions: {
     enabled: false,
   },
-};
+});
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   base: '/mobile-app',
   plugins: [
     react(),
     babel({
       presets: [reactCompilerPreset()],
     }),
-    VitePWA(pwaOptions),
+    VitePWA(getPwaOptions(loadEnv(mode, './config').VITE_API_BIOCOLLECT)),
   ],
   assetsInclude: ['**/*.lottie'],
   envDir: './config',
@@ -96,4 +99,4 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-});
+}));

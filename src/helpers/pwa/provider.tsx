@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 // Contexts
-import { dexie } from '../api/dexie';
+import { clearApiCache, dexie } from '../api/dexie';
 import { userManager } from '../auth';
 import PWAContext, {
   type OfflineActivityMutationResult,
@@ -194,7 +194,10 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
   useEffect(() => {
     // Define a message handler to listen for download events
     const messageHandler = async (message: MessageEvent<StorageSummaryEvent>) => {
-      if (ref.current?.contentWindow && message.source !== ref.current.contentWindow) {
+      if (
+        message.origin !== import.meta.env.VITE_API_BIOCOLLECT ||
+        message.source !== ref.current?.contentWindow
+      ) {
         return;
       }
 
@@ -219,8 +222,9 @@ const PWAProvider = ({ children }: PropsWithChildren): ReactElement => {
     });
     setClearingStorage(true);
 
-    // Clear the cached table in the DB
+    // Clear the cached table in the DB, along with the cached projects & surveys
     dexie.cached.clear();
+    clearApiCache().catch((error) => console.error('Failed to clear the API cache.', error));
     setUnpublished(emptyOfflineActivities);
     setUnpublishedError(null);
     setUnpublishedMap(createOfflineActivitiesMap([]));

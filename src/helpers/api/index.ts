@@ -1,7 +1,10 @@
 import axios from 'axios';
 import { userManager } from '../auth';
-import { dexie } from './dexie';
+import { claimCache, dexie, purgeStaleCache } from './dexie';
 import biocollectApi from './endpoints/biocollect';
+
+// A configured 0 means "none" for axios, which would hang forever on a poor connection
+axios.defaults.timeout = Number.parseInt(import.meta.env.VITE_API_TIMEOUT, 10) || 30000;
 
 axios.interceptors.request.use(async (config) => {
   const user = await userManager.getUser();
@@ -14,4 +17,9 @@ axios.interceptors.request.use(async (config) => {
   return config;
 });
 
-export const biocollect = biocollectApi(dexie);
+purgeStaleCache().catch((error) => console.warn('[Cache] Failed to purge stale data', error));
+
+export const biocollect = biocollectApi(dexie, async () => {
+  const user = await userManager.getUser();
+  if (user) await claimCache(user.profile.sub);
+});

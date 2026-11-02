@@ -1,6 +1,7 @@
 import { Button, type ButtonProps, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
-import { IconCheck, IconDownload, IconPlugOff } from '@tabler/icons-react';
+import { IconCheck, IconDownload, IconPlugOff, IconRefresh } from '@tabler/icons-react';
+import { useLiveQuery } from 'dexie-react-hooks';
 import { useContext } from 'react';
 import { FrameContext } from '#/helpers/frame';
 
@@ -16,6 +17,17 @@ interface DownloadChipProps extends Omit<ButtonProps, 'children'> {
 
 export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadChipProps) {
   const frame = useContext(FrameContext);
+  const entry = useLiveQuery(
+    async () => (survey ? await dexie.cached.get(survey.id) : undefined),
+    [survey?.id],
+  );
+
+  // Only a newer survey counts, as the lists it comes from can lag behind the server
+  const outdated = Boolean(
+    entry?.lastUpdated &&
+    survey?.lastUpdated &&
+    Date.parse(survey.lastUpdated) > Date.parse(entry.lastUpdated),
+  );
 
   // Handler for the download popup
   const handleDownload = () =>
@@ -28,6 +40,7 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
             await dexie.cached.put({
               surveyId: survey.id,
               projectId: survey.projectId,
+              lastUpdated: survey.lastUpdated,
             });
           }
 
@@ -39,7 +52,7 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
   // Handler for the chip callback
   const handleChipClick = () => {
     if (!survey) return;
-    if (downloaded) {
+    if (downloaded && !outdated) {
       modals.openConfirmModal({
         title: (
           <Text size='lg' ff='heading'>
@@ -59,10 +72,7 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
         confirmProps: {
           'data-testid': 'redownload-confirm',
         },
-        onConfirm: async () => {
-          await dexie.cached.delete(survey.id);
-          handleDownload();
-        },
+        onConfirm: handleDownload,
       });
     } else {
       handleDownload();
@@ -70,8 +80,13 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
   };
 
   let Icon = IconDownload;
-  if (downloaded) {
+  let label = 'Download';
+  if (outdated) {
+    Icon = IconRefresh;
+    label = 'Update';
+  } else if (downloaded) {
     Icon = IconCheck;
+    label = 'Downloaded';
   } else if (!onLine) {
     Icon = IconPlugOff;
   }
@@ -87,7 +102,7 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
       maw={250}
       {...rest}
     >
-      {downloaded ? 'Downloaded' : 'Download'}
+      {label}
     </Button>
   );
 }

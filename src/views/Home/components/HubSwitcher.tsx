@@ -61,7 +61,8 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
   );
 
   useEffect(() => {
-    if (didDiscard.current || !hubs || hub) return;
+    // An empty list (e.g. offline before hubs were ever cached) says nothing about the stored hub
+    if (didDiscard.current || !hubs?.length || hub) return;
 
     didDiscard.current = true;
 
@@ -86,8 +87,11 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
 
   useEffect(() => {
     async function fetchHubs() {
-      const fetchedHubs = await biocollect.listHubs();
-      setHubs(fetchedHubs);
+      try {
+        setHubs(await biocollect.listHubs());
+      } catch (error) {
+        console.error('Failed to load hubs!', error);
+      }
     }
 
     fetchHubs();

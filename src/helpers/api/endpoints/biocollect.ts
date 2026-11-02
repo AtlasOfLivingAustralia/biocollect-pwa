@@ -62,7 +62,16 @@ const replaceProjectSurveys = async (
 
 type BioCollectProjectSort = 'dateCreatedSort' | 'nameSort' | '_score' | 'organisationSort';
 
-export default (db: BioCollectDexie) => ({
+// A failed cache write (e.g. quota exceeded) must not fail the request that produced the data
+const tryCache = async (write: () => Promise<unknown>) => {
+  try {
+    await write();
+  } catch (error) {
+    console.warn('[Cache] Failed to write to IndexedDB', error);
+  }
+};
+
+export default (db: BioCollectDexie, ready: () => Promise<void>) => ({
   projectSearch: async (
     offset = 0,
     max = 30,
@@ -72,6 +81,7 @@ export default (db: BioCollectDexie) => ({
     hasDownloadedSurveys = true,
   ): Promise<BioCollectProjectSearch> => {
     const hubId = getHubId();
+    await ready();
 
     if (navigator.onLine && !hasDownloadedSurveys) {
       // Define basic query parameters
@@ -108,6 +118,7 @@ export default (db: BioCollectDexie) => ({
       // Add the hub ID to the stored projects
       formattedSearch.projects.forEach((project) => {
         project.hub = hubId;
+        project.cachedAt = Date.now();
       });
 
       const projectIds = formattedSearch.projects.map(({ projectId }) => projectId);
@@ -121,25 +132,27 @@ export default (db: BioCollectDexie) => ({
         formattedSearch.projects.length >= formattedSearch.total;
 
       // Store the projects & surveys in IDB, removing any that are no longer returned
-      await db.transaction('rw', db.projects, db.surveys, db.cached, async () => {
-        await db.projects.bulkPut(formattedSearch.projects);
-        await replaceProjectSurveys(db, projectIds, surveys);
+      await tryCache(() =>
+        db.transaction('rw', db.projects, db.surveys, db.cached, async () => {
+          await db.projects.bulkPut(formattedSearch.projects);
+          await replaceProjectSurveys(db, projectIds, surveys);
 
-        if (isCompleteListing) {
-          // Projects with downloaded surveys are kept so they stay reachable offline
-          const returnedIds = new Set(projectIds);
-          const downloadedIds = new Set(await db.cached.orderBy('projectId').uniqueKeys());
-          const staleIds = await db.projects
-            .filter(
-              ({ projectId, hub }) =>
-                hub === hubId && !returnedIds.has(projectId) && !downloadedIds.has(projectId),
-            )
-            .primaryKeys();
+          if (isCompleteListing) {
+            // Projects with downloaded surveys are kept so they stay reachable offline
+            const returnedIds = new Set(projectIds);
+            const downloadedIds = new Set(await db.cached.orderBy('projectId').uniqueKeys());
+            const staleIds = await db.projects
+              .filter(
+                ({ projectId, hub }) =>
+                  hub === hubId && !returnedIds.has(projectId) && !downloadedIds.has(projectId),
+              )
+              .primaryKeys();
 
-          await db.projects.bulkDelete(staleIds);
-          await db.surveys.where('projectId').anyOf(staleIds).delete();
-        }
-      });
+            await db.projects.bulkDelete(staleIds);
+            await db.surveys.where('projectId').anyOf(staleIds).delete();
+          }
+        }),
+      );
 
       return formattedSearch;
     } else {
@@ -159,9 +172,11 @@ export default (db: BioCollectDexie) => ({
       // Append the hub
       query.and(({ hub }) => hubId === hub);
 
-      // Append the search query
-      if (search && search.length > 0)
-        query = query.and(({ name }) => new RegExp(`.*${escapeRegExp(search)}.*`).test(name));
+      // Append the search query (case-insensitive, like the online search)
+      if (search && search.length > 0) {
+        const pattern = new RegExp(escapeRegExp(search), 'i');
+        query = query.and(({ name }) => pattern.test(name));
+      }
 
       // Only include projects that still list at least one downloaded survey
       if (hasDownloadedSurveys) {
@@ -184,8 +199,26 @@ export default (db: BioCollectDexie) => ({
     }
   },
   getProject: async (projectId: string): Promise<BioCollectProject | null> => {
+    await ready();
+
     const cached = await db.projects.get(projectId);
     if (cached) {
+      // Refresh in the background so the next visit isn't stale (e.g. after a membership change)
+      if (navigator.onLine) {
+        axios
+          .get<BioCollectProject>(`${import.meta.env.VITE_API_BIOCOLLECT}/ws/project/${projectId}`)
+          .then(({ data }) => {
+            // This endpoint has no survey list, and its hub isn't the one we cached it under
+            const { projectActivities, hub, ...fresh } = formatProject(data);
+
+            // update() rather than put() so a concurrent listSurveys() write isn't overwritten
+            return tryCache(() =>
+              db.projects.update(projectId, { ...fresh, cachedAt: Date.now() }),
+            );
+          })
+          .catch((error) => console.warn('[Cache] Failed to refresh project', error));
+      }
+
       return cached;
     } else if (navigator.onLine) {
       // Make the GET request
@@ -203,6 +236,8 @@ export default (db: BioCollectDexie) => ({
     projectId: string,
     userIsProjectMember = false,
   ): Promise<BioCollectSurvey[]> => {
+    await ready();
+
     if (navigator.onLine) {
       // Make the GET request
       const { data } = await axios.get<BioCollectSurvey[]>(
@@ -215,10 +250,12 @@ export default (db: BioCollectDexie) => ({
       // The endpoint also returns an empty list (or null) when the server fails to load the project,
       // so an empty response can't be trusted to clear the cache
       if (data?.length > 0) {
-        await db.transaction('rw', db.projects, db.surveys, async () => {
-          await replaceProjectSurveys(db, [projectId], surveys);
-          await db.projects.update(projectId, { projectActivities: surveys });
-        });
+        await tryCache(() =>
+          db.transaction('rw', db.projects, db.surveys, async () => {
+            await replaceProjectSurveys(db, [projectId], surveys);
+            await db.projects.update(projectId, { projectActivities: surveys });
+          }),
+        );
       }
 
       return surveys;
@@ -240,7 +277,6 @@ export default (db: BioCollectDexie) => ({
 
       // Make the GET request
       const { data } = await axios.get<BioCollectBioActivitySearch>(url);
-      await db.activities.bulkPut(data.activities);
       return data;
     } else {
       return { activities: [] };
@@ -252,7 +288,7 @@ export default (db: BioCollectDexie) => ({
       const { data } = await axios.get<BioCollectHub[]>(
         `${import.meta.env.VITE_API_BIOCOLLECT}/ws/hub/pwaList`,
       );
-      await db.hubs.bulkPut(data);
+      await tryCache(() => db.hubs.bulkPut(data));
       return data;
     } else {
       return db.hubs.toArray();

@@ -47,6 +47,7 @@ export const PublishedRecords = ({
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [refreshSwitch, setRefreshSwitch] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<boolean>(false);
 
   const refresh = useCallback(() => {
     setSearch(null);
@@ -69,10 +70,14 @@ export const PublishedRecords = ({
   };
 
   useEffect(() => {
+    // Set once a newer request supersedes this one, so its late response is dropped
+    let stale = false;
+
     async function getActivities() {
       if (!view) return;
 
       setLoadingMore(true);
+      setLoadError(false);
 
       const filters: FilterQueries = view === 'myrecords' ? {
         fq: [
@@ -94,15 +99,28 @@ export const PublishedRecords = ({
         sort: 'dateCreatedSort',
       };
 
-      const resp = await biocollect.searchActivities(view, pagedFilters);
+      try {
+        const resp = await biocollect.searchActivities(view, pagedFilters);
+        if (stale) return;
 
-      setSearch(resp);
-      setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
-      setHasMore(resp.activities.length === PAGE_SIZE);
-      setLoadingMore(false);
+        setSearch(resp);
+        setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
+        setHasMore(resp.activities.length === PAGE_SIZE);
+      } catch (error) {
+        if (stale) return;
+
+        console.error('Failed to load published records!', error);
+        setLoadError(true);
+        setHasMore(false);
+      } finally {
+        if (!stale) setLoadingMore(false);
+      }
     }
 
     getActivities();
+    return () => {
+      stale = true;
+    };
   }, [view, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
 
   function clearSearch() {
@@ -182,6 +200,14 @@ export const PublishedRecords = ({
         ]}
       />
       {(() => {
+        if (loadError && items.length === 0) {
+          return (
+            <Center h='100%' py='xl'>
+              <Text c='dimmed'>Failed to load published records, please try refreshing</Text>
+            </Center>
+          );
+        }
+
         if (search) {
           return items.length > 0 ? (
             <>
