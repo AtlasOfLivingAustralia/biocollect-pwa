@@ -88,6 +88,8 @@ export function Home() {
     setHubSwitch((current) => !current);
   }, []);
   const lastTotal = useRef<number>(null);
+  // Only the latest request may update the state, as responses can arrive out of order
+  const latestRequest = useRef<number>(0);
 
   // Watch for changes to the downloaded surveys
   const downloadedSurveys = useLiveQuery<SurveyDownloads>(async () =>
@@ -104,6 +106,8 @@ export function Home() {
   );
 
   const fetch = useCallback(async () => {
+    const request = ++latestRequest.current;
+
     if (error !== null) {
       setError(null);
     }
@@ -118,11 +122,15 @@ export function Home() {
         searchState.offline,
       );
 
+      if (request !== latestRequest.current) return;
+
       setProjectSearch(data);
 
       // Update the last total ref
       lastTotal.current = data.total;
     } catch (error) {
+      if (request !== latestRequest.current) return;
+
       setError((error as AxiosError).message);
       console.error('Search error!', error);
     }

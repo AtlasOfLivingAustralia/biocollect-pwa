@@ -192,39 +192,38 @@ export function ProjectItem({
             label={<b>{surveys.length} survey{surveys.length === 1 ? '' : 's'}</b>}
             variant='dashed'
           />
-          {loading ? (
+          {loading && (
             <Stack px='md' py='sm'>
               <ProjectItemSurvey />
             </Stack>
-          ) : (
-            <>
-              {surveys.length > 0 ? (
-                <ScrollArea h={130} type='auto'>
-                  <Stack px='md' pb='xl' gap='xs'>
-                    {[...surveys].sort((a, b) => {
-                      const aHasUnpublished = Boolean(unpublished?.projectActivity[a.projectActivityId]);
-                      const bHasUnpublished = Boolean(unpublished?.projectActivity[b.projectActivityId]);
+          )}
+          {(
+              loading ? null : surveys.length > 0 ? (
+              <ScrollArea h={130} type='auto'>
+                <Stack px='md' pb='xl' gap='xs'>
+                  {[...surveys].sort((a, b) => {
+                    const aHasUnpublished = Boolean(unpublished?.projectActivity[a.projectActivityId]);
+                    const bHasUnpublished = Boolean(unpublished?.projectActivity[b.projectActivityId]);
 
-                      return Number(bHasUnpublished) - Number(aHasUnpublished)
-                        || a.name.localeCompare(b.name);
-                    }).map((survey) => (
-                      <ProjectItemSurvey
-                        key={survey.id}
-                        survey={survey}
-                        downloaded={downloaded?.[survey.id]}
-                        unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
-                      />
-                    ))}
-                  </Stack>
-                </ScrollArea>
-              ) : (
-                <Center h={85}>
-                  <Text ta='center' size='sm' c='dimmed'>
-                    No surveys available
-                  </Text>
-                </Center>
-              )}
-            </>
+                    return Number(bHasUnpublished) - Number(aHasUnpublished)
+                      || a.name.localeCompare(b.name);
+                  }).map((survey) => (
+                    <ProjectItemSurvey
+                      key={survey.id}
+                      survey={survey}
+                      downloaded={downloaded?.[survey.id]}
+                      unpublishedCount={unpublished?.projectActivity[survey.projectActivityId] || 0}
+                    />
+                  ))}
+                </Stack>
+              </ScrollArea>
+            ) : (
+              <Center h={85}>
+                <Text ta='center' size='sm' c='dimmed'>
+                  No surveys available
+                </Text>
+              </Center>
+            )
           )}
         </Stack>
         <Box

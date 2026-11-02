@@ -49,5 +49,14 @@ export function TokenHandler() {
     tryTokenRefresh('onLine hook');
   }, [onLine]);
 
+  // Ask the browser not to evict downloaded surveys & cached data when storage runs low
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      navigator.storage
+        ?.persist?.()
+        .then((persisted) => console.log(`[Storage] Persistent storage: ${persisted}`));
+    }
+  }, [auth.isAuthenticated]);
+
   return null;
 }

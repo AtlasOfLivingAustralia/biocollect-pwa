@@ -103,6 +103,8 @@ export interface BioCollectProject {
   projectActivities: BioCollectSurvey[];
   userIsProjectMember?: boolean;
   hub: string;
+  // Set locally when the project is cached, not returned by the API
+  cachedAt?: number;
 }
 
 export interface BioCollectProjectSearch {
