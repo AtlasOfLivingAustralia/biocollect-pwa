@@ -40,7 +40,8 @@ export function DownloadChip({ survey, onLine, downloaded, ...rest }: DownloadCh
             await dexie.cached.put({
               surveyId: survey.id,
               projectId: survey.projectId,
-              lastUpdated: survey.lastUpdated,
+              // The Home list comes from the search index, whose surveys have no lastUpdated
+              lastUpdated: survey.lastUpdated ?? new Date().toISOString(),
             });
           }
 
