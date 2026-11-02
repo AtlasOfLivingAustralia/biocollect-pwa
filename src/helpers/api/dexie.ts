@@ -65,8 +65,8 @@ export const claimCache = (userId: string) => {
     claim = (async () => {
       const owner = localStorage.getItem(OWNER_KEY);
 
-      // No owner means the data predates tracking, so keep it rather than lose offline data
-      if (owner && owner !== userId) await clearApiCache();
+      // An unknown owner cannot safely be assumed to be the current user.
+      if (owner !== userId) await clearApiCache();
       localStorage.setItem(OWNER_KEY, userId);
     })().catch((error) => {
       claimedBy = undefined;
