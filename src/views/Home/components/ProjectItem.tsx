@@ -198,7 +198,7 @@ export function ProjectItem({
             </Stack>
           )}
           {(
-            !loading && surveys.length > 0 ? (
+              loading ? null : surveys.length > 0 ? (
               <ScrollArea h={130} type='auto'>
                 <Stack px='md' pb='xl' gap='xs'>
                   {[...surveys].sort((a, b) => {
