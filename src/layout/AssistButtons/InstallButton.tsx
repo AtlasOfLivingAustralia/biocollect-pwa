@@ -114,13 +114,16 @@ export function InstallButton() {
                 <Alert color='orange' title='Open this page in Safari or Chrome'>
                   Your current browser may not support installing BioCollect. Some iOS browsers,
                   such as <b>Microsoft Edge</b>, may not offer <b>Add to Home Screen</b>. Copy this
-                  page&apos;s address into <b>Safari</b> or <b>Google Chrome</b>, then follow the
-                  steps below.
+                  page&apos;s address into <b>Safari</b> or, on <b>iOS/iPadOS 16.4 and later</b>,{' '}
+                  <b>Google Chrome</b>, then follow the steps below. On <b>16.3 and earlier</b>,
+                  use <b>Safari</b>.
                 </Alert>
               ) : (
                 <Alert>
-                  Use <b>Safari</b> or <b>Google Chrome</b> to install BioCollect. Some other iOS
-                  browsers, such as <b>Microsoft Edge</b>, may not offer <b>Add to Home Screen</b>.
+                  Use <b>Safari</b> to install BioCollect on <b>iOS/iPadOS 16.3 and earlier</b>.
+                  On <b>16.4 and later</b>, you can use <b>Safari</b> or <b>Google Chrome</b>.
+                  Some other iOS browsers, such as <b>Microsoft Edge</b>, may not offer{' '}
+                  <b>Add to Home Screen</b>.
                 </Alert>
               )}
               <Flex gap='sm'>
@@ -133,7 +136,7 @@ export function InstallButton() {
                     <ThemeIcon variant='subtle' size='sm'>
                       <IconShare2 size='1rem' />
                     </ThemeIcon>
-                    &nbsp;<b>Share</b> button to the left of the address bar
+                    &nbsp;<b>Share</b> button next to the address bar
                   </Text>
                 ) : (
                   <Text>
@@ -152,7 +155,7 @@ export function InstallButton() {
                     <ThemeIcon variant='subtle' size='sm'>
                       <IconShare2 size='1rem' />
                     </ThemeIcon>
-                    &nbsp;<b>Share</b> button to the left of the address bar
+                    &nbsp;<b>Share</b> button next to the address bar
                   </Text>
                 )}
               </Flex>
