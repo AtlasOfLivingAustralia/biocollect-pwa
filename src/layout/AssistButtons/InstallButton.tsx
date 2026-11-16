@@ -13,26 +13,25 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useDisclosure, useLocalStorage, useMediaQuery } from '@mantine/hooks';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import {
   IconBrandApple,
   IconBrandSafari,
   IconBrowser,
-  IconDotsFilled,
+  IconDots,
   IconDownload,
   IconHandClick,
+  IconMenu2,
   IconNewSection,
   IconPlus,
   IconPointer,
   IconShare2,
-  IconSwipeDown,
 } from '@tabler/icons-react';
 import { detect } from 'detect-browser';
+import { pwaInstallHandler } from 'pwa-install-handler';
 import { useEffect, useState } from 'react';
-import { pwaInstallHandler } from 'pwa-install-handler'
 
 import { isPWAInstalled } from '#/helpers/funcs/isPWAInstalled';
-
 
 export function InstallButton() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -41,18 +40,29 @@ export function InstallButton() {
   const theme = useMantineTheme();
   const mobile = useMediaQuery(`(max-width: ${theme.breakpoints.md})`);
   const browser = detect();
+  // iPadOS Safari reports a desktop (Mac OS) user agent, so fall back to touch support
+  const isIOS = browser?.os === 'iOS' || (browser?.os === 'Mac OS' && navigator.maxTouchPoints > 1);
+  const isIOSChrome = isIOS && browser?.name === 'crios';
+  const isIOSSupported =
+    isIOSChrome || (isIOS && (browser?.name === 'ios' || browser?.name === 'safari'));
+  let defaultTab = 'other';
+  if (isIOS) defaultTab = 'ios';
+  else if (browser?.name === 'safari') defaultTab = 'safari';
 
   useEffect(() => {
-    pwaInstallHandler.addListener((canInstallCallback) => {
-      setCanInstall(canInstallCallback);
-    });
+    const listener = (installable: boolean) => setCanInstall(installable);
+    pwaInstallHandler.addListener(listener);
+    return () => pwaInstallHandler.removeListener(listener);
   }, []);
 
   const onClick = async () => {
     if (canInstall) {
       setInstalling(true);
-      await pwaInstallHandler.install();
-      setInstalling(false);
+      try {
+        await pwaInstallHandler.install();
+      } finally {
+        setInstalling(false);
+      }
     } else {
       open();
     }
@@ -86,10 +96,7 @@ export function InstallButton() {
         zIndex={1000}
         size='xl'
       >
-        <Tabs
-          defaultValue={['ios', 'safari'].includes(browser?.name || '') ? browser?.name : 'other'}
-          mih={300}
-        >
+        <Tabs defaultValue={defaultTab} mih={300}>
           <Tabs.List mb='md'>
             <Tabs.Tab value='ios' leftSection={<IconBrandApple size='0.9rem' />}>
               iOS
@@ -103,39 +110,68 @@ export function InstallButton() {
           </Tabs.List>
           <Tabs.Panel value='ios'>
             <Stack gap='sm'>
-              <Alert>
-                On <b>iOS 16.3</b> and earlier, PWAs can only be installed with Safari.<br />
-                On <b>iOS 16.4</b> and later, PWAs can be installed with the Share menu in Safari, Chrome, Edge and Firefox.
-              </Alert>
-              <Flex gap='sm'>
-                <ThemeIcon variant='light'>
-                  <IconSwipeDown size='1rem' />
-                </ThemeIcon>
-                <Text>
-                  Swipe down on the page to reveal the&nbsp;
-                  <ThemeIcon variant='subtle' size='sm'>
-                    <IconDotsFilled size="1rem" />
-                  </ThemeIcon>&nbsp;
-                  button
-                </Text>
-              </Flex>
+              {isIOS && !isIOSSupported ? (
+                <Alert color='orange' title='Open this page in Safari or Chrome'>
+                  Your current browser may not support installing BioCollect. Some iOS browsers,
+                  such as <b>Microsoft Edge</b>, may not offer <b>Add to Home Screen</b>. Copy this
+                  page&apos;s address into <b>Safari</b> or <b>Google Chrome</b>, then follow the
+                  steps below.
+                </Alert>
+              ) : (
+                <Alert>
+                  Use <b>Safari</b> or <b>Google Chrome</b> to install BioCollect. Some other iOS
+                  browsers, such as <b>Microsoft Edge</b>, may not offer <b>Add to Home Screen</b>.
+                </Alert>
+              )}
               <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconShare2 size='1rem' />
                 </ThemeIcon>
-                <Text>Tap <b>Share</b></Text>
+                {isIOSChrome ? (
+                  <Text>
+                    Tap the&nbsp;
+                    <ThemeIcon variant='subtle' size='sm'>
+                      <IconShare2 size='1rem' />
+                    </ThemeIcon>
+                    &nbsp;<b>Share</b> button to the left of the address bar
+                  </Text>
+                ) : (
+                  <Text>
+                    <b>Safari:</b> tap the <b>Share</b> button in the toolbar. If you only see
+                    the&nbsp;
+                    <ThemeIcon variant='subtle' size='sm'>
+                      <IconDots size='1rem' />
+                    </ThemeIcon>
+                    &nbsp;/&nbsp;
+                    <ThemeIcon variant='subtle' size='sm'>
+                      <IconMenu2 size='1rem' />
+                    </ThemeIcon>
+                    &nbsp;button, tap it first, then tap <b>Share</b>
+                    <br />
+                    <b>Chrome:</b> tap the&nbsp;
+                    <ThemeIcon variant='subtle' size='sm'>
+                      <IconShare2 size='1rem' />
+                    </ThemeIcon>
+                    &nbsp;<b>Share</b> button to the left of the address bar
+                  </Text>
+                )}
               </Flex>
               <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconNewSection size='1rem' />
                 </ThemeIcon>
-                <Text>Swipe down, and tap <b>Add to Home Screen</b></Text>
+                <Text>
+                  Scroll down and tap <b>Add to Home Screen</b> (tap <b>View More</b> if you
+                  don&apos;t see it)
+                </Text>
               </Flex>
               <Flex gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconHandClick size='1rem' />
                 </ThemeIcon>
-                <Text>Tap <b>Add</b> in the top-right corner</Text>
+                <Text>
+                  If shown, make sure <b>Open as Web App</b> is turned on, then tap <b>Add</b>
+                </Text>
               </Flex>
             </Stack>
           </Tabs.Panel>
@@ -148,39 +184,59 @@ export function InstallButton() {
                 <ThemeIcon variant='light'>
                   <IconPointer size='1rem' />
                 </ThemeIcon>
-                <Text>
-                  Click
-                </Text>
+                <Text>Click</Text>
                 <Code>File &gt; Add to Dock</Code>
               </Group>
               <Group gap='sm'>
                 <ThemeIcon variant='light'>
                   <IconPlus size='1rem' />
                 </ThemeIcon>
-                <Text>Click <b>Add</b></Text>
+                <Text>
+                  Click <b>Add</b>
+                </Text>
               </Group>
             </Stack>
           </Tabs.Panel>
           <Tabs.Panel value='other'>
             <Stack gap='sm'>
               <Alert>
-                If you have already installed this application in Chrome, you will see <b>Open in app</b> in the right-hand side of your URL address bar.
+                If BioCollect is already installed, your browser may show an <b>Open in app</b>{' '}
+                button in the address bar.
               </Alert>
+              <Flex gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconDownload size='1rem' />
+                </ThemeIcon>
+                <Text>
+                  <b>Desktop:</b> click the install icon on the right of the address bar, or open
+                  the browser menu and choose <b>Install BioCollect</b> (in Chrome, under{' '}
+                  <b>Cast, save and share</b>; in Edge, under <b>Apps</b>)
+                </Text>
+              </Flex>
+              <Flex gap='sm'>
+                <ThemeIcon variant='light'>
+                  <IconPlus size='1rem' />
+                </ThemeIcon>
+                <Text>
+                  <b>Android:</b> open the browser menu and tap <b>Add to Home screen</b> or{' '}
+                  <b>Install app</b>, then tap <b>Install</b>
+                </Text>
+              </Flex>
               <Text>
-                Please use an alternative browser such as{' '}
-                <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
+                If your browser doesn&apos;t offer an install option, please use{' '}
+                <Anchor href='https://www.google.com/chrome/' target='_blank'>
                   Google Chrome
-                </Anchor>
-                {' '}or{' '}
-                <Anchor href='https://www.google.com.au/intl/en_au/chrome/' target='_blank'>
-                  Edge
                 </Anchor>{' '}
-                to install the BioCollect PWA.
+                or{' '}
+                <Anchor href='https://www.microsoft.com/edge' target='_blank'>
+                  Microsoft Edge
+                </Anchor>{' '}
+                to install BioCollect.
               </Text>
             </Stack>
           </Tabs.Panel>
         </Tabs>
-      </Modal >
+      </Modal>
     </>
   );
 }
