@@ -47,6 +47,15 @@ export function ActivityItem({ activity, onDelete, ...rest }: ActivityItemProps)
           } catch (error) {
             console.error('Failed to delete activity!', error);
             setDeleting(false);
+            modals.open({
+              title: 'Deletion could not be confirmed',
+              children: (
+                <Text>
+                  Refresh the records list to check whether the record was deleted before trying
+                  again.
+                </Text>
+              ),
+            });
           }
         },
       });
