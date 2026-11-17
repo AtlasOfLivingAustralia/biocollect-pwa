@@ -1,5 +1,14 @@
 import { DEFAULT_HUB, useHubId } from "#/helpers/funcs/useHub";
-import { Badge, Flex, Image, Skeleton, Stack, Text, UnstyledButton } from "@mantine/core";
+import {
+  Badge,
+  Flex,
+  Image,
+  Skeleton,
+  Stack,
+  Text,
+  UnstyledButton,
+  VisuallyHidden,
+} from "@mantine/core";
 import { Spotlight, spotlight } from "@mantine/spotlight";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -8,7 +17,7 @@ import type { BioCollectHub } from "#/types";
 import { biocollect } from "#/helpers/api";
 
 import logoAla from '/assets/logo-ala-background-light-trans.png';
-import { IconRefresh } from "@tabler/icons-react";
+import { IconExclamationCircleFilled, IconRefresh } from "@tabler/icons-react";
 
 interface HubSwitcherProps {
   onChange: () => void;
@@ -42,6 +51,8 @@ function HubLogo({ logo }: HubLogoProps) {
 
 export function HubSwitcher({ onChange }: HubSwitcherProps) {
   const [hubs, setHubs] = useState<BioCollectHub[] | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [retry, setRetry] = useState(0);
   const [hubId, setHubId] = useHubId();
   const hub: BioCollectHub | null = hubs?.find(({ url }) => url === hubId) || null;
   const didDiscard = useRef(false);
@@ -85,30 +96,52 @@ export function HubSwitcher({ onChange }: HubSwitcherProps) {
   })), [hubs, hubId, selectHub]);
 
   useEffect(() => {
+    let active = true;
+
     async function fetchHubs() {
-      const fetchedHubs = await biocollect.listHubs();
-      setHubs(fetchedHubs);
+      try {
+        const fetchedHubs = await biocollect.listHubs();
+        if (active) setHubs(fetchedHubs);
+      } catch (error) {
+        if (active) {
+          console.error('Failed to load hubs.', error);
+          setLoadFailed(true);
+        }
+      }
     }
 
     fetchHubs();
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [retry]);
 
   return (
     <>
       <Spotlight searchProps={{ placeholder: 'Search for a hub' }} actions={actions} />
-      <UnstyledButton disabled={!hubs} className={classes.root} onClick={spotlight.open}>
+      <VisuallyHidden role='alert'>
+        {loadFailed ? 'Could not load hubs. Retry available.' : ''}
+      </VisuallyHidden>
+      <UnstyledButton
+        disabled={!hubs && !loadFailed}
+        className={classes.root}
+        onClick={loadFailed ? () => {
+          setLoadFailed(false);
+          setRetry((value) => value + 1);
+        } : spotlight.open}
+      >
         <Flex align='center' gap='md'>
-          <HubLogo logo={hub?.logo} />
-          <Stack className={classes.details} gap={0} py={4}>
-            <Skeleton visible={!hub}>
-              <Text size='xl' fw='bold' ff='heading'>{hub?.name || "Hub name"}</Text>
+          {loadFailed ? <IconExclamationCircleFilled size={50} /> : <HubLogo logo={hub?.logo} />}
+          <Stack className={classes.details} gap={4} py={4}>
+            <Skeleton visible={!hub && !loadFailed}>
+              <Text size='xl' fw='bold' ff='heading'>{loadFailed ? 'Could not load hubs' : hub?.name || "Hub name"}</Text>
             </Skeleton>
-            <Skeleton visible={!hub}>
+            <Skeleton visible={!hub && !loadFailed}>
               <Flex align='center' gap='xs'>
                 <Flex className={classes.icon}>
                   <IconRefresh size='1rem' />
                 </Flex>
-                <Text c='dimmed' size='sm'>Switch hub</Text>
+                <Text c='dimmed' size='sm'>{loadFailed ? 'Retry' : 'Switch hub'}</Text>
               </Flex>
             </Skeleton>
           </Stack>

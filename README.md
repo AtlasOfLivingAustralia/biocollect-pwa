@@ -43,3 +43,10 @@ Setup VSCode to format on save using [this](https://www.alphr.com/auto-format-vs
    1. Installation instructions available [here](https://pnpm.io/installation)
 4. Allow `esbuild` to run via `pnpm approve-builds`
 5. Start the project with `pnpm dev`
+
+`VITE_API_TIMEOUT` in `config/.env.<mode>` sets the BioCollect API request timeout at build time.
+Use a whole number of milliseconds from `0` to `2147483647`; `0` disables the timeout. The
+production configuration currently uses `0`. A missing or invalid value stops the app at startup.
+Authentication and embedded BioCollect pages are not affected.
+
+Run `pnpm test` to check API timeout handling.
