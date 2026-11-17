@@ -1,6 +1,13 @@
 import { Box, Group, Paper, type PaperProps, Progress, Stack, Text } from '@mantine/core';
 import { IconCalendar, IconCalendarDue } from '@tabler/icons-react';
 
+const dateFormatter = new Intl.DateTimeFormat('en-AU', {
+  day: 'numeric',
+  month: 'numeric',
+  year: 'numeric',
+  timeZone: 'Australia/Sydney',
+});
+
 interface TimeSpanProps extends PaperProps {
   start?: string | null;
   end?: string | null;
@@ -22,9 +29,7 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
               <Text size='xs' c='dimmed' fw='bold'>
                 Start Date
               </Text>
-              <Text size='sm'>
-                {startDate.getDay()}/{startDate.getMonth() + 1}/{startDate.getFullYear()}
-              </Text>
+              <Text size='sm'>{dateFormatter.format(startDate)}</Text>
             </Stack>
           </>
         )}
@@ -36,9 +41,7 @@ export function TimeSpan({ start, end, ...rest }: TimeSpanProps) {
               <Text size='xs' c='dimmed' fw='bold'>
                 End Date
               </Text>
-              <Text size='sm'>
-                {endDate.getDay()}/{endDate.getMonth() + 1}/{endDate.getFullYear()}
-              </Text>
+              <Text size='sm'>{dateFormatter.format(endDate)}</Text>
             </Stack>
           </>
         )}
