@@ -1,6 +1,23 @@
-import { ActionIcon, Button, Center, Flex, Group, SegmentedControl, Stack, Text, TextInput } from '@mantine/core';
+import {
+  ActionIcon,
+  Button,
+  Center,
+  Flex,
+  Group,
+  SegmentedControl,
+  Stack,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { useDebouncedValue } from '@mantine/hooks';
-import { IconRefresh, IconSearch, IconUser, IconUsersGroup, IconX } from '@tabler/icons-react';
+import {
+  IconFileSad,
+  IconRefresh,
+  IconSearch,
+  IconUser,
+  IconUsersGroup,
+  IconX,
+} from '@tabler/icons-react';
 import {
   Fragment,
   type PropsWithChildren,
@@ -45,6 +62,7 @@ export const PublishedRecords = ({
   const [page, setPage] = useState<number>(0);
   const [items, setItems] = useState<BioCollectBioActivity[]>([]);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [refreshSwitch, setRefreshSwitch] = useState<boolean>(false);
 
@@ -69,10 +87,13 @@ export const PublishedRecords = ({
   };
 
   useEffect(() => {
+    let active = true;
+
     async function getActivities() {
       if (!view) return;
 
       setLoadingMore(true);
+      setLoadError(null);
 
       const filters: FilterQueries = view === 'myrecords' ? {
         fq: [
@@ -94,15 +115,27 @@ export const PublishedRecords = ({
         sort: 'dateCreatedSort',
       };
 
-      const resp = await biocollect.searchActivities(view, pagedFilters);
+      try {
+        const resp = await biocollect.searchActivities(view, pagedFilters);
+        if (!active) return;
 
-      setSearch(resp);
-      setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
-      setHasMore(resp.activities.length === PAGE_SIZE);
-      setLoadingMore(false);
+        setSearch(resp);
+        setItems((prev) => (page === 0 ? resp.activities : [...prev, ...resp.activities]));
+        setHasMore(resp.activities.length === PAGE_SIZE);
+      } catch (error) {
+        if (active) {
+          console.error('Failed to load published records.', error);
+          setLoadError(error instanceof Error ? error.message : 'Failed to load published records.');
+        }
+      } finally {
+        if (active) setLoadingMore(false);
+      }
     }
 
     getActivities();
+    return () => {
+      active = false;
+    };
   }, [view, publishedRefreshKey, refreshSwitch, debouncedSearchTerm, page]);
 
   function clearSearch() {
@@ -182,6 +215,23 @@ export const PublishedRecords = ({
         ]}
       />
       {(() => {
+        if (loadError) {
+          return (
+            <Center py='xl'>
+              <Stack align='center' gap={8} role='alert'>
+                <IconFileSad size='4rem' aria-hidden='true' />
+                <Text mt='md' ff='heading' size='xl' ta='center'>
+                  Published records unavailable
+                </Text>
+                <Text c='dimmed' ta='center'>{loadError}</Text>
+                <Button mt='lg' onClick={refresh}>
+                  Retry
+                </Button>
+              </Stack>
+            </Center>
+          );
+        }
+
         if (search) {
           return items.length > 0 ? (
             <>
